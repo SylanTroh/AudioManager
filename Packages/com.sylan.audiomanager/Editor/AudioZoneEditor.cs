@@ -92,7 +92,7 @@ namespace Sylan.AudioManager
         }
         private void ResetBoxCollider(BoxCollider collider)
         {
-            Bounds bounds = collider.gameObject.GetComponent<MeshFilter>().mesh.bounds;
+            Bounds bounds = collider.gameObject.GetComponent<MeshFilter>().sharedMesh.bounds;
             collider.center = bounds.center;
             collider.size = bounds.size;
         }

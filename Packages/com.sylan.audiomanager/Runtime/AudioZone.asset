@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c333ccfdd0cbdbc4ca30cef2dd6e6b9b, type: 3}
   m_Name: AudioZone
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: d2c20e2f097f481498c6dd5e5868bd62,
+  serializedUdonProgramAsset: {fileID: 11400000, guid: 364e322332546b4439d53a624d11e9ec,
     type: 2}
   udonAssembly: 
   assemblyError: 
