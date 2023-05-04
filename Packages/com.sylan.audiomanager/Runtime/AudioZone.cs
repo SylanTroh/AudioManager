@@ -1,27 +1,58 @@
 ﻿
 using UdonSharp;
 using UnityEngine;
+using VRC.SDK3.Data;
 using VRC.SDKBase;
+using VRC.SDKBase.Midi;
 using VRC.Udon;
+using static VRC.Core.APIGroup;
 
 namespace Sylan.AudioManager
 {
     public class AudioZone : UdonSharpBehaviour
     {
-        const int DEFAULT_ZONE_PRIORITY = 128;
-        const int NULL_ZONE_PRIORITY = 255;
+        private AudioManager _AudioManager;
 
-        public int priority = DEFAULT_ZONE_PRIORITY;
+        [Header("Primary AudioZone ID")]
+        public string zoneID = string.Empty;
 
-        public float voiceGain = AudioManager.DEFAULT_VOICE_GAIN;
-        public float voiceNear = AudioManager.DEFAULT_VOICE_RANGE_NEAR;
-        public float voiceFar = AudioManager.DEFAULT_VOICE_RANGE_FAR;
-        public float voiceVolumetricRadius = AudioManager.DEFAULT_VOICE_VOLUMETRIC_RADIUS;
-        public bool voiceLowpass = AudioManager.DEFAULT_VOICE_LOWPASS;
+        [Header("Additional AudioZones. Useful for transitions.", order = 0)]
+        [Space(-10, order = 1)]
+        [Header("To hear players who are not in a zone, set an empty string.", order = 2)]
+        public string[] transitionZoneIDs;
 
-        void Start()
+        public void Init(AudioManager audioManager)
         {
+            _AudioManager = audioManager;
+        }
+        public override void OnPlayerTriggerEnter(VRCPlayerApi player)
+        {
+            Debug.Log("[AudioZone] Entering Zone " + zoneID + gameObject.GetInstanceID());
 
+            player.EnterZone(_AudioManager.AudioZoneManager, zoneID);
+            foreach (string id in transitionZoneIDs)
+            {
+                player.EnterZone(_AudioManager.AudioZoneManager, id);
+            }
+
+            UpdateAudio(player);
+        }
+        public override void OnPlayerTriggerExit(VRCPlayerApi player)
+        {
+            Debug.Log("[AudioZone] Exiting Zone " + zoneID + gameObject.GetInstanceID());
+
+            player.ExitZone(_AudioManager.AudioZoneManager, zoneID);
+            foreach (string id in transitionZoneIDs)
+            {
+                player.ExitZone(_AudioManager.AudioZoneManager, id);
+            }
+
+            UpdateAudio(player);
+        }
+        public void UpdateAudio(VRCPlayerApi triggeringPlayer)
+        {
+            if(triggeringPlayer == Networking.LocalPlayer) _AudioManager.SetAllAudio();
+            else _AudioManager.SetPlayerAudio(triggeringPlayer);
         }
     }
 }
