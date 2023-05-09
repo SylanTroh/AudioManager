@@ -9,7 +9,7 @@ using VRC.Udon;
 namespace Sylan.AudioManager
 {
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
-    public class AudioManager : UdonSharpBehaviour
+    public class AudioSettingManager : UdonSharpBehaviour
     {
         public const float DEFAULT_VOICE_GAIN = 15.0f;
         public const float DEFAULT_VOICE_RANGE_NEAR = 0.0f;
@@ -17,16 +17,10 @@ namespace Sylan.AudioManager
         public const float DEFAULT_VOICE_VOLUMETRIC_RADIUS = 0.0f;
         public const bool DEFAULT_VOICE_LOWPASS = true;
 
-        public AudioZoneManager AudioZoneManager { get; private set; }
+        public AudioZoneManager AudioZoneManager { get => _AudioZoneManager; private set { _AudioZoneManager = value; } }
+        [SerializeField] private AudioZoneManager _AudioZoneManager;
+        public const string AudioZoneManagerPropertyName = nameof(_AudioZoneManager);
 
-        void Start()
-        {
-            AudioZoneManager = GetComponentInChildren<AudioZoneManager>();
-        }
-        public static AudioManager GetAudioManager(Transform transform)
-        {
-            return transform.root.GetComponent<AudioManager>();
-        }
         public static void SetPlayerVoice(VRCPlayerApi player, float voiceGain, float voiceNear, float voiceFar, float voiceVolumetricRadius, bool voiceLowpass)
         {
             if (!player.IsValid()) return;
@@ -45,17 +39,22 @@ namespace Sylan.AudioManager
         {
             SetPlayerVoice(player, DEFAULT_VOICE_GAIN, DEFAULT_VOICE_RANGE_NEAR, 0, DEFAULT_VOICE_VOLUMETRIC_RADIUS, DEFAULT_VOICE_LOWPASS);
         }
-        public void SetPlayerAudio(VRCPlayerApi player)
+        public void UpdateAudioSettings(VRCPlayerApi triggeringPlayer)
         {
-            ApplyAudioZoneSetting(player);
-        }
-        public void SetAllAudio()
-        {
-            VRCPlayerApi[] players = new VRCPlayerApi[VRCPlayerApi.GetPlayerCount()];
-            VRCPlayerApi.GetPlayers(players);
-            foreach (VRCPlayerApi player in players)
+            if (triggeringPlayer == null) return;
+            if(!triggeringPlayer.IsValid()) return;
+
+            if (triggeringPlayer != Networking.LocalPlayer)
             {
-                ApplyAudioZoneSetting(player);
+                //If someone else caused the update, update triggering player
+                ApplyAudioZoneSetting(triggeringPlayer);
+            }
+            else
+            {
+                //If the local player caused the update, update all players
+                VRCPlayerApi[] players = new VRCPlayerApi[VRCPlayerApi.GetPlayerCount()];
+                VRCPlayerApi.GetPlayers(players);
+                foreach (VRCPlayerApi player in players) ApplyAudioZoneSetting(player);
             }
         }
         public void ApplyAudioZoneSetting(VRCPlayerApi player)

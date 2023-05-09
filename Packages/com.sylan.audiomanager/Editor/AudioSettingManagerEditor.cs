@@ -7,22 +7,21 @@ using Sylan.EditorUtilities;
 namespace Sylan.AudioManager
 {
     [InitializeOnLoad]
-    public class AudioZoneManagerInitialize : Editor, IVRCSDKBuildRequestedCallback
+    public class AudioSettingManagerInitialize : Editor, IVRCSDKBuildRequestedCallback
     {
         private static bool SetSerializedProperties()
         {
             //Object with Serialized Property(s)
-            if(!SerializedPropertyUtils.GetSerializedObject<AudioZoneManager>(out SerializedObject serializedObject)) return false;
+            if(!SerializedPropertyUtils.GetSerializedObject<AudioSettingManager>(out SerializedObject serializedObject)) return false;
 
             //Set Serialized Property
-            SerializedPropertyUtils.PopulateSerializedArray<AudioZone>(serializedObject, AudioZoneManager.AudioZonesPropertyName);
-            SerializedPropertyUtils.PopulateSerializedProperty<AudioSettingManager>(serializedObject, AudioZoneManager.AudioSettingManagerPropertyName);
+            SerializedPropertyUtils.PopulateSerializedProperty<AudioZoneManager>(serializedObject, AudioSettingManager.AudioZoneManagerPropertyName);
             return true;
         }
         //
         //Run On Play
         //
-        static AudioZoneManagerInitialize()
+        static AudioSettingManagerInitialize()
         //Rename Static Constructor to match Class name
         {
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
