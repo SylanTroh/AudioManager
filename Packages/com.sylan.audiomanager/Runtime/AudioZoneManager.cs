@@ -11,17 +11,15 @@ namespace Sylan.AudioManager
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class AudioZoneManager : UdonSharpBehaviour
     {
-        private AudioManager _AudioManager;
-        
-        [SerializeField] private AudioZone[] SerializedAudioZones;
+        public AudioSettingManager AudioSettingManager { get => _AudioSettingManager; private set { _AudioSettingManager = value; } }
+        [SerializeField] private AudioSettingManager _AudioSettingManager;
+        public const string AudioSettingManagerPropertyName = nameof(_AudioSettingManager);
+
+        [SerializeField] private AudioZone[] AudioZones;
+        public const string AudioZonesPropertyName = nameof(AudioZones);
+
         //Key:playerID -> DataDictionary Key:zoneID -> int numOccurences
         private DataDictionary _AudioZoneID = new DataDictionary();
-
-        private void Start()
-        {
-            _AudioManager = AudioManager.GetAudioManager(transform);
-            foreach (AudioZone zone in SerializedAudioZones) zone.Init(_AudioManager);
-        }
         //
         // Manage AudioZoneDict By Player
         //
@@ -137,8 +135,12 @@ namespace Sylan.AudioManager
             return false;
         }
         //
+        //Update Audio Settings
         //
-        //
+        public void UpdateAudioSettings(VRCPlayerApi triggeringPlayer)
+        {
+            _AudioSettingManager.UpdateAudioSettings(triggeringPlayer);
+        }
     }
     public static class AudioZoneManagerExtensions
     {

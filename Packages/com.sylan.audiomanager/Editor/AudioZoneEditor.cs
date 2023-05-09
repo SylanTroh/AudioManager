@@ -3,11 +3,13 @@ using UnityEngine;
 using UnityEditor;
 using VRC.SDK3.Components;
 using static VRC.Dynamics.PhysBoneManager;
+using Sylan.EditorUtilities;
+using VRC.SDKBase.Editor.BuildPipeline;
 
 namespace Sylan.AudioManager
 {
     [CustomEditor(typeof(AudioZone))]
-    public class ResizableCubeEditor : Editor
+    public class AudioZoneEditor : Editor
     {
         private AudioZone audioZone;
         BoxCollider boxCollider;
@@ -33,7 +35,6 @@ namespace Sylan.AudioManager
             base.OnInspectorGUI();
 
             serializedObject.Update();
-            audioZone.gameObject.name = "AudioZone: " + zoneID.stringValue;
 
             EditorGUILayout.Space();
             showFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(showFoldout, "Audiozone Editor Settings", EditorStyles.foldoutHeader);
@@ -235,6 +236,46 @@ namespace Sylan.AudioManager
                 Gizmos.matrix = Matrix4x4.TRS(meshCollider.transform.position, meshCollider.transform.rotation, meshCollider.transform.lossyScale);
                 Gizmos.DrawWireMesh(meshCollider.sharedMesh);
             }
+        }
+    }
+    [InitializeOnLoad]
+    public class AudioZoneInitialize : Editor, IVRCSDKBuildRequestedCallback
+    {
+        private static bool SetSerializedProperties()
+        {
+            //Object with Serialized Property(s)
+            if (!SerializedPropertyUtils.GetSerializedObjects<AudioZone>(out SerializedObject[] serializedObjects)) return false;
+
+            foreach (var serializedObject in serializedObjects)
+            {
+                //Set Serialized Property
+                SerializedPropertyUtils.PopulateSerializedProperty<AudioZoneManager>(serializedObject, AudioZone.AudioZoneManagerPropertyName);
+            }
+
+            return true;
+        }
+        //
+        //Run On Play
+        //
+        static AudioZoneInitialize()
+        //Rename Static Constructor to match Class name
+        {
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+        }
+        private static void OnPlayModeStateChanged(PlayModeStateChange state)
+        {
+            if (state != PlayModeStateChange.ExitingEditMode) return;
+            SetSerializedProperties();
+        }
+        //
+        // Run On Build
+        //
+        public int callbackOrder => 0;
+
+        public bool OnBuildRequested(VRCSDKRequestedBuildType requestedBuildType)
+        {
+            if (requestedBuildType != VRCSDKRequestedBuildType.Scene) return false;
+            return SetSerializedProperties();
         }
     }
 }
