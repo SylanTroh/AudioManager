@@ -11,8 +11,7 @@
     },
   "gitDependencies": {},
   "vpmDependencies": {
-    "com.vrchat.udonsharp": "1.1.X",
-    "com.sylan.world-utils": "1.1.X"
+    "com.vrchat.udonsharp": "1.1.X"
   },
   "samples": [
   ]
