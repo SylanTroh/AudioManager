@@ -1,6 +1,5 @@
 ﻿
 using System;
-using UnityEditor;
 using UnityEngine;
 using UdonSharp;
 using VRC.SDK3.Data;

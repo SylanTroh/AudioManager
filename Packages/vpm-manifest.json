@@ -8,9 +8,6 @@
     },
     "com.vrchat.clientsim": {
       "version": "1.2.2"
-    },
-    "com.sylan.world-utils": {
-      "version": "1.0.0"
     }
   },
   "locked": {
@@ -34,12 +31,6 @@
       "version": "1.2.4",
       "dependencies": {
         "com.vrchat.worlds": "^3.1.x"
-      }
-    },
-    "com.sylan.world-utils": {
-      "version": "1.0.0",
-      "dependencies": {
-        "com.vrchat.udonsharp": "1.1.X"
       }
     }
   }
