@@ -1,9 +1,7 @@
 ﻿#if !COMPILER_UDONSHARP && UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
-using VRC.SDK3.Components;
-using static VRC.Dynamics.PhysBoneManager;
-using Sylan.EditorUtilities;
+using Sylan.AudioManager.EditorUtilities;
 using VRC.SDKBase.Editor.BuildPipeline;
 
 namespace Sylan.AudioManager

@@ -1,8 +1,7 @@
 ﻿#if !COMPILER_UDONSHARP && UNITY_EDITOR
-using UnityEngine;
 using UnityEditor;
 using VRC.SDKBase.Editor.BuildPipeline;
-using Sylan.EditorUtilities;
+using Sylan.AudioManager.EditorUtilities;
 
 namespace Sylan.AudioManager
 {
