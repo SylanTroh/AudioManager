@@ -206,7 +206,7 @@ MonoBehaviour:
   voiceRangeFar: 15
   volumetricRadius: 0
   voiceLowpass: 1
-  _AudioZoneManager: {fileID: 1471065855}
+  _AudioZoneManager: {fileID: 0}
 --- !u!1 &125617382
 GameObject:
   m_ObjectHideFlags: 0
@@ -657,7 +657,7 @@ MonoBehaviour:
   zoneID: roomTransition
   transitionZoneIDs:
   - room
-  _AudioZoneManager: {fileID: 1471065855}
+  _AudioZoneManager: {fileID: 0}
 --- !u!43 &570378488
 Mesh:
   m_ObjectHideFlags: 0
@@ -1365,7 +1365,7 @@ MonoBehaviour:
   zoneID: roomTransition
   transitionZoneIDs:
   - 
-  _AudioZoneManager: {fileID: 1471065855}
+  _AudioZoneManager: {fileID: 0}
 --- !u!43 &863259862
 Mesh:
   m_ObjectHideFlags: 0
@@ -1625,7 +1625,7 @@ MonoBehaviour:
   _udonSharpBackingUdonBehaviour: {fileID: 939174661}
   zoneID: room
   transitionZoneIDs: []
-  _AudioZoneManager: {fileID: 1471065855}
+  _AudioZoneManager: {fileID: 0}
 --- !u!1 &941371498
 GameObject:
   m_ObjectHideFlags: 0
@@ -1700,7 +1700,7 @@ MonoBehaviour:
   voiceFar: 100000
   volumetricRadius: 0
   lowpassFilter: 1
-  _AudioSettingManager: {fileID: 3782364}
+  _AudioSettingManager: {fileID: 0}
 --- !u!4 &941371501
 Transform:
   m_ObjectHideFlags: 0
@@ -2215,9 +2215,9 @@ MonoBehaviour:
   NetworkIDs:
   - gameObject: {fileID: 1344707365}
     ID: 190
-  - gameObject: {fileID: 3782361}
+  - gameObject: {fileID: 0}
     ID: 192
-  - gameObject: {fileID: 1471065852}
+  - gameObject: {fileID: 0}
     ID: 193
   - gameObject: {fileID: 939174658}
     ID: 200
@@ -2365,7 +2365,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 1471065854}
-  _AudioSettingManager: {fileID: 3782364}
+  _AudioSettingManager: {fileID: 0}
   AudioZones:
   - {fileID: 490456305}
   - {fileID: 850794486}
@@ -2725,7 +2725,7 @@ MonoBehaviour:
   voiceFar: 100000
   volumetricRadius: 0
   lowpassFilter: 1
-  _AudioSettingManager: {fileID: 3782364}
+  _AudioSettingManager: {fileID: 0}
 --- !u!43 &2125246856
 Mesh:
   m_ObjectHideFlags: 0
