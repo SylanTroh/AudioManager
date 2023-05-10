@@ -44,6 +44,13 @@ namespace Sylan.AudioManager
             (DataToken) new DataList()
         };
 
+        [Header("Set default AudioSetting")]
+        [SerializeField] private float voiceGain = DEFAULT_VOICE_GAIN;
+        [SerializeField] private float voiceRangeNear = DEFAULT_VOICE_RANGE_NEAR;
+        [SerializeField] private float voiceRangeFar = DEFAULT_VOICE_RANGE_FAR;
+        [SerializeField] private float volumetricRadius = DEFAULT_VOICE_VOLUMETRIC_RADIUS;
+        [SerializeField] private bool voiceLowpass = DEFAULT_VOICE_LOWPASS;
+
         public AudioZoneManager AudioZoneManager { get => _AudioZoneManager; private set { _AudioZoneManager = value; } }
         [HideInInspector, SerializeField] private AudioZoneManager _AudioZoneManager;
         public const string AudioZoneManagerPropertyName = nameof(_AudioZoneManager);
@@ -53,6 +60,12 @@ namespace Sylan.AudioManager
 
         private void Start()
         {
+            DefaultAudioSettings[VOICE_GAIN_INDEX] = (DataToken)voiceGain;
+            DefaultAudioSettings[RANGE_NEAR_INDEX] = (DataToken)voiceRangeNear;
+            DefaultAudioSettings[RANGE_FAR_INDEX] = (DataToken)voiceRangeFar;
+            DefaultAudioSettings[VOLUMETRIC_RADIUS_INDEX] = (DataToken)volumetricRadius;
+            DefaultAudioSettings[VOICE_LOWPASS_INDEX] = (DataToken)voiceLowpass;
+
             DefaultDictEntry[SETTING_ID_INDEX].DataList.Add((DataToken)DefaultAudioSettingID);
             DefaultDictEntry[SETTING_PRIORITY_INDEX].DataList.Add((DataToken)DefaultAudioSettingPriority);
             DefaultDictEntry[SETTING_INDEX].DataList.Add((DataToken)DefaultAudioSettings);
@@ -168,6 +181,10 @@ namespace Sylan.AudioManager
         }
         public void AddAudioSetting(VRCPlayerApi player, string settingID, int priority, DataList audioSetting)
         {
+            if (!Utilities.IsValid(player)) return;
+            if (!player.IsValid()) return;
+            if (player == Networking.LocalPlayer) return;
+
             if (!ValidateAudioSetting(audioSetting)) return;
             _AddAudioSetting(player, settingID, priority, audioSetting);
         }
@@ -208,6 +225,10 @@ namespace Sylan.AudioManager
         }
         public bool RemoveAudioSetting(VRCPlayerApi player, string settingID)
         {
+            if (!Utilities.IsValid(player)) return false;
+            if (!player.IsValid()) return false;
+            if (player == Networking.LocalPlayer) return false;
+
             DataList list = GetPlayerAudioSettings(player);
             DataList settingIDList = list[SETTING_ID_INDEX].DataList;
             int index = settingIDList.IndexOf((DataToken)settingID);
@@ -231,23 +252,17 @@ namespace Sylan.AudioManager
         {
             if (!Utilities.IsValid(triggeringPlayer)) return;
             if (!triggeringPlayer.IsValid()) return;
+            if (triggeringPlayer == Networking.LocalPlayer) return;
 
-            if (triggeringPlayer != Networking.LocalPlayer)
-            {
-                //If someone else caused the update, update triggering player
-                ApplyAudioSetting(triggeringPlayer);
-            }
-            else
-            {
-                //If the local player caused the update, update all players
-                VRCPlayerApi[] players = new VRCPlayerApi[VRCPlayerApi.GetPlayerCount()];
-                VRCPlayerApi.GetPlayers(players);
-                foreach (VRCPlayerApi player in players) ApplyAudioSetting(player);
-            }
+            //If someone else caused the update, update triggering player
+            ApplyAudioSetting(triggeringPlayer);
         }
         public void ApplyAudioSetting(VRCPlayerApi player)
         {
+            if (!Utilities.IsValid(player)) return;
+            if (!player.IsValid()) return;
             if (player == Networking.LocalPlayer) return;
+            
             DataList list = GetPlayerAudioSettings(player);
 
             //VRCJson.TrySerializeToJson(list, JsonExportType.Minify, out DataToken result1);

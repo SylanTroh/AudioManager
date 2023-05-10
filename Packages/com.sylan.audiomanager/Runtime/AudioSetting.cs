@@ -11,7 +11,9 @@ namespace Sylan.AudioManager
         [Header("AudioSetting ID. Used for debugging.")]
         public string settingID = string.Empty;
 
-        [Header("Lower number means higher priority")]
+        [Header("Lower number means higher priority", order = 0)]
+        [Space(-10, order = 1)]
+        [Header("Audiozones have priority 1000", order = 2)]
         public int priority = AudioSettingManager.DEFAULT_PRIORITY;
 
         public float voiceGain = AudioSettingManager.DEFAULT_VOICE_GAIN;
@@ -32,6 +34,7 @@ namespace Sylan.AudioManager
         }
         public override void OnPlayerTriggerEnter(VRCPlayerApi triggeringPlayer)
         {
+            if (triggeringPlayer == Networking.LocalPlayer) return;
             Debug.Log("[AudioManager] Apply Audio Setting " + settingID + " to " + triggeringPlayer.displayName + "-" + triggeringPlayer.playerId.ToString());
 
             triggeringPlayer.AddAudioSetting(_AudioSettingManager, settingID, priority, audioSetting);
@@ -40,6 +43,7 @@ namespace Sylan.AudioManager
         }
         public override void OnPlayerTriggerExit(VRCPlayerApi triggeringPlayer)
         {
+            if (triggeringPlayer == Networking.LocalPlayer) return;
             Debug.Log("[AudioManager] Apply Audio Setting " + settingID + " to " + triggeringPlayer.displayName + "-" + triggeringPlayer.playerId.ToString());
 
             triggeringPlayer.RemoveAudioSetting(_AudioSettingManager, settingID);

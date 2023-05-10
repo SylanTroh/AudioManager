@@ -243,7 +243,23 @@ namespace Sylan.AudioManager
     [InitializeOnLoad]
     public class AudioZoneInitialize : Editor, IVRCSDKBuildRequestedCallback
     {
-        private static bool SetSerializedProperties()
+        private static int FindAudioZoneLayer()
+        {
+            int layerIndex = -1;
+            for (int i = 22; i < 32; i++)
+            {
+                if (LayerMask.LayerToName(i) == "AudioZones")
+                {
+                    layerIndex = i;
+                    Debug.Log("Found AudioZones layer at index " + i + ".");
+                }
+            }
+
+            Debug.LogWarning("No AudioZones layer found after index 21.");
+            return layerIndex;
+        }
+
+        private static bool RunOnBuild()
         {
             //Object with Serialized Property(s)
             if (!SerializedPropertyUtils.GetSerializedObjects<AudioZone>(out SerializedObject[] serializedObjects)) return false;
@@ -252,6 +268,16 @@ namespace Sylan.AudioManager
             {
                 //Set Serialized Property
                 SerializedPropertyUtils.PopulateSerializedProperty<AudioZoneManager>(serializedObject, AudioZone.AudioZoneManagerPropertyName);
+            }
+
+            int collisionLayer = FindAudioZoneLayer();
+            if (collisionLayer != -1)
+            {
+                SerializedPropertyUtils.GetObjects<AudioZone>(out AudioZone[] objects);
+                foreach (var obj in objects)
+                {
+                    obj.gameObject.layer = FindAudioZoneLayer();
+                }
             }
 
             return true;
@@ -267,7 +293,7 @@ namespace Sylan.AudioManager
         private static void OnPlayModeStateChanged(PlayModeStateChange state)
         {
             if (state != PlayModeStateChange.ExitingEditMode) return;
-            SetSerializedProperties();
+            RunOnBuild();
         }
         //
         // Run On Build
@@ -277,7 +303,7 @@ namespace Sylan.AudioManager
         public bool OnBuildRequested(VRCSDKRequestedBuildType requestedBuildType)
         {
             if (requestedBuildType != VRCSDKRequestedBuildType.Scene) return false;
-            return SetSerializedProperties();
+            return RunOnBuild();
         }
     }
 }

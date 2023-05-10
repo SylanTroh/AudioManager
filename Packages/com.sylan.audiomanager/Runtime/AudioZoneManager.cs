@@ -17,19 +17,35 @@ namespace Sylan.AudioManager
         [HideInInspector, SerializeField] private AudioZone[] AudioZones;
         public const string AudioZonesPropertyName = nameof(AudioZones);
 
+        [Header("Set AudioSetting when in different audiozones")]
+        [SerializeField] private float voiceGain = 7.0f;
+        [SerializeField] private float voiceRangeNear = AudioSettingManager.DEFAULT_VOICE_RANGE_NEAR;
+        [SerializeField] private float voiceRangeFar = 1.75f;
+        [SerializeField] private float volumetricRadius = AudioSettingManager.DEFAULT_VOICE_VOLUMETRIC_RADIUS;
+        [SerializeField] private bool voiceLowpass = AudioSettingManager.DEFAULT_VOICE_LOWPASS;
+
+
         //Key:playerID -> DataDictionary Key:zoneID -> int numOccurences
         private DataDictionary _AudioZoneDict = new DataDictionary();
 
-        public const int AUDIO_ZONE_PRIORITY = 10000;
+        public const int AUDIO_ZONE_PRIORITY = 1000;
         public const string AUDIO_ZONE_SETTING_ID = "AUDIOZONEVOICESETTING";
         DataList AudioZoneAudioSettings = new DataList()
         {
-            (DataToken)AudioSettingManager.DEFAULT_VOICE_GAIN,
+            (DataToken)7.0f, //Voice Gain
             (DataToken)0.0f, //Voice Range Near
-            (DataToken)1.5f, //Voice Range Far
+            (DataToken)2.0f, //Voice Range Far
             (DataToken)AudioSettingManager.DEFAULT_VOICE_VOLUMETRIC_RADIUS,
             (DataToken)AudioSettingManager.DEFAULT_VOICE_LOWPASS
         };
+        private void Start()
+        {
+            AudioZoneAudioSettings[AudioSettingManager.VOICE_GAIN_INDEX] = (DataToken)voiceGain;
+            AudioZoneAudioSettings[AudioSettingManager.RANGE_NEAR_INDEX] = (DataToken)voiceRangeNear;
+            AudioZoneAudioSettings[AudioSettingManager.RANGE_FAR_INDEX] = (DataToken)voiceRangeFar;
+            AudioZoneAudioSettings[AudioSettingManager.VOLUMETRIC_RADIUS_INDEX] = (DataToken)volumetricRadius;
+            AudioZoneAudioSettings[AudioSettingManager.VOICE_LOWPASS_INDEX] = (DataToken)voiceLowpass;
+        }
 
         //
         // Manage AudioZoneDict By Player
