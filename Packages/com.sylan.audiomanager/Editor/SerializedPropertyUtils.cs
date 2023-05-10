@@ -111,7 +111,7 @@ namespace Sylan.AudioManager.EditorUtilities
                 return false;
             }
             serializedObjects = new SerializedObject[obj.Length];
-            for(int i  = 0; i < obj.Length; i++)
+            for (int i = 0; i < obj.Length; i++)
             {
                 serializedObjects[i] = new SerializedObject(obj[i]);
             }

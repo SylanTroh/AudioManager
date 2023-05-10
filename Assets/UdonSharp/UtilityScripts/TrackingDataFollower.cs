@@ -9,7 +9,7 @@ namespace UdonSharp.Examples.Utilities
     /// </summary>
     [AddComponentMenu("Udon Sharp/Utilities/Tracking Data Follower")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync)]
-    public class TrackingDataFollower : UdonSharpBehaviour 
+    public class TrackingDataFollower : UdonSharpBehaviour
     {
         public VRCPlayerApi.TrackingDataType trackingTarget;
 

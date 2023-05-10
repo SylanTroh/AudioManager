@@ -6,10 +6,10 @@ using VRC.SDKBase.Editor.BuildPipeline;
 
 namespace Sylan.AudioManager
 {
-    [CustomEditor(typeof(AudioZone))]
-    public class AudioZoneEditor : Editor
+    [CustomEditor(typeof(AudioSetting))]
+    public class AudioSettingEditor : Editor
     {
-        private AudioZone audioZone;
+        private AudioSetting audioSetting;
         BoxCollider boxCollider;
         CapsuleCollider capsuleCollider;
         SphereCollider sphereCollider;
@@ -23,11 +23,11 @@ namespace Sylan.AudioManager
 
         private void OnEnable()
         {
-            audioZone = target as AudioZone;
-            boxCollider = audioZone.GetComponent<BoxCollider>();
-            capsuleCollider = audioZone.GetComponent<CapsuleCollider>();
-            sphereCollider = audioZone.GetComponent<SphereCollider>();
-            meshCollider = audioZone.GetComponent<MeshCollider>();
+            audioSetting = target as AudioSetting;
+            boxCollider = audioSetting.GetComponent<BoxCollider>();
+            capsuleCollider = audioSetting.GetComponent<CapsuleCollider>();
+            sphereCollider = audioSetting.GetComponent<SphereCollider>();
+            meshCollider = audioSetting.GetComponent<MeshCollider>();
             zoneID = serializedObject.FindProperty("zoneID");
         }
         public override void OnInspectorGUI()
@@ -52,14 +52,14 @@ namespace Sylan.AudioManager
 
                 if (GUILayout.Button("Add BoxCollider"))
                 {
-                    audioZone.gameObject.AddComponent<BoxCollider>();
-                    boxCollider = audioZone.gameObject.GetComponent<BoxCollider>();
+                    audioSetting.gameObject.AddComponent<BoxCollider>();
+                    boxCollider = audioSetting.gameObject.GetComponent<BoxCollider>();
                     ResetBoxCollider(boxCollider);
                 }
                 if (GUILayout.Button("Add SphereCollider"))
                 {
-                    audioZone.gameObject.gameObject.AddComponent<SphereCollider>();
-                    sphereCollider = audioZone.gameObject.GetComponent<SphereCollider>();
+                    audioSetting.gameObject.gameObject.AddComponent<SphereCollider>();
+                    sphereCollider = audioSetting.gameObject.GetComponent<SphereCollider>();
                     ResetSphereCollider(sphereCollider);
                 }
                 EditorGUILayout.EndFoldoutHeaderGroup();
@@ -108,8 +108,8 @@ namespace Sylan.AudioManager
             collider.center = bounds.center;
             collider.size = bounds.size;
             collider.isTrigger = true;
-            audioZone.transform.localPosition = Vector3.zero;
-            audioZone.transform.localRotation = Quaternion.identity;
+            audioSetting.transform.localPosition = Vector3.zero;
+            audioSetting.transform.localRotation = Quaternion.identity;
         }
         private void ResetSphereCollider(SphereCollider collider)
         {
@@ -119,8 +119,8 @@ namespace Sylan.AudioManager
             else bounds = meshFilter.sharedMesh.bounds; collider.center = bounds.center;
             collider.radius = bounds.extents.magnitude;
             collider.isTrigger = true;
-            audioZone.transform.localPosition = Vector3.zero;
-            audioZone.transform.localRotation = Quaternion.identity;
+            audioSetting.transform.localPosition = Vector3.zero;
+            audioSetting.transform.localRotation = Quaternion.identity;
         }
         private void OnSceneGUI()
         {
@@ -241,17 +241,17 @@ namespace Sylan.AudioManager
         }
     }
     [InitializeOnLoad]
-    public class AudioZoneInitialize : Editor, IVRCSDKBuildRequestedCallback
+    public class AudioSettingInitialize : Editor, IVRCSDKBuildRequestedCallback
     {
         private static bool SetSerializedProperties()
         {
             //Object with Serialized Property(s)
-            if (!SerializedPropertyUtils.GetSerializedObjects<AudioZone>(out SerializedObject[] serializedObjects)) return false;
+            if (!SerializedPropertyUtils.GetSerializedObjects<AudioSetting>(out SerializedObject[] serializedObjects)) return false;
 
             foreach (var serializedObject in serializedObjects)
             {
                 //Set Serialized Property
-                SerializedPropertyUtils.PopulateSerializedProperty<AudioZoneManager>(serializedObject, AudioZone.AudioZoneManagerPropertyName);
+                SerializedPropertyUtils.PopulateSerializedProperty<AudioSettingManager>(serializedObject, AudioSetting.AudioSettingManagerPropertyName);
             }
 
             return true;
@@ -259,7 +259,7 @@ namespace Sylan.AudioManager
         //
         //Run On Play
         //
-        static AudioZoneInitialize()
+        static AudioSettingInitialize()
         //Rename Static Constructor to match Class name
         {
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;

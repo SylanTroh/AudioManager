@@ -1,7 +1,7 @@
 ﻿#if !COMPILER_UDONSHARP && UNITY_EDITOR
+using Sylan.AudioManager.EditorUtilities;
 using UnityEditor;
 using VRC.SDKBase.Editor.BuildPipeline;
-using Sylan.AudioManager.EditorUtilities;
 
 namespace Sylan.AudioManager
 {
@@ -11,7 +11,7 @@ namespace Sylan.AudioManager
         private static bool SetSerializedProperties()
         {
             //Object with Serialized Property(s)
-            if(!SerializedPropertyUtils.GetSerializedObject<AudioSettingManager>(out SerializedObject serializedObject)) return false;
+            if (!SerializedPropertyUtils.GetSerializedObject<AudioSettingManager>(out SerializedObject serializedObject)) return false;
 
             //Set Serialized Property
             SerializedPropertyUtils.PopulateSerializedProperty<AudioZoneManager>(serializedObject, AudioSettingManager.AudioZoneManagerPropertyName);

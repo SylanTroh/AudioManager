@@ -1,8 +1,6 @@
 
 using UnityEngine;
-using VRC.SDK3.Components;
 using VRC.SDKBase;
-using VRC.Udon;
 
 namespace UdonSharp.Examples.Utilities
 {
@@ -11,7 +9,7 @@ namespace UdonSharp.Examples.Utilities
     /// </summary>
     [AddComponentMenu("Udon Sharp/Utilities/Bone Follower")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync)]
-    public class BoneFollower : UdonSharpBehaviour 
+    public class BoneFollower : UdonSharpBehaviour
     {
         public HumanBodyBones trackedBone;
 
