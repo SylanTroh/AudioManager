@@ -1,6 +1,5 @@
 
 using UnityEngine;
-using VRC.SDK3.Components;
 
 namespace UdonSharp.Examples.Utilities
 {
@@ -10,7 +9,7 @@ namespace UdonSharp.Examples.Utilities
     /// </summary>
     [AddComponentMenu("Udon Sharp/Utilities/Interact Toggle")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync)]
-    public class InteractToggle : UdonSharpBehaviour 
+    public class InteractToggle : UdonSharpBehaviour
     {
         [Tooltip("List of objects to toggle on and off")]
         public GameObject[] toggleObjects;
@@ -19,7 +18,8 @@ namespace UdonSharp.Examples.Utilities
         {
             foreach (GameObject toggleObject in toggleObjects)
             {
-                if (toggleObject != null) {
+                if (toggleObject != null)
+                {
                     toggleObject.SetActive(!toggleObject.activeSelf);
                 }
             }

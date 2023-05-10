@@ -8,40 +8,47 @@ namespace Sylan.AudioManager
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class AudioZone : UdonSharpBehaviour
     {
-        [SerializeField] private AudioZoneManager _AudioZoneManager;
-        public const string AudioZoneManagerPropertyName = nameof(_AudioZoneManager);
-
         [Header("Primary AudioZone ID")]
         public string zoneID = string.Empty;
 
         [Header("Additional AudioZones. Useful for transitions.", order = 0)]
         [Space(-10, order = 1)]
-        [Header("To hear players who are not in a zone, set an empty string.", order = 2)]
+        [Header("To match players who are not in a zone, set an empty string.", order = 2)]
         public string[] transitionZoneIDs;
+
+        [HideInInspector, SerializeField] private AudioZoneManager _AudioZoneManager;
+        public const string AudioZoneManagerPropertyName = nameof(_AudioZoneManager);
+
+        private bool hasAudioSettingComponent = false;
+
+        private void Start()
+        {
+            hasAudioSettingComponent = (GetComponent<AudioSetting>() != null);
+        }
 
         public override void OnPlayerTriggerEnter(VRCPlayerApi triggeringPlayer)
         {
-            Debug.Log("[AudioManager] Entering Zone " + zoneID + gameObject.GetInstanceID());
+            Debug.Log("[AudioManager] " + triggeringPlayer.displayName + "-" + triggeringPlayer.playerId.ToString() + " Entering Zone " + zoneID + "-" + gameObject.GetInstanceID());
 
-            triggeringPlayer.EnterZone(_AudioZoneManager, zoneID);
+            triggeringPlayer.EnterAudioZone(_AudioZoneManager, zoneID);
             foreach (string id in transitionZoneIDs)
             {
-                triggeringPlayer.EnterZone(_AudioZoneManager, id);
+                triggeringPlayer.EnterAudioZone(_AudioZoneManager, id);
             }
 
-            _AudioZoneManager.UpdateAudioSettings(triggeringPlayer);
+            _AudioZoneManager.UpdateAudioZoneSetting(triggeringPlayer, hasAudioSettingComponent);
         }
         public override void OnPlayerTriggerExit(VRCPlayerApi triggeringPlayer)
         {
-            Debug.Log("[AudioManager] Exiting Zone " + zoneID + gameObject.GetInstanceID());
+            Debug.Log("[AudioManager] " + triggeringPlayer.displayName + "-" + triggeringPlayer.playerId.ToString() + " Exiting Zone " + zoneID + "-" + gameObject.GetInstanceID());
 
-            triggeringPlayer.ExitZone(_AudioZoneManager, zoneID);
+            triggeringPlayer.ExitAudioZone(_AudioZoneManager, zoneID);
             foreach (string id in transitionZoneIDs)
             {
-                triggeringPlayer.ExitZone(_AudioZoneManager, id);
+                triggeringPlayer.ExitAudioZone(_AudioZoneManager, id);
             }
 
-            _AudioZoneManager.UpdateAudioSettings(triggeringPlayer);
+            _AudioZoneManager.UpdateAudioZoneSetting(triggeringPlayer, hasAudioSettingComponent);
         }
     }
 }

@@ -1,8 +1,6 @@
 
 using UnityEngine;
-using VRC.SDK3.Components;
 using VRC.SDKBase;
-using VRC.Udon;
 
 namespace UdonSharp.Examples.Utilities
 {
@@ -11,7 +9,7 @@ namespace UdonSharp.Examples.Utilities
     /// This script assumes that the object it is on will not have other things transferring ownership of it.
     /// </summary>
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
-    public class GlobalToggleObject : UdonSharpBehaviour 
+    public class GlobalToggleObject : UdonSharpBehaviour
     {
         public GameObject toggleObject;
 

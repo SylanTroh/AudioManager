@@ -13,12 +13,12 @@ namespace VRC.PackageManagement.Core
         // JSON property names in Project Manifest
         public const string UNITY_PACKAGES_FOLDER = "Packages";
         public const string UNITY_MANIFEST_FILENAME = "manifest.json";
-        
+
         // VRC Values
         public const string VRC_CONFIG = "https://api.vrchat.cloud/api/1/config";
         public const string VRC_AGENT = "VCCBootstrap 1.0";
         public const string VRC_RESOLVER_PACKAGE = "com.vrchat.core.vpm-resolver";
-        
+
         // Finds url for bootstrap package without using JSON
         private static Regex _bootstrapRegex = new Regex("\"bootstrap\"\\s*:\\s*\"(.+?(?=\"))\"");
         public static string ManifestPath => Path.Combine(Directory.GetCurrentDirectory(), UNITY_PACKAGES_FOLDER, UNITY_MANIFEST_FILENAME);
@@ -38,7 +38,7 @@ namespace VRC.PackageManagement.Core
                 }
                 catch (Exception e)
                 {
-                   Debug.LogError($"Could not download and install the VPM Package Resolver - you may be missing packages. Exception: {e.Message}");
+                    Debug.LogError($"Could not download and install the VPM Package Resolver - you may be missing packages. Exception: {e.Message}");
                 }
             }
         }
@@ -59,17 +59,17 @@ namespace VRC.PackageManagement.Core
             }
 
             var url = bootstrapMatch.Groups[1].Value;
-            
-            var targetFile =  Path.Combine(Path.GetTempPath(), $"resolver-{DateTime.Now.ToString("yyyyMMddTHHmmss")}.unitypackage");
-            
+
+            var targetFile = Path.Combine(Path.GetTempPath(), $"resolver-{DateTime.Now.ToString("yyyyMMddTHHmmss")}.unitypackage");
+
             // Download to dir
             using (var client = new WebClient())
             {
                 // Add User Agent or else CloudFlare will return 1020
                 client.Headers.Add(HttpRequestHeader.UserAgent, VRC_AGENT);
-            
+
                 await client.DownloadFileTaskAsync(url, targetFile);
-                
+
                 if (File.Exists(targetFile))
                 {
                     Debug.Log($"Downloaded Resolver to {targetFile}");
@@ -78,7 +78,7 @@ namespace VRC.PackageManagement.Core
             }
             return;
         }
-        
+
         public static async Task<string> GetRemoteString(string url)
         {
             using (var client = new WebClient())

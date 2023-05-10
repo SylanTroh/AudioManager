@@ -8,7 +8,7 @@ namespace UdonSharp.Examples.Utilities
     /// Allows the master and only the master to toggle a game object globally
     /// </summary>
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
-    public class MasterToggleObject : UdonSharpBehaviour 
+    public class MasterToggleObject : UdonSharpBehaviour
     {
         public GameObject toggleObject;
 
