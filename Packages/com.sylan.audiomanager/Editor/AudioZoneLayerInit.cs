@@ -8,7 +8,7 @@ public class AudioZoneLayerInit : EditorWindow
 
     private int layerIndex = -1;
 
-    [MenuItem("Tools/Initialize Layer")]
+    [MenuItem("Tools/Sylan/Initialize AudioZone Layer")]
     private static void ShowWindow()
     {
         GetWindow(typeof(AudioZoneLayerInit));
@@ -16,6 +16,11 @@ public class AudioZoneLayerInit : EditorWindow
 
     private void OnGUI()
     {
+        if (FindAudioZoneLayer() != -1)
+        {
+            GUILayout.Label("AudioZone Layer already exists");
+            return;
+        }
         layerIndex = EditorGUILayout.IntField("Layer Index", layerIndex);
 
         if (GUILayout.Button("Find Empty Layer"))
@@ -58,6 +63,22 @@ public class AudioZoneLayerInit : EditorWindow
         }
 
         Debug.LogWarning("No empty layer found after index 21.");
+    }
+
+    private static int FindAudioZoneLayer()
+    {
+        int layerIndex = -1;
+        for (int i = 22; i < 32; i++)
+        {
+            if (LayerMask.LayerToName(i) == "AudioZones")
+            {
+                layerIndex = i;
+                Debug.Log("Found AudioZones layer at index " + i + ".");
+            }
+        }
+
+        Debug.LogWarning("No AudioZones layer found after index 21.");
+        return layerIndex;
     }
 
     private void Initialize()
