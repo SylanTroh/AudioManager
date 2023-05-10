@@ -18,9 +18,9 @@ namespace Sylan.AudioManager.EditorUtilities
 
             if (objects.Length == 0)
             {
-                Debug.LogError("[EditorUtilities] No Objects of type " + typeof(T).ToString());
+                Debug.Log("[EditorUtilities] No Objects of type " + typeof(T).ToString());
                 obj = null;
-                return false;
+                return true;
             }
             if (objects.Length > 1)
             {
@@ -45,6 +45,7 @@ namespace Sylan.AudioManager.EditorUtilities
         /// <param name="propertyName">Name of Serialized Property</param>
         public static void PopulateSerializedProperty<T>(SerializedObject serializedObject, string propertyName) where T : MonoBehaviour
         {
+            if (serializedObject == null) return;
             SerializedProperty property;
             property = serializedObject.FindProperty(propertyName);
 
@@ -63,6 +64,7 @@ namespace Sylan.AudioManager.EditorUtilities
         /// <param name="propertyName">Name of Serialized Property</param>
         public static void PopulateSerializedArray<T>(SerializedObject serializedObject, string propertyName) where T : MonoBehaviour
         {
+            if(serializedObject == null) return;
             SerializedProperty arrayProperty;
             arrayProperty = serializedObject.FindProperty(propertyName);
 
@@ -93,7 +95,7 @@ namespace Sylan.AudioManager.EditorUtilities
                 EditorApplication.isPlaying = false;
                 return false;
             }
-            serializedObject = new SerializedObject(obj);
+            if(obj != null) serializedObject = new SerializedObject(obj);
             return true;
         }
         /// <summary>
