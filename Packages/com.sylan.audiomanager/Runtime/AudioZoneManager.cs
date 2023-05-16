@@ -192,7 +192,6 @@ namespace Sylan.AudioManager
             {
                 if (value.Int > 0)
                 {
-                    Debug.Log("In Negative ZOne");
                     return false;
                 }
             }
@@ -231,17 +230,16 @@ namespace Sylan.AudioManager
                 }
             }
 
-
-            VRCJson.TrySerializeToJson(dictPositive1, JsonExportType.Minify, out DataToken result1);
-            VRCJson.TrySerializeToJson(dictPositive2, JsonExportType.Minify, out DataToken result2);
-            Debug.Log(result1.ToString());
-            Debug.Log(result2.ToString());
-            DataDictionary dictNegative1 = GetPlayerAudioZoneDict(player1, false);
-            DataDictionary dictNegative2 = GetPlayerAudioZoneDict(player2, false);
-            VRCJson.TrySerializeToJson(dictNegative1, JsonExportType.Minify, out result1);
-            VRCJson.TrySerializeToJson(dictNegative2, JsonExportType.Minify, out result2);
-            Debug.Log(result1.ToString());
-            Debug.Log(result2.ToString());
+            //VRCJson.TrySerializeToJson(dictPositive1, JsonExportType.Minify, out DataToken result1);
+            //VRCJson.TrySerializeToJson(dictPositive2, JsonExportType.Minify, out DataToken result2);
+            //Debug.Log(result1.ToString());
+            //Debug.Log(result2.ToString());
+            //DataDictionary dictNegative1 = GetPlayerAudioZoneDict(player1, false);
+            //DataDictionary dictNegative2 = GetPlayerAudioZoneDict(player2, false);
+            //VRCJson.TrySerializeToJson(dictNegative1, JsonExportType.Minify, out result1);
+            //VRCJson.TrySerializeToJson(dictNegative2, JsonExportType.Minify, out result2);
+            //Debug.Log(result1.ToString());
+            //Debug.Log(result2.ToString());
 
             //Transition Zones only match null zone, not other transition zones
             if (player1InNullZone && InAudioZone(player2, String.Empty)) return true;
