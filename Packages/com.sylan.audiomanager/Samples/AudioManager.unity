@@ -206,7 +206,7 @@ MonoBehaviour:
   voiceRangeFar: 15
   volumetricRadius: 0
   voiceLowpass: 1
-  _AudioZoneManager: {fileID: 0}
+  _AudioZoneManager: {fileID: 1471065855}
 --- !u!1 &125617382
 GameObject:
   m_ObjectHideFlags: 0
@@ -657,7 +657,8 @@ MonoBehaviour:
   zoneID: roomTransition
   transitionZoneIDs:
   - room
-  _AudioZoneManager: {fileID: 0}
+  _AudioZoneManager: {fileID: 1471065855}
+  isNegativeZone: 0
 --- !u!43 &570378488
 Mesh:
   m_ObjectHideFlags: 0
@@ -1170,6 +1171,7 @@ Transform:
   - {fileID: 939174659}
   - {fileID: 490456302}
   - {fileID: 850794483}
+  - {fileID: 1191164959}
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1365,7 +1367,8 @@ MonoBehaviour:
   zoneID: roomTransition
   transitionZoneIDs:
   - 
-  _AudioZoneManager: {fileID: 0}
+  _AudioZoneManager: {fileID: 1471065855}
+  isNegativeZone: 0
 --- !u!43 &863259862
 Mesh:
   m_ObjectHideFlags: 0
@@ -1625,7 +1628,8 @@ MonoBehaviour:
   _udonSharpBackingUdonBehaviour: {fileID: 939174661}
   zoneID: room
   transitionZoneIDs: []
-  _AudioZoneManager: {fileID: 0}
+  _AudioZoneManager: {fileID: 1471065855}
+  isNegativeZone: 0
 --- !u!1 &941371498
 GameObject:
   m_ObjectHideFlags: 0
@@ -1700,7 +1704,7 @@ MonoBehaviour:
   voiceFar: 100000
   volumetricRadius: 0
   lowpassFilter: 1
-  _AudioSettingManager: {fileID: 0}
+  _AudioSettingManager: {fileID: 3782364}
 --- !u!4 &941371501
 Transform:
   m_ObjectHideFlags: 0
@@ -2068,6 +2072,104 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1191164958
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1191164959}
+  - component: {fileID: 1191164962}
+  - component: {fileID: 1191164961}
+  - component: {fileID: 1191164960}
+  m_Layer: 22
+  m_Name: NegativeZone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1191164959
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1191164958}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 723615791}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1191164960
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1191164958}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 5.5019994, y: 5.502, z: 2.1487923}
+  m_Center: {x: -3.0000002, y: 3, z: -6.6766033}
+--- !u!114 &1191164961
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1191164958}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45115577ef41a5b4ca741ed302693907, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactTextPlacement: {fileID: 0}
+  interactText: Use
+  interactTextGO: {fileID: 0}
+  proximity: 2
+  SynchronizePosition: 0
+  AllowCollisionOwnershipTransfer: 0
+  Reliable: 0
+  _syncMethod: 1
+  serializedProgramAsset: {fileID: 11400000, guid: 364e322332546b4439d53a624d11e9ec,
+    type: 2}
+  programSource: {fileID: 11400000, guid: 65a4510a0b5751b499b931b63b40213c, type: 2}
+  serializedPublicVariablesBytesString: Ai8AAAAAATIAAABWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgAuAFUAZABvAG4AVgBhAHIAaQBhAGIAbABlAFQAYQBiAGwAZQAsACAAVgBSAEMALgBVAGQAbwBuAC4AQwBvAG0AbQBvAG4AAAAAAAYBAAAAAAAAACcBBAAAAHQAeQBwAGUAAWgAAABTAHkAcwB0AGUAbQAuAEMAbwBsAGwAZQBjAHQAaQBvAG4AcwAuAEcAZQBuAGUAcgBpAGMALgBMAGkAcwB0AGAAMQBbAFsAVgBSAEMALgBVAGQAbwBuAC4AQwBvAG0AbQBvAG4ALgBJAG4AdABlAHIAZgBhAGMAZQBzAC4ASQBVAGQAbwBuAFYAYQByAGkAYQBiAGwAZQAsACAAVgBSAEMALgBVAGQAbwBuAC4AQwBvAG0AbQBvAG4AXQBdACwAIABtAHMAYwBvAHIAbABpAGIAAQEJAAAAVgBhAHIAaQBhAGIAbABlAHMALwEAAAABaAAAAFMAeQBzAHQAZQBtAC4AQwBvAGwAbABlAGMAdABpAG8AbgBzAC4ARwBlAG4AZQByAGkAYwAuAEwAaQBzAHQAYAAxAFsAWwBWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgAuAEkAbgB0AGUAcgBmAGEAYwBlAHMALgBJAFUAZABvAG4AVgBhAHIAaQBhAGIAbABlACwAIABWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgBdAF0ALAAgAG0AcwBjAG8AcgBsAGkAYgABAAAABgEAAAAAAAAAAi8CAAAAAUkAAABWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgAuAFUAZABvAG4AVgBhAHIAaQBhAGIAbABlAGAAMQBbAFsAUwB5AHMAdABlAG0ALgBJAG4AdAAzADIALAAgAG0AcwBjAG8AcgBsAGkAYgBdAF0ALAAgAFYAUgBDAC4AVQBkAG8AbgAuAEMAbwBtAG0AbwBuAAIAAAAGAgAAAAAAAAAnAQQAAAB0AHkAcABlAAEXAAAAUwB5AHMAdABlAG0ALgBTAHQAcgBpAG4AZwAsACAAbQBzAGMAbwByAGwAaQBiACcBCgAAAFMAeQBtAGIAbwBsAE4AYQBtAGUAAR8AAABfAF8AXwBVAGQAbwBuAFMAaABhAHIAcABCAGUAaABhAHYAaQBvAHUAcgBWAGUAcgBzAGkAbwBuAF8AXwBfACcBBAAAAHQAeQBwAGUAARYAAABTAHkAcwB0AGUAbQAuAEkAbgB0ADMAMgAsACAAbQBzAGMAbwByAGwAaQBiABcBBQAAAFYAYQBsAHUAZQACAAAABwUHBQcF
+  publicVariablesUnityEngineObjects: []
+  publicVariablesSerializationDataFormat: 0
+--- !u!114 &1191164962
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1191164958}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b5a04c6386991342a6c475806ed063b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  _udonSharpBackingUdonBehaviour: {fileID: 1191164961}
+  zoneID: room
+  transitionZoneIDs: []
+  _AudioZoneManager: {fileID: 1471065855}
+  isNegativeZone: 1
 --- !u!1 &1344707365
 GameObject:
   m_ObjectHideFlags: 0
@@ -2215,10 +2317,6 @@ MonoBehaviour:
   NetworkIDs:
   - gameObject: {fileID: 1344707365}
     ID: 190
-  - gameObject: {fileID: 0}
-    ID: 192
-  - gameObject: {fileID: 0}
-    ID: 193
   - gameObject: {fileID: 939174658}
     ID: 200
   - gameObject: {fileID: 490456301}
@@ -2229,6 +2327,12 @@ MonoBehaviour:
     ID: 207
   - gameObject: {fileID: 2106600230}
     ID: 208
+  - gameObject: {fileID: 3782361}
+    ID: 209
+  - gameObject: {fileID: 1471065852}
+    ID: 210
+  - gameObject: {fileID: 1191164958}
+    ID: 211
   portraitCameraPositionOffset: {x: 0, y: 0, z: 0}
   portraitCameraRotationOffset: {x: 0, y: 1, z: 0, w: -0.00000004371139}
 --- !u!114 &1344707369
@@ -2365,11 +2469,12 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 1471065854}
-  _AudioSettingManager: {fileID: 0}
+  _AudioSettingManager: {fileID: 3782364}
   AudioZones:
   - {fileID: 490456305}
   - {fileID: 850794486}
   - {fileID: 939174662}
+  - {fileID: 1191164962}
   voiceGain: 15
   voiceRangeNear: 0
   voiceRangeFar: 1.75
@@ -2725,7 +2830,7 @@ MonoBehaviour:
   voiceFar: 100000
   volumetricRadius: 0
   lowpassFilter: 1
-  _AudioSettingManager: {fileID: 0}
+  _AudioSettingManager: {fileID: 3782364}
 --- !u!43 &2125246856
 Mesh:
   m_ObjectHideFlags: 0

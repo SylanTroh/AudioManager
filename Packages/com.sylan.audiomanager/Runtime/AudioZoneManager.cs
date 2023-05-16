@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Reflection.Emit;
 using UdonSharp;
 using UnityEngine;
 using VRC.SDK3.Data;
@@ -27,6 +28,7 @@ namespace Sylan.AudioManager
 
         //Key:playerID -> DataDictionary Key:zoneID -> int numOccurences
         private DataDictionary _AudioZoneDict = new DataDictionary();
+        private DataDictionary _NegativeAudioZoneDict = new DataDictionary();
 
         public const int AUDIO_ZONE_PRIORITY = 1000;
         public const string AUDIO_ZONE_SETTING_ID = "AUDIOZONEVOICESETTING";
@@ -50,12 +52,16 @@ namespace Sylan.AudioManager
         //
         // Manage AudioZoneDict By Player
         //
-        public DataDictionary GetPlayerAudioZoneDict(VRCPlayerApi player)
+        public DataDictionary GetPlayerAudioZoneDict(VRCPlayerApi player, bool isNegative = false)
         {
+            DataDictionary dict;
+            if (isNegative) dict = _NegativeAudioZoneDict;
+            else dict = _AudioZoneDict;
+
             if (!Utilities.IsValid(player)) return null;
             if (!player.IsValid()) return null;
 
-            if (!_AudioZoneDict.TryGetValue((DataToken)player.playerId, TokenType.DataDictionary, out DataToken value))
+            if (!dict.TryGetValue((DataToken)player.playerId, TokenType.DataDictionary, out DataToken value))
             {
                 Debug.LogError("[AudioManager] Failed to get AudioZoneDict for " + player.displayName + "-" + player.playerId.ToString());
                 return null;
@@ -74,6 +80,13 @@ namespace Sylan.AudioManager
             }
             _AudioZoneDict.SetValue(key: (DataToken)player.playerId, value: (DataToken)(new DataDictionary()));
             Debug.Log("[AudioManager] Initialize AudioZoneDict for " + player.displayName + "-" + player.playerId.ToString());
+            if (_NegativeAudioZoneDict.TryGetValue((DataToken)player.playerId, TokenType.DataDictionary, out value))
+            {
+                Debug.Log("[AudioManager] NegativeAudioZoneDict already initialized for " + player.displayName + "-" + player.playerId.ToString());
+                return;
+            }
+            _NegativeAudioZoneDict.SetValue(key: (DataToken)player.playerId, value: (DataToken)(new DataDictionary()));
+            Debug.Log("[AudioManager] Initialize NegativeAudioZoneDict for " + player.displayName + "-" + player.playerId.ToString());
         }
         public DataDictionary RemovePlayerAudioZoneDict(VRCPlayerApi player)
         {
@@ -85,6 +98,12 @@ namespace Sylan.AudioManager
                 Debug.LogError("[AudioManager] Failed to remove AudioZoneDict for " + player.displayName + "-" + player.playerId.ToString());
             }
             Debug.Log("[AudioManager] Removed AudioZoneDict for " + player.displayName + "-" + player.playerId.ToString());
+
+            if (!_NegativeAudioZoneDict.Remove(key: (DataToken)player.playerId, out DataToken negativeValue))
+            {
+                Debug.LogError("[AudioManager] Failed to remove _NegativeAudioZoneDict for " + player.displayName + "-" + player.playerId.ToString());
+            }
+            Debug.Log("[AudioManager] Removed _NegativeAudioZoneDict for " + player.displayName + "-" + player.playerId.ToString());
             return value.DataDictionary;
         }
         public override void OnPlayerJoined(VRCPlayerApi joiningPlayer)
@@ -111,10 +130,10 @@ namespace Sylan.AudioManager
         //
         //Manage AudioZoneDict[player]
         //
-        public void EnterAudioZone(VRCPlayerApi player, string zoneID)
+        public void EnterAudioZone(VRCPlayerApi player, string zoneID, bool isNegative = false)
         {
-            DataDictionary dict = GetPlayerAudioZoneDict(player);
-            if(!Utilities.IsValid(dict)) return;
+            DataDictionary dict = GetPlayerAudioZoneDict(player, isNegative);
+            if (!Utilities.IsValid(dict)) return;
             if (!dict.TryGetValue((DataToken)zoneID, TokenType.Int, out DataToken value))
             {
                 dict.Add((DataToken)zoneID, (DataToken)1);
@@ -124,9 +143,9 @@ namespace Sylan.AudioManager
                 dict.SetValue((DataToken)zoneID, (DataToken)(value.Int + 1));
             }
         }
-        public bool ExitAudioZone(VRCPlayerApi player, string zoneID)
+        public bool ExitAudioZone(VRCPlayerApi player, string zoneID, bool isNegative = false)
         {
-            DataDictionary dict = GetPlayerAudioZoneDict(player);
+            DataDictionary dict = GetPlayerAudioZoneDict(player, isNegative);
             if (!Utilities.IsValid(dict)) return false;
             if (!dict.TryGetValue((DataToken)zoneID, TokenType.Int, out DataToken value))
             {
@@ -135,7 +154,7 @@ namespace Sylan.AudioManager
             }
             else if (value.Int <= 1)
             {
-                return ExitAllAudioZones(player, zoneID);
+                return ExitAllAudioZones(player, zoneID, isNegative);
             }
             else
             {
@@ -143,9 +162,9 @@ namespace Sylan.AudioManager
                 return true;
             }
         }
-        public bool ExitAllAudioZones(VRCPlayerApi player, string zoneID)
+        public bool ExitAllAudioZones(VRCPlayerApi player, string zoneID, bool isNegative = false)
         {
-            DataDictionary dict = GetPlayerAudioZoneDict(player);
+            DataDictionary dict = GetPlayerAudioZoneDict(player, isNegative);
             if (!dict.Remove((DataToken)zoneID, out DataToken value))
             {
                 Debug.LogError("[AudioManager] Tried to remove AudioZone not in Dict");
@@ -155,45 +174,86 @@ namespace Sylan.AudioManager
         }
         public void ClearAudioZones(VRCPlayerApi player)
         {
-            DataDictionary dict = GetPlayerAudioZoneDict(player);
+            DataDictionary dict = GetPlayerAudioZoneDict(player, true);
+            if (!Utilities.IsValid(dict)) return;
+            dict.Clear();
+            dict = GetPlayerAudioZoneDict(player, false);
             if (!Utilities.IsValid(dict)) return;
             dict.Clear();
         }
         public bool InAudioZone(VRCPlayerApi player, string zoneID)
         {
-            DataDictionary dict = GetPlayerAudioZoneDict(player);
-            if (!Utilities.IsValid(dict)) return false;
-            if (!dict.TryGetValue((DataToken)zoneID, TokenType.Int, out DataToken value))
+            DataDictionary dictPositive = GetPlayerAudioZoneDict(player);
+            if (!Utilities.IsValid(dictPositive)) return false;
+            DataDictionary dictNegative = GetPlayerAudioZoneDict(player, true);
+            if (!Utilities.IsValid(dictNegative)) return false;
+
+            if (dictNegative.TryGetValue((DataToken)zoneID, TokenType.Int, out DataToken value))
+            {
+                if (value.Int > 0)
+                {
+                    Debug.Log("In Negative ZOne");
+                    return false;
+                }
+            }
+            if (!dictPositive.TryGetValue((DataToken)zoneID, TokenType.Int, out value))
             {
                 return false;
             }
-            if (value.Int == 0) return false;
+            if (value.Int <= 0) return false;
             return true;
         }
         public bool ShareAudioZone(VRCPlayerApi player1, VRCPlayerApi player2)
         {
-            DataDictionary dict1 = GetPlayerAudioZoneDict(player1);
-            DataDictionary dict2 = GetPlayerAudioZoneDict(player2);
-            if(!Utilities.IsValid(dict1) || !Utilities.IsValid(dict2)) return false;
-            DataList list1 = dict1.GetKeys();
-            DataList list2 = dict2.GetKeys();
+            DataDictionary dictPositive1 = GetPlayerAudioZoneDict(player1);
+            DataDictionary dictPositive2 = GetPlayerAudioZoneDict(player2);
+            if (!Utilities.IsValid(dictPositive1) || !Utilities.IsValid(dictPositive2)) return false;
 
-            //VRCJson.TrySerializeToJson(dict1, JsonExportType.Minify, out DataToken result1);
-            //VRCJson.TrySerializeToJson(dict2, JsonExportType.Minify, out DataToken result2);
-            //Debug.Log(result1.ToString());
-            //Debug.Log(result2.ToString());
+            DataList list1 = dictPositive1.GetKeys();
+            DataList list2 = dictPositive2.GetKeys();
+            bool player1InNullZone = true;
+            bool player2InNullZone = true;
 
-            //Transition Zones only match no zone, not other transition zones
-            if (list1.Count == 0 && InAudioZone(player2, String.Empty)) return true;
-            if (list2.Count == 0 && InAudioZone(player1, String.Empty)) return true;
-            if (list1.Count == 0 && list2.Count == 0) return true;
-            if (list1.Count == 0 || list2.Count == 0) return false;
+            for (int i = 0; i < list1.Count; i++)
+            {
+                if (InAudioZone(player1, list1[i].String))
+                {
+                    player1InNullZone = false;
+                    break;
+                }
+            }
+            for (int i = 0; i < list2.Count; i++)
+            {
+                if (InAudioZone(player2, list2[i].String))
+                {
+                    player2InNullZone = false;
+                    break;
+                }
+            }
+
+
+            VRCJson.TrySerializeToJson(dictPositive1, JsonExportType.Minify, out DataToken result1);
+            VRCJson.TrySerializeToJson(dictPositive2, JsonExportType.Minify, out DataToken result2);
+            Debug.Log(result1.ToString());
+            Debug.Log(result2.ToString());
+            DataDictionary dictNegative1 = GetPlayerAudioZoneDict(player1, false);
+            DataDictionary dictNegative2 = GetPlayerAudioZoneDict(player2, false);
+            VRCJson.TrySerializeToJson(dictNegative1, JsonExportType.Minify, out result1);
+            VRCJson.TrySerializeToJson(dictNegative2, JsonExportType.Minify, out result2);
+            Debug.Log(result1.ToString());
+            Debug.Log(result2.ToString());
+
+            //Transition Zones only match null zone, not other transition zones
+            if (player1InNullZone && InAudioZone(player2, String.Empty)) return true;
+            if (player2InNullZone && InAudioZone(player1, String.Empty)) return true;
+            if (player1InNullZone && player2InNullZone) return true;
+            if (player1InNullZone || player2InNullZone) return false;
 
             foreach (DataToken token in list1.ToArray())
             {
                 if (token.TokenType != TokenType.String) continue;
                 string id = token.String;
-                if(id == string.Empty) continue;
+                if (id == string.Empty) continue;
                 if (InAudioZone(player2, id)) return true;
             }
             return false;
@@ -210,7 +270,7 @@ namespace Sylan.AudioManager
             {
                 //If someone else caused the update, update triggering player
                 ApplyAudioZoneSetting(triggeringPlayer);
-                if(!hasAudioSettingComponent) _AudioSettingManager.ApplyAudioSetting(triggeringPlayer);
+                if (!hasAudioSettingComponent) _AudioSettingManager.ApplyAudioSetting(triggeringPlayer);
             }
             else
             {
@@ -245,17 +305,17 @@ namespace Sylan.AudioManager
         //
         //Extensions for VRCPlayerAPI
         //
-        public static void EnterAudioZone(this VRCPlayerApi player, AudioZoneManager zoneManager, string zoneID)
+        public static void EnterAudioZone(this VRCPlayerApi player, AudioZoneManager zoneManager, string zoneID, bool isNegative)
         {
-            zoneManager.EnterAudioZone(player, zoneID);
+            zoneManager.EnterAudioZone(player, zoneID, isNegative);
         }
-        public static bool ExitAudioZone(this VRCPlayerApi player, AudioZoneManager zoneManager, string zoneID)
+        public static bool ExitAudioZone(this VRCPlayerApi player, AudioZoneManager zoneManager, string zoneID, bool isNegative)
         {
-            return zoneManager.ExitAudioZone(player, zoneID);
+            return zoneManager.ExitAudioZone(player, zoneID, isNegative);
         }
-        public static bool ExitAllAudioZones(this VRCPlayerApi player, AudioZoneManager zoneManager, string zoneID)
+        public static bool ExitAllAudioZones(this VRCPlayerApi player, AudioZoneManager zoneManager, string zoneID, bool isNegative)
         {
-            return zoneManager.ExitAllAudioZones(player, zoneID);
+            return zoneManager.ExitAllAudioZones(player, zoneID, isNegative);
         }
         public static void ClearAudioZones(this VRCPlayerApi player, AudioZoneManager zoneManager)
         {
