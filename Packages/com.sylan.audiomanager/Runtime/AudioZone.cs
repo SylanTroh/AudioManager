@@ -21,6 +21,8 @@ namespace Sylan.AudioManager
 
         private bool hasAudioSettingComponent = false;
 
+        public bool isNegativeZone = false;
+
         private void Start()
         {
             hasAudioSettingComponent = (GetComponent<AudioSetting>() != null);
@@ -30,10 +32,10 @@ namespace Sylan.AudioManager
         {
             Debug.Log("[AudioManager] " + triggeringPlayer.displayName + "-" + triggeringPlayer.playerId.ToString() + " Entering Zone " + zoneID + "-" + gameObject.GetInstanceID());
 
-            triggeringPlayer.EnterAudioZone(_AudioZoneManager, zoneID);
+            triggeringPlayer.EnterAudioZone(_AudioZoneManager, zoneID, isNegativeZone);
             foreach (string id in transitionZoneIDs)
             {
-                triggeringPlayer.EnterAudioZone(_AudioZoneManager, id);
+                triggeringPlayer.EnterAudioZone(_AudioZoneManager, id, isNegativeZone);
             }
 
             _AudioZoneManager.UpdateAudioZoneSetting(triggeringPlayer, hasAudioSettingComponent);
@@ -42,10 +44,10 @@ namespace Sylan.AudioManager
         {
             Debug.Log("[AudioManager] " + triggeringPlayer.displayName + "-" + triggeringPlayer.playerId.ToString() + " Exiting Zone " + zoneID + "-" + gameObject.GetInstanceID());
 
-            triggeringPlayer.ExitAudioZone(_AudioZoneManager, zoneID);
+            triggeringPlayer.ExitAudioZone(_AudioZoneManager, zoneID, isNegativeZone);
             foreach (string id in transitionZoneIDs)
             {
-                triggeringPlayer.ExitAudioZone(_AudioZoneManager, id);
+                triggeringPlayer.ExitAudioZone(_AudioZoneManager, id, isNegativeZone);
             }
 
             _AudioZoneManager.UpdateAudioZoneSetting(triggeringPlayer, hasAudioSettingComponent);
