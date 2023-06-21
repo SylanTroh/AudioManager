@@ -1,6 +1,4 @@
-﻿using BestHTTP.SecureProtocol.Org.BouncyCastle.Utilities.Collections;
-using System.Collections.Generic;
-using UdonSharp;
+﻿using UdonSharp;
 using UnityEngine;
 using VRC.SDK3.Data;
 using VRC.SDKBase;
@@ -196,9 +194,14 @@ namespace Sylan.AudioManager
             if (!Utilities.IsValid(list)) return;
 
             DataList settingIDList = list[SETTING_ID_INDEX].DataList;
+            if (!Utilities.IsValid(settingIDList)) return;
+            DataList priorityList = list[SETTING_PRIORITY_INDEX].DataList;
+            if (!Utilities.IsValid(priorityList)) return;
+            DataList SettingList = list[SETTING_INDEX].DataList;
+            if (!Utilities.IsValid(SettingList)) return;
+
             if (settingIDList.Contains((DataToken)settingID)) return;
 
-            DataList priorityList = list[SETTING_PRIORITY_INDEX].DataList;
             int index = -1;
 
             for (int i = 0; i < priorityList.Count; i++)
@@ -210,7 +213,7 @@ namespace Sylan.AudioManager
                     break;
                 }
             }
-            if(index == -1)
+            if (index == -1)
             {
                 list[SETTING_ID_INDEX].DataList.Add((DataToken)settingID);
                 list[SETTING_PRIORITY_INDEX].DataList.Add((DataToken)priority);
@@ -230,7 +233,15 @@ namespace Sylan.AudioManager
             if (player == Networking.LocalPlayer) return false;
 
             DataList list = GetPlayerAudioSettings(player);
+            if (!Utilities.IsValid(list)) return false;
+
             DataList settingIDList = list[SETTING_ID_INDEX].DataList;
+            if (!Utilities.IsValid(settingIDList)) return false;
+            DataList priorityList = list[SETTING_PRIORITY_INDEX].DataList;
+            if (!Utilities.IsValid(priorityList)) return false;
+            DataList SettingList = list[SETTING_INDEX].DataList;
+            if (!Utilities.IsValid(SettingList)) return false;
+
             int index = settingIDList.IndexOf((DataToken)settingID);
             if (index == -1) return false;
             else
@@ -262,13 +273,20 @@ namespace Sylan.AudioManager
             if (!Utilities.IsValid(player)) return;
             if (!player.IsValid()) return;
             if (player == Networking.LocalPlayer) return;
-            
+
             DataList list = GetPlayerAudioSettings(player);
+            if (!Utilities.IsValid(list)) return;
 
             //VRCJson.TrySerializeToJson(list, JsonExportType.Minify, out DataToken result1);
             //Debug.Log(result1.ToString());
 
-            if (!Utilities.IsValid(list)) return;
+            DataList settingIDList = list[SETTING_ID_INDEX].DataList;
+            if (!Utilities.IsValid(settingIDList)) return;
+            DataList priorityList = list[SETTING_PRIORITY_INDEX].DataList;
+            if (!Utilities.IsValid(priorityList)) return;
+            DataList SettingList = list[SETTING_INDEX].DataList;
+            if (!Utilities.IsValid(SettingList)) return;
+
             //Get Highest Priority Setting
             DataList audioSetting = list[SETTING_INDEX].DataList[0].DataList;
             SetPlayerVoice(player, audioSetting);
