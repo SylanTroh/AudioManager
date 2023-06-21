@@ -193,12 +193,12 @@ namespace Sylan.AudioManager
             DataList list = GetPlayerAudioSettings(player);
             if (!Utilities.IsValid(list)) return;
 
-            DataList settingIDList = list[SETTING_ID_INDEX].DataList;
-            if (!Utilities.IsValid(settingIDList)) return;
-            DataList priorityList = list[SETTING_PRIORITY_INDEX].DataList;
-            if (!Utilities.IsValid(priorityList)) return;
-            DataList SettingList = list[SETTING_INDEX].DataList;
-            if (!Utilities.IsValid(SettingList)) return;
+            if (!list.TryGetValue(SETTING_ID_INDEX, TokenType.DataList, out DataToken token)) return;
+            DataList settingIDList = token.DataList;
+            if (!list.TryGetValue(SETTING_PRIORITY_INDEX, TokenType.DataList, out token)) return;
+            DataList priorityList = token.DataList;
+            if (!list.TryGetValue(SETTING_INDEX, TokenType.DataList, out token)) return;
+            DataList SettingList = token.DataList;
 
             if (settingIDList.Contains((DataToken)settingID)) return;
 
@@ -235,12 +235,12 @@ namespace Sylan.AudioManager
             DataList list = GetPlayerAudioSettings(player);
             if (!Utilities.IsValid(list)) return false;
 
-            DataList settingIDList = list[SETTING_ID_INDEX].DataList;
-            if (!Utilities.IsValid(settingIDList)) return false;
-            DataList priorityList = list[SETTING_PRIORITY_INDEX].DataList;
-            if (!Utilities.IsValid(priorityList)) return false;
-            DataList SettingList = list[SETTING_INDEX].DataList;
-            if (!Utilities.IsValid(SettingList)) return false;
+            if (!list.TryGetValue(SETTING_ID_INDEX, TokenType.DataList, out DataToken token)) return false;
+            DataList settingIDList = token.DataList;
+            if (!list.TryGetValue(SETTING_PRIORITY_INDEX, TokenType.DataList, out token)) return false;
+            DataList priorityList = token.DataList;
+            if (!list.TryGetValue(SETTING_INDEX, TokenType.DataList, out token)) return false;
+            DataList SettingList = token.DataList;
 
             int index = settingIDList.IndexOf((DataToken)settingID);
             if (index == -1) return false;
@@ -280,15 +280,19 @@ namespace Sylan.AudioManager
             //VRCJson.TrySerializeToJson(list, JsonExportType.Minify, out DataToken result1);
             //Debug.Log(result1.ToString());
 
-            DataList settingIDList = list[SETTING_ID_INDEX].DataList;
-            if (!Utilities.IsValid(settingIDList)) return;
-            DataList priorityList = list[SETTING_PRIORITY_INDEX].DataList;
-            if (!Utilities.IsValid(priorityList)) return;
-            DataList SettingList = list[SETTING_INDEX].DataList;
-            if (!Utilities.IsValid(SettingList)) return;
+            if (!list.TryGetValue(SETTING_ID_INDEX, TokenType.DataList, out DataToken token)) return;
+            DataList settingIDList = token.DataList;
+            if (!list.TryGetValue(SETTING_PRIORITY_INDEX, TokenType.DataList, out token)) return;
+            DataList priorityList = token.DataList;
+            if (!list.TryGetValue(SETTING_INDEX, TokenType.DataList, out token)) return;
+            DataList SettingList = token.DataList;
 
             //Get Highest Priority Setting
-            DataList audioSetting = list[SETTING_INDEX].DataList[0].DataList;
+            if (!list[SETTING_INDEX].DataList.TryGetValue(0, TokenType.DataList, out token)) return;
+
+            DataList audioSetting = token.DataList;
+            if (!ValidateAudioSetting(audioSetting)) return;
+
             SetPlayerVoice(player, audioSetting);
 
             string debugString = "[AudioManager] Setting " + player.displayName + "-" + player.playerId.ToString() + " Audio:";
