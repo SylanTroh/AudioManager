@@ -92,7 +92,7 @@ MonoBehaviour:
       Data: 5|UnityEngine.HeaderAttribute, UnityEngine.CoreModule
     - Name: header
       Entry: 1
-      Data: AudioSetting ID. Used for debugging.
+      Data: AudioSetting ID. Used for debugging. Needs to be non-empty and unique.
     - Name: 
       Entry: 8
       Data: 

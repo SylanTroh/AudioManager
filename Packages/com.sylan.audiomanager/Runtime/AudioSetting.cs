@@ -8,7 +8,7 @@ namespace Sylan.AudioManager
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class AudioSetting : UdonSharpBehaviour
     {
-        [Header("AudioSetting ID. Used for debugging.")]
+        [Header("AudioSetting ID. Used for debugging. Needs to be non-empty and unique.")]
         public string settingID = string.Empty;
 
         [Header("Lower number means higher priority", order = 0)]
@@ -29,6 +29,7 @@ namespace Sylan.AudioManager
 
         private void Start()
         {
+            if (settingID == string.Empty) Destroy(this);
             DataToken[] tokens = {voiceGain, voiceNear, voiceFar, volumetricRadius, lowpassFilter };
             audioSetting = new DataList(tokens);
         }
