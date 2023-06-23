@@ -27,20 +27,6 @@ namespace Sylan.AudioManager
 
         string DefaultAudioSettingID = string.Empty;
         int DefaultAudioSettingPriority = int.MaxValue;
-        DataList DefaultAudioSettings = new DataList()
-        {
-            (DataToken)DEFAULT_VOICE_GAIN,
-            (DataToken)DEFAULT_VOICE_RANGE_NEAR,
-            (DataToken)DEFAULT_VOICE_RANGE_FAR,
-            (DataToken)DEFAULT_VOICE_VOLUMETRIC_RADIUS,
-            (DataToken)DEFAULT_VOICE_LOWPASS
-        };
-        DataList DefaultDictEntry = new DataList()
-        {
-            (DataToken) new DataList(),
-            (DataToken) new DataList(),
-            (DataToken) new DataList()
-        };
 
         [Header("Set default AudioSetting")]
         [SerializeField] private float voiceGain = DEFAULT_VOICE_GAIN;
@@ -56,18 +42,6 @@ namespace Sylan.AudioManager
         //Key:playerID -> DataList [ settingID[], settingPriority[], audioSettings[] ]
         private DataDictionary _AudioSettingDict = new DataDictionary();
 
-        private void Start()
-        {
-            DefaultAudioSettings[VOICE_GAIN_INDEX] = (DataToken)voiceGain;
-            DefaultAudioSettings[RANGE_NEAR_INDEX] = (DataToken)voiceRangeNear;
-            DefaultAudioSettings[RANGE_FAR_INDEX] = (DataToken)voiceRangeFar;
-            DefaultAudioSettings[VOLUMETRIC_RADIUS_INDEX] = (DataToken)volumetricRadius;
-            DefaultAudioSettings[VOICE_LOWPASS_INDEX] = (DataToken)voiceLowpass;
-
-            DefaultDictEntry[SETTING_ID_INDEX].DataList.Add((DataToken)DefaultAudioSettingID);
-            DefaultDictEntry[SETTING_PRIORITY_INDEX].DataList.Add((DataToken)DefaultAudioSettingPriority);
-            DefaultDictEntry[SETTING_INDEX].DataList.Add((DataToken)DefaultAudioSettings);
-        }
         //
         // Set Player Voice
         //
@@ -120,6 +94,21 @@ namespace Sylan.AudioManager
                 Debug.Log("[AudioManager] AudioSettigs already initialized for " + player.displayName + "-" + player.playerId.ToString());
                 return;
             }
+
+            DataList DefaultAudioSettings = new DataList();
+            DefaultAudioSettings.Add((DataToken)voiceGain);
+            DefaultAudioSettings.Add((DataToken)voiceRangeNear);
+            DefaultAudioSettings.Add((DataToken)voiceRangeFar);
+            DefaultAudioSettings.Add((DataToken)volumetricRadius);
+            DefaultAudioSettings.Add((DataToken)voiceLowpass);
+            DataList DefaultDictEntry = new DataList();
+            DefaultDictEntry.Add((DataToken) new DataList());
+            DefaultDictEntry.Add((DataToken) new DataList());
+            DefaultDictEntry.Add((DataToken) new DataList());
+            DefaultDictEntry[SETTING_ID_INDEX].DataList.Add((DataToken)DefaultAudioSettingID);
+            DefaultDictEntry[SETTING_PRIORITY_INDEX].DataList.Add((DataToken)DefaultAudioSettingPriority);
+            DefaultDictEntry[SETTING_INDEX].DataList.Add((DataToken)DefaultAudioSettings);
+
             _AudioSettingDict.SetValue(key: (DataToken)player.playerId, value: (DataToken)DefaultDictEntry);
             Debug.Log("[AudioManager] Initialize AudioSettings for " + player.displayName + "-" + player.playerId.ToString());
         }
