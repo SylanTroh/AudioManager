@@ -202,7 +202,7 @@ namespace Sylan.AudioManager
             if (value.Int <= 0) return false;
             return true;
         }
-        public bool ShareAudioZone(VRCPlayerApi player1, VRCPlayerApi player2)
+        public bool SharesAudioZoneWith(VRCPlayerApi player1, VRCPlayerApi player2)
         {
             DataDictionary dictPositive1 = GetPlayerAudioZoneDict(player1);
             DataDictionary dictPositive2 = GetPlayerAudioZoneDict(player2);
@@ -229,6 +229,8 @@ namespace Sylan.AudioManager
                     break;
                 }
             }
+            bool player1InEmptyZone = InAudioZone(player1, String.Empty);
+            bool player2InEmptyZone = InAudioZone(player2, String.Empty);
 
             //VRCJson.TrySerializeToJson(dictPositive1, JsonExportType.Minify, out DataToken result1);
             //VRCJson.TrySerializeToJson(dictPositive2, JsonExportType.Minify, out DataToken result2);
@@ -242,8 +244,9 @@ namespace Sylan.AudioManager
             //Debug.Log(result2.ToString());
 
             //Transition Zones only match null zone, not other transition zones
-            if (player1InNullZone && InAudioZone(player2, String.Empty)) return true;
-            if (player2InNullZone && InAudioZone(player1, String.Empty)) return true;
+            if (player1InEmptyZone && player2InEmptyZone) return true;
+            if (player1InNullZone && player2InEmptyZone) return true;
+            if (player2InNullZone && player1InEmptyZone) return true;
             if (player1InNullZone && player2InNullZone) return true;
             if (player1InNullZone || player2InNullZone) return false;
 
@@ -325,7 +328,7 @@ namespace Sylan.AudioManager
         }
         public static bool SharesAudioZoneWith(this VRCPlayerApi player1, VRCPlayerApi player2, AudioZoneManager zoneManager)
         {
-            return zoneManager.ShareAudioZone(player1, player2);
+            return zoneManager.SharesAudioZoneWith(player1, player2);
         }
         //
         //

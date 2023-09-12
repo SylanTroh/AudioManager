@@ -1,6 +1,8 @@
 ﻿
 using UnityEngine;
+using VRC.SDK3.Components;
 using VRC.SDKBase;
+using VRC.Udon;
 
 namespace UdonSharp.Examples.Utilities
 {
@@ -10,7 +12,7 @@ namespace UdonSharp.Examples.Utilities
     /// </summary>
     [AddComponentMenu("Udon Sharp/Utilities/World Audio Settings")]
     [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync)]
-    public class WorldAudioSettings : UdonSharpBehaviour
+    public class WorldAudioSettings : UdonSharpBehaviour 
     {
         [Header("Player voice")]
         [Tooltip("Adjusts the player volume")]
