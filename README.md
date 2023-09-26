@@ -9,8 +9,8 @@ Features Include:
 # Installation
 1. Go to https://sylantroh.github.io/SylanVCC/ and click "Add to VCC"
 2. Click Manage Project in the creator companion and press the plus button next to AudioManager
-3. Create an empty game object in your scene and add an 'AudioSettingManager' component.
-4. If you would like to use fake audio occlusion, add a gameobject with an 'AudioZoneManager' component to your scene as well.
+3. Create an empty game object in your scene and add an 'AudioSettingManager' component. You can use this component to set the default audio settings for your world.
+4. If you would like to use fake audio occlusion, add a gameobject with an 'AudioZoneManager' component to your scene as well. You can use component to set what audio settings will be in use when players don't share an AudioZone as well as change the default priority of AudioZones.
 
 # Setting up Fake Audio Occlusion
 - WIP
