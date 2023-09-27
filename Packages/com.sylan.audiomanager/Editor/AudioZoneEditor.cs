@@ -6,10 +6,10 @@ using VRC.SDKBase.Editor.BuildPipeline;
 
 namespace Sylan.AudioManager
 {
-    [CustomEditor(typeof(AudioZone))]
+    [CustomEditor(typeof(AudioZoneCollider))]
     public class AudioZoneEditor : Editor
     {
-        private AudioZone audioZone;
+        private AudioZoneCollider audioZone;
         BoxCollider boxCollider;
         CapsuleCollider capsuleCollider;
         SphereCollider sphereCollider;
@@ -23,7 +23,7 @@ namespace Sylan.AudioManager
 
         private void OnEnable()
         {
-            audioZone = target as AudioZone;
+            audioZone = target as AudioZoneCollider;
             boxCollider = audioZone.GetComponent<BoxCollider>();
             capsuleCollider = audioZone.GetComponent<CapsuleCollider>();
             sphereCollider = audioZone.GetComponent<SphereCollider>();
@@ -209,7 +209,7 @@ namespace Sylan.AudioManager
             return sphereCollider.transform.TransformPoint(sphereCollider.center + Vector3.up * sphereCollider.radius);
         }
         [DrawGizmo(GizmoType.NonSelected | GizmoType.Selected | GizmoType.Pickable)]
-        private static void DrawGizmos(AudioZone audioZone, GizmoType gizmoType)
+        private static void DrawGizmos(AudioZoneCollider audioZone, GizmoType gizmoType)
         {
             var colliderTransform = audioZone.transform.Find("AudioZoneCollider");
             if (colliderTransform == null) return;
@@ -262,18 +262,18 @@ namespace Sylan.AudioManager
         private static bool RunOnBuild()
         {
             //Object with Serialized Property(s)
-            if (!SerializedPropertyUtils.GetSerializedObjects<AudioZone>(out SerializedObject[] serializedObjects)) return false;
+            if (!SerializedPropertyUtils.GetSerializedObjects<AudioZoneCollider>(out SerializedObject[] serializedObjects)) return false;
 
             foreach (var serializedObject in serializedObjects)
             {
                 //Set Serialized Property
-                SerializedPropertyUtils.PopulateSerializedProperty<AudioZoneManager>(serializedObject, AudioZone.AudioZoneManagerPropertyName);
+                SerializedPropertyUtils.PopulateSerializedProperty<AudioZoneManager>(serializedObject, AudioZoneCollider.AudioZoneManagerPropertyName);
             }
 
             int collisionLayer = FindAudioZoneLayer();
             if (collisionLayer != -1)
             {
-                SerializedPropertyUtils.GetObjects<AudioZone>(out AudioZone[] objects);
+                SerializedPropertyUtils.GetObjects<AudioZoneCollider>(out AudioZoneCollider[] objects);
                 foreach (var obj in objects)
                 {
                     obj.gameObject.layer = FindAudioZoneLayer();

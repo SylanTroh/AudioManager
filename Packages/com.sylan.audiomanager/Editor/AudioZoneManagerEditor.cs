@@ -14,7 +14,7 @@ namespace Sylan.AudioManager
             if (!SerializedPropertyUtils.GetSerializedObject<AudioZoneManager>(out SerializedObject serializedObject)) return false;
 
             //Set Serialized Property
-            SerializedPropertyUtils.PopulateSerializedArray<AudioZone>(serializedObject, AudioZoneManager.AudioZonesPropertyName);
+            SerializedPropertyUtils.PopulateSerializedArray<AudioZoneCollider>(serializedObject, AudioZoneManager.AudioZoneCollidersPropertyName);
             SerializedPropertyUtils.PopulateSerializedProperty<AudioSettingManager>(serializedObject, AudioZoneManager.AudioSettingManagerPropertyName);
             return true;
         }

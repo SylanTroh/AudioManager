@@ -6,7 +6,8 @@ using VRC.SDKBase;
 namespace Sylan.AudioManager
 {
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
-    public class AudioZone : UdonSharpBehaviour
+    [AddComponentMenu("Scrips/Audio Zone Collider")]
+    public class AudioZoneCollider : UdonSharpBehaviour
     {
         [Header("Primary AudioZone ID")]
         public string zoneID = string.Empty;
@@ -25,7 +26,7 @@ namespace Sylan.AudioManager
 
         private void Start()
         {
-            hasAudioSettingComponent = (GetComponent<AudioSetting>() != null);
+            hasAudioSettingComponent = (GetComponent<AudioSettingCollider>() != null);
         }
 
         public override void OnPlayerTriggerEnter(VRCPlayerApi triggeringPlayer)

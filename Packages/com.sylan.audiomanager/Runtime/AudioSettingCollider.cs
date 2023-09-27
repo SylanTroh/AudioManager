@@ -6,7 +6,7 @@ using VRC.SDKBase;
 namespace Sylan.AudioManager
 {
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
-    public class AudioSetting : UdonSharpBehaviour
+    public class AudioSettingCollider : UdonSharpBehaviour
     {
         [Header("AudioSetting ID. Used for debugging. Needs to be non-empty and unique.")]
         public string settingID = string.Empty;

@@ -15,8 +15,8 @@ namespace Sylan.AudioManager
         [HideInInspector, SerializeField] private AudioSettingManager _AudioSettingManager;
         public const string AudioSettingManagerPropertyName = nameof(_AudioSettingManager);
 
-        [HideInInspector, SerializeField] private AudioZone[] AudioZones;
-        public const string AudioZonesPropertyName = nameof(AudioZones);
+        [HideInInspector, SerializeField] private AudioZoneCollider[] AudioZoneColliders;
+        public const string AudioZoneCollidersPropertyName = nameof(AudioZoneColliders);
 
         [Header("Set AudioSetting when in different audiozones")]
         [SerializeField] private float voiceGain = 7.0f;
