@@ -20,7 +20,7 @@ Each AudioZoneCollider script has at least one "ID" which is a string that corre
 If a AudioZone has the id "", that is, the empty string, it will match players who are not in any AudioZones in addition to the AudioZone with id "". This can be used to create "Transition Zones" or zones where players can hear players who are inside of a zone, while still hearing players who are outside of it. Finally, if a player is in a AudioZoneCollider with the "Is Negative Zone" checkbox enabled, this will prevent them from matching players in AudioZones with the IDs specified on that AudioZoneCollider.
 
 ## Video Guide
-[![Setup](https://img.youtube.com/vi/9Saxs7rcltQ/hqdefault.jpg)](https://www.youtube.com/embed/9Saxs7rcltQ)
+[![Setup](https://img.youtube.com/vi/9Saxs7rcltQ/hqdefault.jpg)](https://youtu.be/9Saxs7rcltQ)
 
 # Known Issues
 - Sitting in a station disables a player's capsule collider. If a player moves through AudioZoneCollider in this state their audio will break. This is most commonly caused by one player "carrying" another using a station on their avatar, but would also occur if a world has stations that can move players through AudioZoneColliders.
