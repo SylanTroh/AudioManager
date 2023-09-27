@@ -19,6 +19,9 @@ Each AudioZoneCollider script has at least one "ID" which is a string that corre
 
 If a AudioZone has the id "", that is, the empty string, it will match players who are not in any AudioZones in addition to the AudioZone with id "". This can be used to create "Transition Zones" or zones where players can hear players who are inside of a zone, while still hearing players who are outside of it. Finally, if a player is in a AudioZoneCollider with the "Is Negative Zone" checkbox enabled, this will prevent them from matching players in AudioZones with the IDs specified on that AudioZoneCollider.
 
+## Video Guide
+[![Setup](https://img.youtube.com/vi/9Saxs7rcltQ/hqdefault.jpg)](https://www.youtube.com/embed/9Saxs7rcltQ)
+
 # Known Issues
 - Sitting in a station disables a player's capsule collider. If a player moves through AudioZoneCollider in this state their audio will break. This is most commonly caused by one player "carrying" another using a station on their avatar, but would also occur if a world has stations that can move players through AudioZoneColliders.
 - VRChat doesn't do a perfect job of syncing remote player locations. As such, remote players may slightly clip through walls, triggering AudioZoneCollider on the other side of a wall. This effect is especially pronounced with multiple floors, where remote players will clip quite far into the floor below. This needs to be worked around by leaving some space between an AudioZoneCollider and the walls of a room.
