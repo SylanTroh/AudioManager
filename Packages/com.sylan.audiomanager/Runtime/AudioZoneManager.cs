@@ -30,7 +30,10 @@ namespace Sylan.AudioManager
         private DataDictionary _AudioZoneDict = new DataDictionary();
         private DataDictionary _NegativeAudioZoneDict = new DataDictionary();
 
-        public const int AUDIO_ZONE_PRIORITY = 1000;
+        [Header("Lower number means higher priority", order = 0)]
+        [Space(-10, order = 1)]
+        [Header("Audiozones have priority 1000 be default", order = 2)]
+        public int audioZonePriority = 1000;
         public const string AUDIO_ZONE_SETTING_ID = "AUDIOZONEVOICESETTING";
         DataList AudioZoneAudioSettings = new DataList()
         {
@@ -297,7 +300,7 @@ namespace Sylan.AudioManager
             else
             {
                 //Debug.Log("[AudioManager] Does not share AudioZone with " + player.displayName + ".");
-                _AudioSettingManager.AddAudioSetting(player, AUDIO_ZONE_SETTING_ID, AUDIO_ZONE_PRIORITY, AudioZoneAudioSettings);
+                _AudioSettingManager.AddAudioSetting(player, AUDIO_ZONE_SETTING_ID, audioZonePriority, AudioZoneAudioSettings);
             }
         }
     }
