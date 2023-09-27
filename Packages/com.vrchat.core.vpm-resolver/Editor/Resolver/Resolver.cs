@@ -1,11 +1,11 @@
-﻿using Serilog;
-using Serilog.Sinks.Unity3D;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Serilog;
+using Serilog.Sinks.Unity3D;
 using UnityEditor;
 using UnityEngine;
 using VRC.PackageManagement.Core;
@@ -15,12 +15,12 @@ using Version = VRC.PackageManagement.Core.Types.VPMVersion.Version;
 
 namespace VRC.PackageManagement.Resolver
 {
-
+    
     [InitializeOnLoad]
     public class Resolver
     {
         private const string _projectLoadedKey = "PROJECT_LOADED";
-
+        
         private static string _projectDir;
         public static string ProjectDir
         {
@@ -68,7 +68,7 @@ namespace VRC.PackageManagement.Resolver
         private static async Task CheckResolveNeeded()
         {
             SessionState.SetBool(_projectLoadedKey, true);
-
+            
             //Wait for project to finish compiling
             while (EditorApplication.isCompiling || EditorApplication.isUpdating)
             {
@@ -82,7 +82,7 @@ namespace VRC.PackageManagement.Resolver
                 {
                     return;
                 }
-
+                
                 if (VPMProjectManifest.ResolveIsNeeded(ProjectDir))
                 {
                     Debug.Log($"Resolve needed.");
@@ -104,7 +104,7 @@ namespace VRC.PackageManagement.Resolver
                 // Unity says we can't open windows from this function so it throws an exception but also works fine.
             }
         }
-
+        
         public static bool VPMManifestExists()
         {
             return VPMProjectManifest.Exists(ProjectDir, out _);
@@ -115,7 +115,7 @@ namespace VRC.PackageManagement.Resolver
             VPMProjectManifest.Load(ProjectDir);
             ResolverWindow.Refresh();
         }
-
+        
         public static void ResolveManifest()
         {
             ResolveStatic(ProjectDir);
@@ -129,7 +129,7 @@ namespace VRC.PackageManagement.Resolver
             EditorUtility.ClearProgressBar();
             ForceRefresh();
         }
-
+        
         public static List<string> GetAllVersionsOf(string id)
         {
             var project = new UnityProject(ProjectDir);
@@ -186,12 +186,12 @@ namespace VRC.PackageManagement.Resolver
 
             return null;
         }
-
-        public static void ForceRefresh()
+        
+        public static void ForceRefresh ()
         {
-            MethodInfo method = typeof(UnityEditor.PackageManager.Client).GetMethod("Resolve", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
-            if (method != null)
-                method.Invoke(null, null);
+            MethodInfo method = typeof( UnityEditor.PackageManager.Client ).GetMethod( "Resolve", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.DeclaredOnly );
+            if( method != null )
+                method.Invoke( null, null );
 
             AssetDatabase.Refresh();
         }

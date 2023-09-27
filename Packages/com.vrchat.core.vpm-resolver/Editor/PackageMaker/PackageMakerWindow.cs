@@ -17,10 +17,13 @@ namespace VRC.PackageManagement.PackageMaker
     {
         // VisualElements
         private VisualElement _rootView;
-        private TextField _targetAssetFolderField;
+   		private TextField _targetAssetFolderField;
         private TextField _packageIDField;
         private Button _actionButton;
         private EnumField _targetVRCPackageField;
+        private TextField _authorNameField;
+        private TextField _authorEmailField;
+        private TextField _authorUrlField;
         private static string _projectDir;
         private PackageMakerWindowData _windowData;
 
@@ -32,7 +35,10 @@ namespace VRC.PackageManagement.PackageMaker
             }
             _packageIDField.SetValueWithoutNotify(_windowData.packageID);
             _targetVRCPackageField.SetValueWithoutNotify(_windowData.relatedPackage);
-
+            _authorEmailField.SetValueWithoutNotify(_windowData.authorEmail);
+            _authorNameField.SetValueWithoutNotify(_windowData.authorName);
+            _authorUrlField.SetValueWithoutNotify(_windowData.authorUrl);
+            
             RefreshActionButtonState();
         }
 
@@ -48,9 +54,9 @@ namespace VRC.PackageManagement.PackageMaker
             PackageMakerWindow wnd = GetWindow<PackageMakerWindow>();
             wnd.titleContent = new GUIContent("Package Maker");
         }
-
+        
         [MenuItem("Assets/Export VPM as UnityPackage")]
-        private static void ExportAsUnityPackage()
+        private static void ExportAsUnityPackage ()
         {
 
             var foldersToExport = new List<string>();
@@ -74,7 +80,7 @@ namespace VRC.PackageManagement.PackageMaker
             Directory.CreateDirectory(exportDir);
             AssetDatabase.ExportPackage
             (
-                foldersToExport.ToArray(),
+                foldersToExport.ToArray(), 
                 Path.Combine(exportDir, exportFilename.ToString()),
                 ExportPackageOptions.Recurse | ExportPackageOptions.Interactive
             );
@@ -86,7 +92,7 @@ namespace VRC.PackageManagement.PackageMaker
             {
                 _windowData = PackageMakerWindowData.GetOrCreate();
             }
-
+            
             if (_rootView == null) return;
 
             if (_windowData != null)
@@ -99,7 +105,9 @@ namespace VRC.PackageManagement.PackageMaker
         {
             _actionButton.SetEnabled(
                 StringIsValidAssetFolder(_windowData.targetAssetFolder) &&
-                !string.IsNullOrWhiteSpace(_windowData.packageID)
+                !string.IsNullOrWhiteSpace(_windowData.packageID) &&
+                _authorNameField.value != null &&
+                IsValidEmail(_authorEmailField.value)
             );
         }
 
@@ -112,14 +120,15 @@ namespace VRC.PackageManagement.PackageMaker
             {
                 _windowData = PackageMakerWindowData.GetOrCreate();
             }
-
+            
             _rootView = rootVisualElement;
             _rootView.name = "root-view";
-            _rootView.styleSheets.Add((StyleSheet)Resources.Load("PackageMakerWindowStyle"));
+            _rootView.styleSheets.Add((StyleSheet) Resources.Load("PackageMakerWindowStyle"));
 
             // Create Target Asset folder and register for drag and drop events
             _rootView.Add(CreateTargetFolderElement());
             _rootView.Add(CreatePackageIDElement());
+            _rootView.Add(CreateAuthorElement());
             _rootView.Add(CreateTargetVRCPackageElement());
             _rootView.Add(CreateActionButton());
 
@@ -131,10 +140,9 @@ namespace VRC.PackageManagement.PackageMaker
             None = 0,
             Worlds = 1,
             Avatars = 2,
-            Base = 3,
-            UdonSharp = 4,
+            Base = 3
         }
-
+        
         private VisualElement CreateTargetVRCPackageElement()
         {
             _targetVRCPackageField = new EnumField("Related VRChat Package", VRCPackageEnum.None);
@@ -174,12 +182,12 @@ namespace VRC.PackageManagement.PackageMaker
                 ForceRefresh();
             }
         }
-
-        public static void ForceRefresh()
+        
+        public static void ForceRefresh ()
         {
-            MethodInfo method = typeof(UnityEditor.PackageManager.Client).GetMethod("Resolve", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
-            if (method != null)
-                method.Invoke(null, null);
+            MethodInfo method = typeof( UnityEditor.PackageManager.Client ).GetMethod( "Resolve", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.DeclaredOnly );
+            if( method != null )
+                method.Invoke( null, null );
 
             AssetDatabase.Refresh();
         }
@@ -194,14 +202,67 @@ namespace VRC.PackageManagement.PackageMaker
             _packageIDField = new TextField("Package ID", 255, false, false, '*');
             _packageIDField.RegisterValueChangedCallback(OnPackageIDChanged);
             box.Add(_packageIDField);
-
+            
             box.Add(new Label("Lowercase letters, numbers and dots only.")
             {
-                name = "description",
+                name="description",
                 tooltip = "Standard practice is reverse domain notation like com.vrchat.packagename. Needs to be unique across VRChat, so if you don't own a domain you can try your username.",
             });
-
+            
             return box;
+        }
+
+        private VisualElement CreateAuthorElement()
+        {
+            // Construct author fields
+            _authorNameField = new TextField("Author Name");
+            _authorEmailField = new TextField("Author Email");
+            _authorUrlField = new TextField("Author URL (optional)");
+
+            // Save name to window data and toggle the Action Button if its status changed
+            _authorNameField.RegisterValueChangedCallback((evt) =>
+            {
+                _windowData.authorName = evt.newValue;
+                Debug.Log($"Window author name is {evt.newValue}");
+                RefreshActionButtonState();
+            });
+            
+            // Save email to window data if valid and toggle the Action Button if its status changed
+            _authorEmailField.RegisterValueChangedCallback((evt) =>
+            {
+                // Only save email if it appears valid
+                if (IsValidEmail(evt.newValue))
+                {
+                    _windowData.authorEmail = evt.newValue;
+                }
+                RefreshActionButtonState();
+            });
+            
+            // Save url to window data, doesn't affect action button state
+            _authorUrlField.RegisterValueChangedCallback((evt) =>
+            {
+                _windowData.authorUrl = evt.newValue;
+            });
+            
+            // Add new fields to layout
+            var box = new Box();
+            box.Add(_authorNameField);
+            box.Add(_authorEmailField);
+            box.Add(_authorUrlField);
+            return box;
+        }
+
+        private bool IsValidEmail(string evtNewValue)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(evtNewValue);
+                return addr.Address == evtNewValue;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         private Regex packageIdRegex = new Regex("[^a-z0-9.]");
@@ -223,7 +284,7 @@ namespace VRC.PackageManagement.PackageMaker
             {
                 name = "editor-target-box"
             };
-
+            
             _targetAssetFolderField = new TextField("Target Folder");
             _targetAssetFolderField.RegisterCallback<DragEnterEvent>(OnTargetAssetFolderDragEnter, TrickleDown.TrickleDown);
             _targetAssetFolderField.RegisterCallback<DragLeaveEvent>(OnTargetAssetFolderDragLeave, TrickleDown.TrickleDown);
@@ -232,8 +293,8 @@ namespace VRC.PackageManagement.PackageMaker
             _targetAssetFolderField.RegisterCallback<DragExitedEvent>(OnTargetAssetFolderDragExited, TrickleDown.TrickleDown);
             _targetAssetFolderField.RegisterValueChangedCallback(OnTargetAssetFolderValueChanged);
             targetFolderBox.Add(_targetAssetFolderField);
-
-            targetFolderBox.Add(new Label("Drag and Drop an Assets Folder to Convert Above") { name = "description" });
+            
+            targetFolderBox.Add(new Label("Drag and Drop an Assets Folder to Convert Above"){name="description"});
             return targetFolderBox;
         }
 
@@ -243,7 +304,7 @@ namespace VRC.PackageManagement.PackageMaker
         {
             return !string.IsNullOrWhiteSpace(targetFolder) && AssetDatabase.IsValidFolder(targetFolder);
         }
-
+        
         private void OnTargetAssetFolderValueChanged(ChangeEvent<string> evt)
         {
             string targetFolder = evt.newValue;
@@ -259,7 +320,7 @@ namespace VRC.PackageManagement.PackageMaker
                 _targetAssetFolderField.SetValueWithoutNotify(evt.previousValue);
             }
         }
-
+        
         private void OnTargetAssetFolderDragExited(DragExitedEvent evt)
         {
             DragAndDrop.visualMode = DragAndDropVisualMode.None;
@@ -299,7 +360,7 @@ namespace VRC.PackageManagement.PackageMaker
         private void OnTargetAssetFolderDragEnter(DragEnterEvent evt)
         {
             if (DragAndDrop.paths.Length == 1)
-            {
+            { 
                 DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
                 DragAndDrop.AcceptDrag();
             }
@@ -311,9 +372,9 @@ namespace VRC.PackageManagement.PackageMaker
 
         private void DoMigration(string corePath, string targetDir)
         {
-
+            
             EditorUtility.DisplayProgressBar("Migrating Package", "Creating Starter Package", 0.1f);
-
+            
             // Convert PackageType enum to VRC Package ID string
             string packageType = null;
             switch (_windowData.relatedPackage)
@@ -325,23 +386,33 @@ namespace VRC.PackageManagement.PackageMaker
                     packageType = "com.vrchat.base";
                     break;
                 case VRCPackageEnum.Worlds:
-                    packageType = "com.vrchat.clientsim"; // we want ClientSim too, need to specify that for now
-                    break;
-                case VRCPackageEnum.UdonSharp:
-                    packageType = "com.vrchat.udonsharp";
+                    packageType = "com.vrchat.worlds";
                     break;
             }
 
             string parentDir = new DirectoryInfo(targetDir)?.Parent.FullName;
-            Core.Utilities.CreateStarterPackage(_windowData.packageID, parentDir, packageType);
+            var packageDir = Core.Utilities.CreateStarterPackage(_windowData.packageID, parentDir, packageType);
+            
+            // Modify manifest to add author
+            // Todo: add support for passing author into CreateStarterPackage
+            var manifest =
+                VRCPackageManifest.GetManifestAtPath(Path.Combine(packageDir, VRCPackageManifest.Filename)) as
+                    VRCPackageManifest;
+            manifest.author = new Author()
+            {
+                email = _windowData.authorEmail,
+                name = _windowData.authorName,
+                url = _windowData.authorUrl
+            };
+            manifest.Save();
+            
             var allFiles = GetAllFiles(corePath).ToList();
             MoveFilesToPackageDir(allFiles, corePath, targetDir);
-
+            
             // Clear target asset folder since it should no longer exist
             _windowData.targetAssetFolder = "";
-
         }
-
+        
         private static IEnumerable<string> GetAllFiles(string path)
         {
             var excludedPaths = new List<string>()
@@ -353,7 +424,7 @@ namespace VRC.PackageManagement.PackageMaker
                     s => excludedPaths.All(entry => !s.Contains(entry))
                 );
         }
-
+        
         public static void MoveFilesToPackageDir(List<string> files, string pathBase, string targetDir)
         {
             EditorUtility.DisplayProgressBar("Migrating Package", "Moving Package Files", 0f);
@@ -366,7 +437,7 @@ namespace VRC.PackageManagement.PackageMaker
                     EditorUtility.DisplayProgressBar("Migrating Package", "Moving Package Files", i / totalFiles);
                     var file = files[i];
                     string simplifiedPath = file.Replace($"{pathBase}\\", "");
-
+                
                     string dest = null;
                     if (simplifiedPath.Contains("Editor\\"))
                     {
@@ -391,11 +462,11 @@ namespace VRC.PackageManagement.PackageMaker
                     continue;
                 }
             }
-
+            
             Directory.Delete(pathBase, true); // cleans up leftover folders since only files are moved
             EditorUtility.ClearProgressBar();
         }
-
+        
         // Important while we're doing copy-and-rename in order to rename paths with "Assets" without renaming paths with "Sample Assets"
         public static string ReplaceFirst(string text, string search, string replace)
         {

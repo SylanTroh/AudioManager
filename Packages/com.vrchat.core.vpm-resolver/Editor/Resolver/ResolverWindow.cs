@@ -45,7 +45,7 @@ namespace VRC.PackageManagement.Resolver
 
             bool needsResolve = VPMProjectManifest.ResolveIsNeeded(Resolver.ProjectDir);
             string resolveStatus = needsResolve ? "Please press  \"Resolve\" to Download them." : "All of them are in the project.";
-
+            
             // check for vpm dependencies
             if (!Resolver.VPMManifestExists())
             {
@@ -58,7 +58,7 @@ namespace VRC.PackageManagement.Resolver
             {
                 var manifest = VPMProjectManifest.Load(Resolver.ProjectDir);
                 var project = new UnityProject(Resolver.ProjectDir);
-
+                
                 // Here is where we detect if all dependencies are installed
                 var allDependencies = (manifest.locked != null && manifest.locked.Count > 0)
                     ? manifest.locked
