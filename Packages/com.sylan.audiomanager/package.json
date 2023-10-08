@@ -1,7 +1,7 @@
 {
   "name": "com.sylan.audiomanager",
   "displayName": "AudioManager",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "description": "Audiozones for manual Audio Occlusion in VRChat.",
   "url": "https://github.com/SylanTroh/AudioManager.git",
   "author": {
@@ -11,7 +11,7 @@
     },
   "gitDependencies": {},
   "vpmDependencies": {
-    "com.vrchat.udonsharp": "1.1.X"
+    "com.vrchat.worlds": "^3.4.0"
   },
   "samples": [
   ]
