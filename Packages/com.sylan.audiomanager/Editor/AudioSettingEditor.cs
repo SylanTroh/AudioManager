@@ -137,7 +137,7 @@ namespace Sylan.AudioManager
                 for (int i = 0; i < handles.Length; i++)
                 {
                     handles[i] = boxCollider.transform.TransformPoint(handles[i]);
-                    handles[i] = Handles.FreeMoveHandle(handles[i], Quaternion.identity, handleSize, Vector3.one * 0.1f, Handles.SphereHandleCap);
+                    var fmh_140_69_638376709796116596 = Quaternion.identity; handles[i] = Handles.FreeMoveHandle(handles[i], handleSize, Vector3.one * 0.1f, Handles.SphereHandleCap);
                     handles[i] = boxCollider.transform.InverseTransformPoint(handles[i]);
                 }
 
@@ -167,8 +167,8 @@ namespace Sylan.AudioManager
                 Vector3 centerHandle = GetCenterHandlePosition();
                 Vector3 radiusHandle = GetRadiusHandlePosition();
 
-                centerHandle = Handles.FreeMoveHandle(centerHandle, Quaternion.identity, handleSize, Vector3.one * 0.1f, Handles.SphereHandleCap);
-                radiusHandle = Handles.FreeMoveHandle(radiusHandle, Quaternion.identity, handleSize, Vector3.one * 0.1f, Handles.SphereHandleCap);
+                var fmh_170_69_638376709796133656 = Quaternion.identity; centerHandle = Handles.FreeMoveHandle(centerHandle, handleSize, Vector3.one * 0.1f, Handles.SphereHandleCap);
+                var fmh_171_69_638376709796135360 = Quaternion.identity; radiusHandle = Handles.FreeMoveHandle(radiusHandle, handleSize, Vector3.one * 0.1f, Handles.SphereHandleCap);
 
                 if (EditorGUI.EndChangeCheck())
                 {
