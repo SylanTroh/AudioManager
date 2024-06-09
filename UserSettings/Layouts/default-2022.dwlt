@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 2560
     height: 1349.3334
   m_ShowMode: 4
-  m_Title: Project
+  m_Title: Scene
   m_RootView: {fileID: 6}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -48,7 +48,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 101
+  controlID: 264
 --- !u!114 &3
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -224,7 +224,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 100}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 38
+  controlID: 203
 --- !u!114 &10
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -249,7 +249,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 50}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 39
+  controlID: 204
 --- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -368,14 +368,14 @@ MonoBehaviour:
   m_LastFolders:
   - Packages/com.sylan.audiomanager/Samples
   m_LastFoldersGridSize: -1
-  m_LastProjectPath: D:\Dropbox\VR\Packages\AudioManager-Migrated
+  m_LastProjectPath: D:\Dropbox\VR\Packages\AudioManager
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 79}
-    m_SelectedIDs: 74430000
-    m_LastClickedID: 17268
-    m_ExpandedIDs: 00000000704100002c42000000ca9a3bffffff7f
+    scrollPos: {x: 0, y: 0}
+    m_SelectedIDs: 24420000
+    m_LastClickedID: 16932
+    m_ExpandedIDs: 00000000dc4000007441000000ca9a3bffffff7f
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -403,7 +403,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 0000000070410000
+    m_ExpandedIDs: 00000000dc4000007441000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -545,9 +545,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 74430000
+      m_SelectedIDs: 305c0000
       m_LastClickedID: 0
-      m_ExpandedIDs: cee5feff0ee7feff88ecfeff
+      m_ExpandedIDs: 32ccfeffd4ccfeffd686ffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -611,7 +611,7 @@ MonoBehaviour:
       collapsed: 0
       displayed: 1
       snapOffset: {x: 0, y: 0}
-      snapOffsetDelta: {x: -160, y: -26.666687}
+      snapOffsetDelta: {x: -154.66663, y: -26.666687}
       snapCorner: 3
       id: Tool Settings
       index: 0
@@ -928,9 +928,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: -1.5647125, y: 3.2736893, z: -0.8408842}
+    m_Target: {x: 4.9151506, y: 5.527537, z: -3.6552467}
     speed: 2
-    m_Value: {x: -1.5647125, y: 3.2736893, z: -0.8408842}
+    m_Value: {x: 4.9151506, y: 5.527537, z: -3.6552467}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -976,9 +976,9 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: -0.088353306, y: -0.82003146, z: 0.1317548, w: -0.54989827}
+    m_Target: {x: -0.06928489, y: -0.69014955, z: 0.06669051, w: -0.717335}
     speed: 2
-    m_Value: {x: -0.08917782, y: -0.8198308, z: 0.13298436, w: -0.5497637}
+    m_Value: {x: -0.06856335, y: -0.6901732, z: 0.06599613, w: -0.7173595}
   m_Size:
     m_Target: 10
     speed: 2
