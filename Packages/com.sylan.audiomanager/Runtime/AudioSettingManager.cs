@@ -120,6 +120,7 @@ namespace Sylan.AudioManager
             if (!_AudioSettingDict.Remove(key: (DataToken)player.playerId, out DataToken value))
             {
                 Debug.LogError("[AudioManager] Failed to remove AudioSettingDict for " + player.displayName + "-" + player.playerId.ToString());
+                return null;
             }
             Debug.Log("[AudioManager] Removed AudioSettingDict for " + player.displayName + "-" + player.playerId.ToString());
             return value.DataList;
