@@ -241,7 +241,7 @@ namespace Sylan.AudioManager
         }
     }
     [InitializeOnLoad]
-    public class AudioSettingInitialize : Editor, IVRCSDKBuildRequestedCallback
+    public class AudioSettingInitialize : IVRCSDKBuildRequestedCallback
     {
         private static int FindAudioZoneLayer()
         {
