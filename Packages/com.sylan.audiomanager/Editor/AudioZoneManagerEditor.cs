@@ -6,7 +6,7 @@ using VRC.SDKBase.Editor.BuildPipeline;
 namespace Sylan.AudioManager
 {
     [InitializeOnLoad]
-    public class AudioZoneManagerInitialize : Editor, IVRCSDKBuildRequestedCallback
+    public class AudioZoneManagerInitialize : IVRCSDKBuildRequestedCallback
     {
         private static bool SetSerializedProperties()
         {
