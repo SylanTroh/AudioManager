@@ -2691,6 +2691,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawns:
   - {fileID: 1344707366}
+  spawnRadius: 0
   spawnOrder: 2
   spawnOrientation: 0
   ReferenceCamera: {fileID: 0}
@@ -2708,6 +2709,7 @@ MonoBehaviour:
   contentOther: 0
   releasePublic: 0
   unityVersion: 2019.4.31f1
+  udonProducts: []
   Name: 
   NSFW: 0
   SpawnPosition: {x: 0, y: 0, z: 0}
@@ -2773,18 +2775,49 @@ MonoBehaviour:
   NetworkIDs:
   - gameObject: {fileID: 1344707365}
     ID: 190
+    SerializedTypeNames: []
   - gameObject: {fileID: 941371498}
     ID: 207
+    SerializedTypeNames: []
   - gameObject: {fileID: 2106600230}
     ID: 208
-  - gameObject: {fileID: 0}
+    SerializedTypeNames: []
+  - gameObject: {fileID: 794337259}
     ID: 209
-  - gameObject: {fileID: 0}
+    SerializedTypeNames:
+    - VRC.Udon.UdonBehaviour
+  - gameObject: {fileID: 1565303860}
     ID: 210
-  - gameObject: {fileID: 0}
+    SerializedTypeNames:
+    - VRC.Udon.UdonBehaviour
+  - gameObject: {fileID: 716597927}
+    ID: 211
+    SerializedTypeNames:
+    - VRC.Udon.UdonBehaviour
+  - gameObject: {fileID: 399894418}
+    ID: 212
+    SerializedTypeNames:
+    - VRC.Udon.UdonBehaviour
+  - gameObject: {fileID: 6670462}
     ID: 213
+    SerializedTypeNames:
+    - VRC.Udon.UdonBehaviour
+  - gameObject: {fileID: 900094057}
+    ID: 214
+    SerializedTypeNames:
+    - VRC.Udon.UdonBehaviour
+  - gameObject: {fileID: 1025939248}
+    ID: 215
+    SerializedTypeNames:
+    - VRC.Udon.UdonBehaviour
+  - gameObject: {fileID: 781408876}
+    ID: 216
+    SerializedTypeNames:
+    - VRC.Udon.UdonBehaviour
   portraitCameraPositionOffset: {x: 0, y: 0, z: 0}
   portraitCameraRotationOffset: {x: 0, y: 1, z: 0, w: -0.00000004371139}
+  PlayerPersistence: []
+  NavigationAreas: []
 --- !u!114 &1344707369
 MonoBehaviour:
   m_ObjectHideFlags: 0
