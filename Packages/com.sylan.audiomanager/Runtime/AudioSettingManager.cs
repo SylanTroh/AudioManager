@@ -20,6 +20,8 @@ namespace Sylan.AudioManager
         public const int RANGE_FAR_INDEX = 2;
         public const int VOLUMETRIC_RADIUS_INDEX = 3;
         public const int VOICE_LOWPASS_INDEX = 4;
+        public const int FADE_ENABLED_INDEX = 5;
+        public const int FADE_DURATION_INDEX = 6;
 
         public const int SETTING_ID_INDEX = 0;
         public const int SETTING_PRIORITY_INDEX = 1;
@@ -39,35 +41,12 @@ namespace Sylan.AudioManager
         [HideInInspector, SerializeField] private AudioZoneManager _AudioZoneManager;
         public const string AudioZoneManagerPropertyName = nameof(_AudioZoneManager);
 
+        public VoiceApplicator VoiceApplicator { get => _VoiceApplicator; private set { _VoiceApplicator = value; } }
+        [HideInInspector, SerializeField] private VoiceApplicator _VoiceApplicator;
+        public const string VoiceApplicatorPropertyName = nameof(_VoiceApplicator);
+
         //Key:playerID -> DataList [ settingID[], settingPriority[], audioSettings[] ]
         private DataDictionary _AudioSettingDict = new DataDictionary();
-
-        //
-        // Set Player Voice
-        //
-        private static void SetPlayerVoice(VRCPlayerApi player, float voiceGain, float voiceNear, float voiceFar, float voiceVolumetricRadius, bool voiceLowpass)
-        {
-            if (!Utilities.IsValid(player)) return;
-            if (!player.IsValid()) return;
-
-            player.SetVoiceGain(voiceGain);
-            player.SetVoiceDistanceNear(voiceNear);
-            player.SetVoiceDistanceFar(voiceFar);
-            player.SetVoiceVolumetricRadius(voiceVolumetricRadius);
-            player.SetVoiceLowpass(voiceLowpass);
-        }
-        private static void SetPlayerVoice(VRCPlayerApi player, DataList audioSetting)
-        {
-            if (audioSetting == null) return;
-            SetPlayerVoice(
-                player,
-                audioSetting[VOICE_GAIN_INDEX].Float,
-                audioSetting[RANGE_NEAR_INDEX].Float,
-                audioSetting[RANGE_FAR_INDEX].Float,
-                audioSetting[VOLUMETRIC_RADIUS_INDEX].Float,
-                audioSetting[VOICE_LOWPASS_INDEX].Boolean
-                );
-        }
 
         //
         // Manage _AudioSettingDict By player
@@ -151,9 +130,20 @@ namespace Sylan.AudioManager
         //
         private bool ValidateAudioSetting(DataList audioSetting)
         {
+            if (audioSetting == null)
+            {
+                Debug.LogError("[AudioManager] Invalid Audio Setting - null");
+                return false;
+            }
+            
+            if (audioSetting.Count != 5 && audioSetting.Count != 7)
+            {
+                Debug.LogError("[AudioManager] Invalid Audio Setting - expected 5 or 7 elements, got " + audioSetting.Count);
+                return false;
+            }
+            
+            // Validate required voice parameters
             bool isValid =
-                (audioSetting != null) &&
-                (audioSetting.Count == 5) &&
                 (audioSetting.TryGetValue(VOICE_GAIN_INDEX, TokenType.Float, out DataToken discard)) &&
                 (audioSetting.TryGetValue(RANGE_NEAR_INDEX, TokenType.Float, out discard)) &&
                 (audioSetting.TryGetValue(RANGE_FAR_INDEX, TokenType.Float, out discard)) &&
@@ -162,9 +152,24 @@ namespace Sylan.AudioManager
 
             if (!isValid)
             {
-                Debug.LogError("[AudioManager] Invalid Audio Setting");
+                Debug.LogError("[AudioManager] Invalid Audio Setting - missing or wrong type for voice parameters");
                 return false;
             }
+            
+            // Validate fade parameters if present
+            if (audioSetting.Count == 7)
+            {
+                isValid = isValid &&
+                    (audioSetting.TryGetValue(FADE_ENABLED_INDEX, TokenType.Boolean, out discard)) &&
+                    (audioSetting.TryGetValue(FADE_DURATION_INDEX, TokenType.Float, out discard));
+                    
+                if (!isValid)
+                {
+                    Debug.LogError("[AudioManager] Invalid Audio Setting - wrong type for fade parameters");
+                    return false;
+                }
+            }
+            
             return true;
         }
         public void AddAudioSetting(VRCPlayerApi player, string settingID, int priority, DataList audioSetting)
@@ -283,7 +288,7 @@ namespace Sylan.AudioManager
             DataList audioSetting = token.DataList;
             if (!ValidateAudioSetting(audioSetting)) return;
 
-            SetPlayerVoice(player, audioSetting);
+            _VoiceApplicator.ApplyVoiceSetting(player, audioSetting);
 
             string debugString = "[AudioManager] Setting " + player.displayName + "-" + player.playerId.ToString() + " Audio:";
             debugString += " SettingID:" + list[SETTING_ID_INDEX].DataList[0].String;

@@ -21,6 +21,12 @@ namespace Sylan.AudioManager
         public float voiceFar = AudioSettingManager.DEFAULT_VOICE_RANGE_FAR;
         public float volumetricRadius = AudioSettingManager.DEFAULT_VOICE_VOLUMETRIC_RADIUS;
         public bool lowpassFilter = AudioSettingManager.DEFAULT_VOICE_LOWPASS;
+        
+        [Header("Voice Fade Settings")]
+        [Tooltip("Enable smooth fading when entering/exiting this audio setting zone")]
+        public bool enableFade = false;
+        [Tooltip("Duration of fade in seconds")]
+        public float fadeDuration = 1.0f;
 
         [HideInInspector, SerializeField] private AudioSettingManager _AudioSettingManager;
         public const string AudioSettingManagerPropertyName = nameof(_AudioSettingManager);
@@ -30,7 +36,7 @@ namespace Sylan.AudioManager
         private void Start()
         {
             if (settingID == string.Empty) Destroy(this);
-            DataToken[] tokens = {voiceGain, voiceNear, voiceFar, volumetricRadius, lowpassFilter };
+            DataToken[] tokens = {voiceGain, voiceNear, voiceFar, volumetricRadius, lowpassFilter, enableFade, fadeDuration};
             audioSetting = new DataList(tokens);
         }
         public override void OnPlayerTriggerEnter(VRCPlayerApi triggeringPlayer)

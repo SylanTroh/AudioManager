@@ -1,6 +1,4 @@
-﻿
-using System;
-using System.Reflection.Emit;
+﻿using System;
 using UdonSharp;
 using UnityEngine;
 using VRC.SDK3.Data;
@@ -24,6 +22,12 @@ namespace Sylan.AudioManager
         [SerializeField] private float voiceRangeFar = 1.75f;
         [SerializeField] private float volumetricRadius = AudioSettingManager.DEFAULT_VOICE_VOLUMETRIC_RADIUS;
         [SerializeField] private bool voiceLowpass = AudioSettingManager.DEFAULT_VOICE_LOWPASS;
+        
+        [Header("Voice Fade Settings")]
+        [Tooltip("Enable smooth fading when entering/exiting audio zones")]
+        [SerializeField] private bool enableAudioZoneFade = true;
+        [Tooltip("Duration of fade in seconds")]
+        [SerializeField] private float audioZoneFadeDuration = 1.0f;
 
 
         //Key:playerID -> DataDictionary Key:zoneID -> int numOccurences
@@ -41,7 +45,9 @@ namespace Sylan.AudioManager
             (DataToken)0.0f, //Voice Range Near
             (DataToken)2.0f, //Voice Range Far
             (DataToken)AudioSettingManager.DEFAULT_VOICE_VOLUMETRIC_RADIUS,
-            (DataToken)AudioSettingManager.DEFAULT_VOICE_LOWPASS
+            (DataToken)AudioSettingManager.DEFAULT_VOICE_LOWPASS,
+            (DataToken)false, //Fade Enabled
+            (DataToken)1.0f   //Fade Duration
         };
         private void Start()
         {
@@ -50,6 +56,8 @@ namespace Sylan.AudioManager
             AudioZoneAudioSettings[AudioSettingManager.RANGE_FAR_INDEX] = (DataToken)voiceRangeFar;
             AudioZoneAudioSettings[AudioSettingManager.VOLUMETRIC_RADIUS_INDEX] = (DataToken)volumetricRadius;
             AudioZoneAudioSettings[AudioSettingManager.VOICE_LOWPASS_INDEX] = (DataToken)voiceLowpass;
+            AudioZoneAudioSettings[AudioSettingManager.FADE_ENABLED_INDEX] = (DataToken)enableAudioZoneFade;
+            AudioZoneAudioSettings[AudioSettingManager.FADE_DURATION_INDEX] = (DataToken)audioZoneFadeDuration;
         }
 
         //
@@ -66,7 +74,7 @@ namespace Sylan.AudioManager
 
             if (!dict.TryGetValue((DataToken)player.playerId, TokenType.DataDictionary, out DataToken value))
             {
-                Debug.LogError("[AudioManager] Failed to get AudioZoneDict for " + player.displayName + "-" + player.playerId.ToString());
+                Debug.LogError("[AudioManager] Failed to get AudioZoneDict for " + player.PrintName());
                 return null;
             }
             return value.DataDictionary;
@@ -78,18 +86,18 @@ namespace Sylan.AudioManager
 
             if (_AudioZoneDict.TryGetValue((DataToken)player.playerId, TokenType.DataDictionary, out DataToken value))
             {
-                Debug.Log("[AudioManager] AudioZoneDict already initialized for " + player.displayName + "-" + player.playerId.ToString());
+                Debug.Log("[AudioManager] AudioZoneDict already initialized for " + player.PrintName());
                 return;
             }
             _AudioZoneDict.SetValue(key: (DataToken)player.playerId, value: (DataToken)(new DataDictionary()));
-            Debug.Log("[AudioManager] Initialize AudioZoneDict for " + player.displayName + "-" + player.playerId.ToString());
+            Debug.Log("[AudioManager] Initialize AudioZoneDict for " + player.PrintName());
             if (_NegativeAudioZoneDict.TryGetValue((DataToken)player.playerId, TokenType.DataDictionary, out value))
             {
-                Debug.Log("[AudioManager] NegativeAudioZoneDict already initialized for " + player.displayName + "-" + player.playerId.ToString());
+                Debug.Log("[AudioManager] NegativeAudioZoneDict already initialized for " + player.PrintName());
                 return;
             }
             _NegativeAudioZoneDict.SetValue(key: (DataToken)player.playerId, value: (DataToken)(new DataDictionary()));
-            Debug.Log("[AudioManager] Initialize NegativeAudioZoneDict for " + player.displayName + "-" + player.playerId.ToString());
+            Debug.Log("[AudioManager] Initialize NegativeAudioZoneDict for " + player.PrintName());
         }
         public DataDictionary RemovePlayerAudioZoneDict(VRCPlayerApi player)
         {
@@ -98,15 +106,15 @@ namespace Sylan.AudioManager
 
             if (!_AudioZoneDict.Remove(key: (DataToken)player.playerId, out DataToken value))
             {
-                Debug.LogError("[AudioManager] Failed to remove AudioZoneDict for " + player.displayName + "-" + player.playerId.ToString());
+                Debug.LogError("[AudioManager] Failed to remove AudioZoneDict for " + player.PrintName());
             }
-            Debug.Log("[AudioManager] Removed AudioZoneDict for " + player.displayName + "-" + player.playerId.ToString());
+            Debug.Log("[AudioManager] Removed AudioZoneDict for " + player.PrintName());
 
             if (!_NegativeAudioZoneDict.Remove(key: (DataToken)player.playerId, out DataToken negativeValue))
             {
-                Debug.LogError("[AudioManager] Failed to remove _NegativeAudioZoneDict for " + player.displayName + "-" + player.playerId.ToString());
+                Debug.LogError("[AudioManager] Failed to remove _NegativeAudioZoneDict for " + player.PrintName());
             }
-            Debug.Log("[AudioManager] Removed _NegativeAudioZoneDict for " + player.displayName + "-" + player.playerId.ToString());
+            Debug.Log("[AudioManager] Removed _NegativeAudioZoneDict for " + player.PrintName());
             return value.DataDictionary;
         }
         public override void OnPlayerJoined(VRCPlayerApi joiningPlayer)
@@ -332,6 +340,10 @@ namespace Sylan.AudioManager
         public static bool SharesAudioZoneWith(this VRCPlayerApi player1, VRCPlayerApi player2, AudioZoneManager zoneManager)
         {
             return zoneManager.SharesAudioZoneWith(player1, player2);
+        }
+        public static string PrintName(this VRCPlayerApi player)
+        {
+            return player.displayName + "-" + player.playerId.ToString();
         }
         //
         //
