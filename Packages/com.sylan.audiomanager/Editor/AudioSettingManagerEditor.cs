@@ -13,8 +13,22 @@ namespace Sylan.AudioManager
             //Object with Serialized Property(s)
             if (!SerializedPropertyUtils.GetSerializedObject<AudioSettingManager>(out SerializedObject serializedObject)) return false;
 
+            // Get the AudioSettingManager instance
+            AudioSettingManager manager = serializedObject.targetObject as AudioSettingManager;
+            if (manager != null)
+            {
+                // Add VoiceApplicator to the same GameObject if it doesn't already exist
+                VoiceApplicator voiceApplicator = manager.GetComponent<VoiceApplicator>();
+                if (voiceApplicator == null)
+                {
+                    voiceApplicator = manager.gameObject.AddComponent<VoiceApplicator>();
+                    UnityEngine.Debug.Log("[AudioManager] Automatically added VoiceApplicator to " + manager.gameObject.name);
+                }
+            }
+
             //Set Serialized Property
             SerializedPropertyUtils.PopulateSerializedProperty<AudioZoneManager>(serializedObject, AudioSettingManager.AudioZoneManagerPropertyName);
+            SerializedPropertyUtils.PopulateSerializedProperty<VoiceApplicator>(serializedObject, AudioSettingManager.VoiceApplicatorPropertyName);
             return true;
         }
         //
