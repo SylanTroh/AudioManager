@@ -9,6 +9,10 @@ namespace Sylan.AudioManager
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class AudioZoneManager : UdonSharpBehaviour
     {
+        // ================================================================
+        // References
+        // ================================================================
+        
         public AudioSettingManager AudioSettingManager { get => _AudioSettingManager; private set { _AudioSettingManager = value; } }
         [HideInInspector, SerializeField] private AudioSettingManager _AudioSettingManager;
         public const string AudioSettingManagerPropertyName = nameof(_AudioSettingManager);
@@ -16,6 +20,10 @@ namespace Sylan.AudioManager
         [HideInInspector, SerializeField] private AudioZoneCollider[] AudioZoneColliders;
         public const string AudioZoneCollidersPropertyName = nameof(AudioZoneColliders);
 
+        // ================================================================
+        // Audio Zone Configuration
+        // ================================================================
+        
         [Header("Set AudioSetting when in different audiozones")]
         [SerializeField] private float voiceGain = 7.0f;
         [SerializeField] private float voiceRangeNear = AudioSettingManager.DEFAULT_VOICE_RANGE_NEAR;
@@ -29,15 +37,19 @@ namespace Sylan.AudioManager
         [Tooltip("Duration of fade in seconds")]
         [SerializeField] private float audioZoneFadeDuration = 1.0f;
 
-
-        //Key:playerID -> DataDictionary Key:zoneID -> int numOccurences
-        private DataDictionary _AudioZoneDict = new DataDictionary();
-        private DataDictionary _NegativeAudioZoneDict = new DataDictionary();
-
         [Header("Lower number means higher priority", order = 0)]
         [Space(-10, order = 1)]
         [Header("Audiozones have priority 1000 be default", order = 2)]
         public int audioZonePriority = 1000;
+
+        // ================================================================
+        // Data Structures
+        // ================================================================
+        
+        //Key:playerID -> DataDictionary Key:zoneID -> int numOccurences
+        private DataDictionary _AudioZoneDict = new DataDictionary();
+        private DataDictionary _NegativeAudioZoneDict = new DataDictionary();
+
         public const string AUDIO_ZONE_SETTING_ID = "AUDIOZONEVOICESETTING";
         DataList AudioZoneAudioSettings = new DataList()
         {
@@ -49,6 +61,7 @@ namespace Sylan.AudioManager
             (DataToken)false, //Fade Enabled
             (DataToken)1.0f   //Fade Duration
         };
+                
         private void Start()
         {
             AudioZoneAudioSettings[AudioSettingManager.VOICE_GAIN_INDEX] = (DataToken)voiceGain;
@@ -60,9 +73,10 @@ namespace Sylan.AudioManager
             AudioZoneAudioSettings[AudioSettingManager.FADE_DURATION_INDEX] = (DataToken)audioZoneFadeDuration;
         }
 
-        //
-        // Manage AudioZoneDict By Player
-        //
+        // ================================================================
+        // Dictionary Management
+        // ================================================================
+        
         public DataDictionary GetPlayerAudioZoneDict(VRCPlayerApi player, bool isNegative = false)
         {
             DataDictionary dict;
@@ -138,9 +152,11 @@ namespace Sylan.AudioManager
         {
             RemovePlayerAudioZoneDict(player);
         }
-        //
-        //Manage AudioZoneDict[player]
-        //
+        
+        // ================================================================
+        // Zone Membership Tracking
+        // ================================================================
+        
         public void EnterAudioZone(VRCPlayerApi player, string zoneID, bool isNegative = false)
         {
             DataDictionary dict = GetPlayerAudioZoneDict(player, isNegative);
@@ -192,6 +208,11 @@ namespace Sylan.AudioManager
             if (!Utilities.IsValid(dict)) return;
             dict.Clear();
         }
+        
+        // ================================================================
+        // Zone Membership Query
+        // ================================================================
+        
         public bool InAudioZone(VRCPlayerApi player, string zoneID)
         {
             DataDictionary dictPositive = GetPlayerAudioZoneDict(player);
@@ -270,9 +291,11 @@ namespace Sylan.AudioManager
             }
             return false;
         }
-        //
-        //Update Audio Settings
-        //
+
+        // ================================================================
+        // Update Audio Settings
+        // ================================================================
+
         public void UpdateAudioZoneSetting(VRCPlayerApi triggeringPlayer, bool hasAudioSettingComponent = false)
         {
             if (triggeringPlayer == null) return;
@@ -314,9 +337,9 @@ namespace Sylan.AudioManager
     }
     public static class AudioZoneManagerExtensions
     {
-        //
-        //Extensions for VRCPlayerAPI
-        //
+        // ================================================================
+        // Extensions for VRCPlayerAPI
+        // ================================================================
         public static void EnterAudioZone(this VRCPlayerApi player, AudioZoneManager zoneManager, string zoneID, bool isNegative)
         {
             zoneManager.EnterAudioZone(player, zoneID, isNegative);
@@ -345,8 +368,5 @@ namespace Sylan.AudioManager
         {
             return player.displayName + "-" + player.playerId.ToString();
         }
-        //
-        //
-        //
     }
 }
