@@ -25,3 +25,12 @@ If a AudioZone has the id "", that is, the empty string, it will match players w
 # Known Issues
 - Sitting in a station disables a player's capsule collider. If a player moves through AudioZoneCollider in this state their audio will break. This is most commonly caused by one player "carrying" another using a station on their avatar, but would also occur if a world has stations that can move players through AudioZoneColliders.
 - VRChat doesn't do a perfect job of syncing remote player locations. As such, remote players may slightly clip through walls, triggering AudioZoneCollider on the other side of a wall. This effect is especially pronounced with multiple floors, where remote players will clip quite far into the floor below. This needs to be worked around by leaving some space between an AudioZoneCollider and the walls of a room.
+
+---
+
+# Update Log
+
+## Version 1.6.0
+- Added VoiceApplicator component to manage smooth fading between audio settings
+- VoiceApplicator is automatically added to an AudioSettingManager on build/play
+- Audiosettings now need two additional parameters (for a total of 7) to support fading. The old format will still work for now, but is depracated.
