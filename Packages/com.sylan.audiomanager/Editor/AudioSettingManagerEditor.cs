@@ -14,7 +14,7 @@ namespace Sylan.AudioManager
             if (!SerializedPropertyUtils.GetSerializedObject<AudioSettingManager>(out SerializedObject serializedObject)) return false;
 
             // Get the AudioSettingManager instance
-            AudioSettingManager manager = serializedObject.targetObject as AudioSettingManager;
+            AudioSettingManager manager = serializedObject?.targetObject as AudioSettingManager;
             if (manager != null)
             {
                 // Add VoiceApplicator to the same GameObject if it doesn't already exist
