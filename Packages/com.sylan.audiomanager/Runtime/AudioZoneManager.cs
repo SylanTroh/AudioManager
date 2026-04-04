@@ -170,7 +170,7 @@ namespace Sylan.AudioManager
                 dict.SetValue((DataToken)zoneID, (DataToken)(value.Int + 1));
             }
         }
-        public bool ExitAudioZone(VRCPlayerApi player, string zoneID, bool isNegative = false)
+        public bool ExitAudioZone(VRCPlayerApi player, string zoneID, bool isNegative, int exitCount)
         {
             DataDictionary dict = GetPlayerAudioZoneDict(player, isNegative);
             if (!Utilities.IsValid(dict)) return false;
@@ -179,15 +179,14 @@ namespace Sylan.AudioManager
                 Debug.LogError("[AudioManager] Tried to exit AudioZone not in Dict");
                 return false;
             }
-            else if (value.Int <= 1)
+
+            if (value.Int - exitCount <= 0)
             {
                 return ExitAllAudioZones(player, zoneID, isNegative);
             }
-            else
-            {
-                dict.SetValue((DataToken)zoneID, (DataToken)(value.Int - 1));
-                return true;
-            }
+
+            dict.SetValue((DataToken)zoneID, (DataToken)(value.Int - exitCount));
+            return true;
         }
         public bool ExitAllAudioZones(VRCPlayerApi player, string zoneID, bool isNegative = false)
         {
@@ -344,9 +343,9 @@ namespace Sylan.AudioManager
         {
             zoneManager.EnterAudioZone(player, zoneID, isNegative);
         }
-        public static bool ExitAudioZone(this VRCPlayerApi player, AudioZoneManager zoneManager, string zoneID, bool isNegative)
+        public static bool ExitAudioZone(this VRCPlayerApi player, AudioZoneManager zoneManager, string zoneID, bool isNegative, int exitCount = 1)
         {
-            return zoneManager.ExitAudioZone(player, zoneID, isNegative);
+            return zoneManager.ExitAudioZone(player, zoneID, isNegative, exitCount);
         }
         public static bool ExitAllAudioZones(this VRCPlayerApi player, AudioZoneManager zoneManager, string zoneID, bool isNegative)
         {
