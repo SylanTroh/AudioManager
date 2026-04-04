@@ -98,7 +98,7 @@ namespace Sylan.AudioManager
             if (localPlayerEnterCounter > 0)
             {
                 //We have already entered the zone normally via OnPlayerTriggerEnter, which means we are in no station. Nothing to do here
-                Debug.Log($"[AudioManager] Local Player is already in Zone {zoneID}, no need to send Network Event for {nameof(NetworkCallableOnPlayerTriggerEnter)}");
+                // Debug.Log($"[AudioManager] Local Player is already in Zone {zoneID}, no need to send Network Event for {nameof(NetworkCallableOnPlayerTriggerEnter)}");
                 return;
             }
             SendCustomNetworkEvent(NetworkEventTarget.All, nameof(NetworkCallableOnPlayerTriggerEnter), Networking.LocalPlayer.playerId);
@@ -109,7 +109,7 @@ namespace Sylan.AudioManager
             if (localPlayerEnterCounter <= 0)
             {
                 //We already exited the zone as often as we entered it - nothing to do here.
-                Debug.Log($"[AudioManager] Local Player is already out of Zone {zoneID}, no need to send Network Event for {nameof(NetworkCallableOnPlayerTriggerExit)}");
+                // Debug.Log($"[AudioManager] Local Player is already out of Zone {zoneID}, no need to send Network Event for {nameof(NetworkCallableOnPlayerTriggerExit)}");
                 return;
             }
             SendCustomNetworkEvent(NetworkEventTarget.All, nameof(NetworkCallableOnPlayerTriggerExit), Networking.LocalPlayer.playerId, localPlayerEnterCounter);
