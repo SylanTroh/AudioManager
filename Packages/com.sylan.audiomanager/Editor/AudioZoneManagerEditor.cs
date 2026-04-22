@@ -1,6 +1,8 @@
 ﻿#if !COMPILER_UDONSHARP && UNITY_EDITOR
 using Sylan.AudioManager.EditorUtilities;
+using UdonSharpEditor;
 using UnityEditor;
+using UnityEngine;
 using VRC.SDKBase.Editor.BuildPipeline;
 
 namespace Sylan.AudioManager
@@ -13,11 +15,39 @@ namespace Sylan.AudioManager
             //Object with Serialized Property(s)
             if (!SerializedPropertyUtils.GetSerializedObject<AudioZoneManager>(out SerializedObject serializedObject)) return false;
 
+            // Get the AudioZoneManager instance
+            AudioZoneManager manager = serializedObject?.targetObject as AudioZoneManager;
+            if (manager != null && IsMissingPlayerObject())
+            {
+                CreatePlayerObject(manager);
+            }
+
             //Set Serialized Property
             SerializedPropertyUtils.PopulateSerializedArray<AudioZoneCollider>(serializedObject, AudioZoneManager.AudioZoneCollidersPropertyName);
             SerializedPropertyUtils.PopulateSerializedProperty<AudioSettingManager>(serializedObject, AudioZoneManager.AudioSettingManagerPropertyName);
             return true;
         }
+
+        public static bool IsMissingPlayerObject()
+        {
+            return Object.FindAnyObjectByType<AudioZonePlayerObject>(FindObjectsInactive.Include) == null;
+        }
+
+        public static void CreatePlayerObject(AudioZoneManager manager)
+        {
+            GameObject go = new(nameof(AudioZonePlayerObject));
+            Undo.RegisterCreatedObjectUndo(go, $"Create {nameof(AudioZonePlayerObject)}");
+            go.transform.SetParent(manager.transform, worldPositionStays: false);
+
+            AudioZonePlayerObject playerObject = UdonSharpUndo.AddComponent<AudioZonePlayerObject>(go);
+
+            // Immediately populate the manager both for clarity for the user
+            // as well as not having to rely on order of operations during on build.
+            SerializedObject playerObjectSo = new(playerObject);
+            playerObjectSo.FindProperty(AudioZonePlayerObject.AudioZoneManagerPropertyName).objectReferenceValue = manager;
+            playerObjectSo.ApplyModifiedProperties();
+        }
+
         //
         //Run On Play
         //
@@ -40,6 +70,34 @@ namespace Sylan.AudioManager
         {
             if (requestedBuildType != VRCSDKRequestedBuildType.Scene) return false;
             return SetSerializedProperties();
+        }
+    }
+
+    [CanEditMultipleObjects]
+    [CustomEditor(typeof(AudioZoneManager))]
+    public class AudioZoneManagerEditor : Editor
+    {
+        public override void OnInspectorGUI()
+        {
+            if (UdonSharpGUI.DrawDefaultUdonSharpBehaviourHeader(targets))
+                return;
+            EditorGUILayout.Space();
+
+            serializedObject.Update();
+            DrawPropertiesExcluding(serializedObject, "m_Script");
+            serializedObject.ApplyModifiedProperties();
+
+            // A button for the user to create the AudioZonePlayerObject immediately just for clarity that it is needed.
+            if (AudioZoneManagerInitialize.IsMissingPlayerObject())
+            {
+                EditorGUILayout.Space();
+                if (GUILayout.Button(new GUIContent(
+                    $"Create {nameof(AudioZonePlayerObject)}",
+                    "This is required and will be created automatically upon entering play mode or publishing the world.")))
+                {
+                    AudioZoneManagerInitialize.CreatePlayerObject((AudioZoneManager)targets[0]);
+                }
+            }
         }
     }
 }
