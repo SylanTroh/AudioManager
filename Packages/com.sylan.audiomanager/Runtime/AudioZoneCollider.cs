@@ -12,6 +12,8 @@ namespace Sylan.AudioManager
         [Header("Primary AudioZone ID")]
         public string zoneID = string.Empty;
 
+        public bool useNewApproach = true; //TODO set it on build time or remove Tigger logic completely
+
         [Header("Additional AudioZones. Useful for transitions.", order = 0)]
         [Space(-10, order = 1)]
         [Header("To match players who are not in a zone, set an empty string.", order = 2)]
@@ -31,6 +33,7 @@ namespace Sylan.AudioManager
 
         public override void OnPlayerTriggerEnter(VRCPlayerApi triggeringPlayer)
         {
+            if (useNewApproach) return;
             Debug.Log("[AudioManager] " + triggeringPlayer.displayName + "-" + triggeringPlayer.playerId.ToString() + " Entering Zone " + zoneID + "-" + gameObject.GetInstanceID());
 
             triggeringPlayer.EnterAudioZone(_AudioZoneManager, zoneID, isNegativeZone);
@@ -41,8 +44,10 @@ namespace Sylan.AudioManager
 
             _AudioZoneManager.UpdateAudioZoneSetting(triggeringPlayer, hasAudioSettingComponent);
         }
+        
         public override void OnPlayerTriggerExit(VRCPlayerApi triggeringPlayer)
         {
+            if (useNewApproach) return;
             Debug.Log("[AudioManager] " + triggeringPlayer.displayName + "-" + triggeringPlayer.playerId.ToString() + " Exiting Zone " + zoneID + "-" + gameObject.GetInstanceID());
 
             triggeringPlayer.ExitAudioZone(_AudioZoneManager, zoneID, isNegativeZone);
