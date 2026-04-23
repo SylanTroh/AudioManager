@@ -19,19 +19,19 @@ namespace Sylan.AudioManager
         public const string AudioZoneManagerPropertyName = nameof(AudioZoneManager);
 
         [UdonSynced, SerializeField] private int[] AudioZones = Array.Empty<int>();
-        [UdonSynced, SerializeField] private int[] NegativeAudioZones = Array.Empty<int>();
 
         private DataDictionary positiveDict = new DataDictionary();
         private DataDictionary oldPositiveDict = new DataDictionary();
         private DataDictionary negativeDict = new DataDictionary();
         private DataDictionary oldNegativeDict = new DataDictionary();
+        private readonly DataDictionary serialisationHelperDict = new DataDictionary();
         private readonly DataDictionary colliderCache = new DataDictionary();
 
         private const float IntervalInSeconds = .2f;
         private int audioZoneColliderLayerMask;
         private VRCPlayerApi localPlayer;
         private int hitCount = 0;
-        
+
         private readonly Collider[] hits = new Collider[25];
         private readonly System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
 
@@ -57,18 +57,30 @@ namespace Sylan.AudioManager
             if (Networking.IsOwner(gameObject)) return;
             Debug.Log("OnDeserialization");
             var owner = Networking.GetOwner(gameObject);
-            AudioZoneManager.ClearAudioZones(owner);
+            NotifyAudioManager(owner);
+        }
+
+        private void NotifyAudioManager(VRCPlayerApi player)
+        {
+            AudioZoneManager.ClearAudioZones(player);
             foreach (var audioZone in AudioZones)
             {
-                AudioZoneManager.EnterAudioZone(owner, audioZone, false);
+                AudioZoneManager.EnterAudioZone(player, audioZone, false);
             }
 
-            foreach (var audioZone in NegativeAudioZones)
+            AudioZoneManager.UpdateAudioZoneSetting(player);
+        }
+
+        public override void OnPreSerialization()
+        {
+            var keys = oldNegativeDict.GetKeys();
+            for (var i = 0; i < keys.Count; i++)
             {
-                AudioZoneManager.EnterAudioZone(owner, audioZone, true);
+                //TODO can we somehow do it without an this extra dict...?
+                serialisationHelperDict.Remove(keys[i].Int);
             }
 
-            AudioZoneManager.UpdateAudioZoneSetting(owner);
+            AudioZones = GetAllKeysArray(serialisationHelperDict);
         }
 
         public override void OnPlayerJoined(VRCPlayerApi player)
@@ -79,23 +91,24 @@ namespace Sylan.AudioManager
 
         public void ValidateAudioZones()
         {
-            stopwatch.Restart();
+            // stopwatch.Restart();
             var trackingData = localPlayer.GetTrackingData(VRCPlayerApi.TrackingDataType.Head);
             transform.SetPositionAndRotation(trackingData.position, trackingData.rotation);
 
             var hasZonesChanged = CheckForAudioZoneColliders();
             hasZonesChanged = hasZonesChanged || oldPositiveDict.Count != positiveDict.Count || oldNegativeDict.Count != negativeDict.Count;
-            if (hasZonesChanged)
-            {
-                AudioZones = GetAllKeysArray(positiveDict);
-                NegativeAudioZones = GetAllKeysArray(negativeDict);
-                RequestSerialization();
-            }
-
             SwapDictionaries();
 
-            stopwatch.Stop();
-            Debug.Log($"finished after {stopwatch.Elapsed.TotalMilliseconds}ms with {hitCount} hits and {hasZonesChanged}");
+            if (hasZonesChanged)
+            {
+                Debug.Log("Zone Changed");
+                RequestSerialization();
+                // OnPreSerialization(); //TODO remove, just here for testing
+                NotifyAudioManager(localPlayer);
+            }
+
+            // stopwatch.Stop();
+            // Debug.Log($"finished after {stopwatch.Elapsed.TotalMilliseconds}ms with {hitCount} hits and {hasZonesChanged}");
             SendCustomEventDelayedSeconds(nameof(ValidateAudioZones), IntervalInSeconds, EventTiming.LateUpdate);
         }
 
@@ -104,16 +117,17 @@ namespace Sylan.AudioManager
             var tmpSwappingDict = oldPositiveDict;
             oldPositiveDict = positiveDict;
             positiveDict = tmpSwappingDict;
-            positiveDict.Clear();
+            tmpSwappingDict.Clear();
 
             tmpSwappingDict = oldNegativeDict;
             oldNegativeDict = negativeDict;
             negativeDict = tmpSwappingDict;
-            negativeDict.Clear();
+            tmpSwappingDict.Clear();
         }
 
         private bool CheckForAudioZoneColliders()
         {
+            serialisationHelperDict.Clear();
             var size = Physics.OverlapSphereNonAlloc(transform.position, .01f, hits, audioZoneColliderLayerMask, QueryTriggerInteraction.Collide);
             var hasZonesChanged = false;
             for (hitCount = 0; hitCount < size; hitCount++)
@@ -139,21 +153,26 @@ namespace Sylan.AudioManager
                 var dict = audioZoneCollider.isNegativeZone ? negativeDict : positiveDict;
                 var oldDict = audioZoneCollider.isNegativeZone ? oldNegativeDict : oldPositiveDict;
 
-                hasZonesChanged = AddZoneId(oldDict, audioZoneCollider.zoneIdIndex, hasZonesChanged, dict, audioZoneCollider);
+                hasZonesChanged = AddZoneId(oldDict, audioZoneCollider.zoneIdIndex, hasZonesChanged, dict, audioZoneCollider.isNegativeZone);
                 foreach (var zoneId in audioZoneCollider.transitionZoneIdIndexes)
                 {
-                    hasZonesChanged = AddZoneId(oldDict, zoneId, hasZonesChanged, dict, audioZoneCollider);
+                    hasZonesChanged = AddZoneId(oldDict, zoneId, hasZonesChanged, dict, audioZoneCollider.isNegativeZone);
                 }
             }
 
             return hasZonesChanged;
         }
 
-        private static bool AddZoneId(DataDictionary oldDict, int zoneId, bool hasZonesChanged, DataDictionary dict, AudioZoneCollider audioZoneCollider)
+        private bool AddZoneId(DataDictionary oldDict, int zoneId, bool hasZonesChanged, DataDictionary dict, bool isNegativeZone)
         {
             if (!oldDict.ContainsKey(zoneId))
             {
                 hasZonesChanged = true;
+            }
+
+            if (!isNegativeZone)
+            {
+                serialisationHelperDict.SetValue(zoneId, true);
             }
 
             dict.SetValue(zoneId, true);
@@ -164,7 +183,7 @@ namespace Sylan.AudioManager
         {
             var keys = new int[dict.Count];
             var list = dict.GetKeys();
-            for (var i = list.Count - 1; i >= 0; i--)
+            for (var i = 0; i < list.Count; i++)
             {
                 keys[i] = list[i].Int;
             }
