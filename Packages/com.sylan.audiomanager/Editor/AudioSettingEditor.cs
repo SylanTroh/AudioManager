@@ -269,6 +269,10 @@ namespace Sylan.AudioManager
                 //Set Serialized Property
                 SerializedPropertyUtils.PopulateSerializedProperty<AudioSettingManager>(serializedObject, AudioSettingCollider.AudioSettingManagerPropertyName);
             }
+            
+            SerializedPropertyUtils.GetObject<AudioZonePlayerObject>(out var audioZonePlayerObject);
+            var usePlayerObjectVariant = audioZonePlayerObject != null;
+            Debug.Log($"Using {nameof(AudioZonePlayerObject)}: {usePlayerObjectVariant}");
 
             int collisionLayer = FindAudioZoneLayer();
             if (collisionLayer == -1) collisionLayer = 0;
@@ -276,6 +280,12 @@ namespace Sylan.AudioManager
             foreach (var obj in objects)
             {
                 obj.gameObject.layer = collisionLayer;
+                foreach (var collider in obj.GetComponents<Collider>())
+                {
+                    //TODO if we end up removing trigger method in AudioZoneCollider, we can instead tell the scene settings that AudioZones should collide with nothing, then we dont have to do anything here
+                    collider.excludeLayers = usePlayerObjectVariant? -1 : 0; //-1 = Everything, 0 = Nothing. When using PlayerObject approach we don't want to react to anything.
+                    collider.isTrigger = true; //Since we already get all colliders anyway... make sure (again?) that this is set
+                }
             }
 
             return true;
