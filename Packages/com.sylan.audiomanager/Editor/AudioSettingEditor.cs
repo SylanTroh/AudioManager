@@ -1,8 +1,14 @@
 ﻿#if !COMPILER_UDONSHARP && UNITY_EDITOR
+using System;
+using System.Collections.Generic;
 using Sylan.AudioManager.EditorUtilities;
 using UnityEditor;
+using UnityEditor.Build;
+using UnityEditor.Build.Reporting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using VRC.SDKBase.Editor.BuildPipeline;
+using Object = UnityEngine.Object;
 
 namespace Sylan.AudioManager
 {
@@ -276,6 +282,10 @@ namespace Sylan.AudioManager
 
             int collisionLayer = FindAudioZoneLayer();
             if (collisionLayer == -1) collisionLayer = 0;
+            
+            var zoneIdDict = new Dictionary<string, int>();
+            var zoneIdCounter = 0;
+            
             SerializedPropertyUtils.GetObjects<AudioZoneCollider>(out AudioZoneCollider[] objects);
             foreach (var obj in objects)
             {
@@ -286,10 +296,34 @@ namespace Sylan.AudioManager
                     collider.excludeLayers = usePlayerObjectVariant? -1 : 0; //-1 = Everything, 0 = Nothing. When using PlayerObject approach we don't want to react to anything.
                     collider.isTrigger = true; //Since we already get all colliders anyway... make sure (again?) that this is set
                 }
+                
+                obj.zoneIdIndex = GetOrAdd(zoneIdDict, obj.zoneID, ref zoneIdCounter);
+                obj.transitionZoneIdIndexes = new int[obj.transitionZoneIDs.Length];
+                for (var i = 0; i < obj.transitionZoneIDs.Length; i++)
+                {
+                    obj.transitionZoneIdIndexes[i] = GetOrAdd(zoneIdDict, obj.transitionZoneIDs[i], ref zoneIdCounter);
+                }
+            }
+            
+            SerializedPropertyUtils.GetObject<AudioZoneManager>(out var audioZoneManager);
+            audioZoneManager.ZoneIdMapping = new string[zoneIdDict.Count];
+            foreach (var keyValuePair in zoneIdDict)
+            {
+                audioZoneManager.ZoneIdMapping[keyValuePair.Value] =  keyValuePair.Key;
             }
 
             return true;
         }
+
+        private static int GetOrAdd(Dictionary<string, int> zoneIdDict, string zoneId, ref int zoneIdCounter)
+        {
+            if (zoneIdDict.TryGetValue(zoneId, out var value)) return value;
+            
+            value = zoneIdCounter++;
+            zoneIdDict[zoneId] = value;
+            return value;
+        }
+        
         //
         //Run On Play
         //
@@ -312,6 +346,21 @@ namespace Sylan.AudioManager
         {
             if (requestedBuildType != VRCSDKRequestedBuildType.Scene) return false;
             return RunOnBuild();
+        }
+    }
+    
+    public class AudioZoneColliderProcessor : IProcessSceneWithReport
+    {
+        public int callbackOrder => 0;
+
+        public void OnProcessScene(Scene scene, BuildReport report)
+        {
+            //This will only temporary remove the string ZoneIds before PlayMode & upload. We dont need them anymore and can save some memory
+            foreach (var audioZoneCollider in Object.FindObjectsByType<AudioZoneCollider>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                audioZoneCollider.zoneID = string.Empty;
+                audioZoneCollider.transitionZoneIDs = Array.Empty<string>();
+            }
         }
     }
 }

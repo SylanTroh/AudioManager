@@ -19,6 +19,8 @@ namespace Sylan.AudioManager
 
         [HideInInspector, SerializeField] private AudioZoneCollider[] AudioZoneColliders;
         public const string AudioZoneCollidersPropertyName = nameof(AudioZoneColliders);
+        
+        [HideInInspector] public string[] ZoneIdMapping = Array.Empty<string>();
 
         // ================================================================
         // Audio Zone Configuration
@@ -156,7 +158,16 @@ namespace Sylan.AudioManager
         // ================================================================
         // Zone Membership Tracking
         // ================================================================
+        public void EnterAudioZone(VRCPlayerApi player, int zoneIdIndex, bool isNegative = false)
+        {
+            EnterAudioZone(player, ZoneIdMapping[zoneIdIndex], isNegative);
+        }
         
+        public bool ExitAudioZone(VRCPlayerApi player, int zoneIdIndex, bool isNegative = false)
+        {
+            return ExitAudioZone(player, ZoneIdMapping[zoneIdIndex], isNegative);
+        }
+
         public void EnterAudioZone(VRCPlayerApi player, string zoneID, bool isNegative = false)
         {
             DataDictionary dict = GetPlayerAudioZoneDict(player, isNegative);
@@ -340,6 +351,14 @@ namespace Sylan.AudioManager
         // ================================================================
         // Extensions for VRCPlayerAPI
         // ================================================================
+        public static void EnterAudioZone(this VRCPlayerApi player, AudioZoneManager zoneManager, int zoneIdIndex, bool isNegative)
+        {
+            zoneManager.EnterAudioZone(player, zoneIdIndex, isNegative);
+        }
+        public static bool ExitAudioZone(this VRCPlayerApi player, AudioZoneManager zoneManager, int zoneIdIndex, bool isNegative)
+        {
+            return zoneManager.ExitAudioZone(player, zoneIdIndex, isNegative);
+        }
         public static void EnterAudioZone(this VRCPlayerApi player, AudioZoneManager zoneManager, string zoneID, bool isNegative)
         {
             zoneManager.EnterAudioZone(player, zoneID, isNegative);
