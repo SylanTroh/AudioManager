@@ -18,8 +18,8 @@ namespace Sylan.AudioManager
         [HideInInspector, SerializeField] private AudioZoneManager AudioZoneManager;
         public const string AudioZoneManagerPropertyName = nameof(AudioZoneManager);
 
-        [UdonSynced, SerializeField] private string[] AudioZones = Array.Empty<string>();
-        [UdonSynced, SerializeField] private string[] NegativeAudioZones = Array.Empty<string>();
+        [UdonSynced, SerializeField] private int[] AudioZones = Array.Empty<int>();
+        [UdonSynced, SerializeField] private int[] NegativeAudioZones = Array.Empty<int>();
 
         private DataDictionary positiveDict = new DataDictionary();
         private DataDictionary oldPositiveDict = new DataDictionary();
@@ -139,8 +139,8 @@ namespace Sylan.AudioManager
                 var dict = audioZoneCollider.isNegativeZone ? negativeDict : positiveDict;
                 var oldDict = audioZoneCollider.isNegativeZone ? oldNegativeDict : oldPositiveDict;
 
-                hasZonesChanged = AddZoneId(oldDict, audioZoneCollider.zoneID, hasZonesChanged, dict, audioZoneCollider);
-                foreach (var zoneId in audioZoneCollider.transitionZoneIDs)
+                hasZonesChanged = AddZoneId(oldDict, audioZoneCollider.zoneIdIndex, hasZonesChanged, dict, audioZoneCollider);
+                foreach (var zoneId in audioZoneCollider.transitionZoneIdIndexes)
                 {
                     hasZonesChanged = AddZoneId(oldDict, zoneId, hasZonesChanged, dict, audioZoneCollider);
                 }
@@ -149,7 +149,7 @@ namespace Sylan.AudioManager
             return hasZonesChanged;
         }
 
-        private static bool AddZoneId(DataDictionary oldDict, string zoneId, bool hasZonesChanged, DataDictionary dict, AudioZoneCollider audioZoneCollider)
+        private static bool AddZoneId(DataDictionary oldDict, int zoneId, bool hasZonesChanged, DataDictionary dict, AudioZoneCollider audioZoneCollider)
         {
             if (!oldDict.ContainsKey(zoneId))
             {
@@ -160,13 +160,13 @@ namespace Sylan.AudioManager
             return hasZonesChanged;
         }
 
-        private static string[] GetAllKeysArray(DataDictionary dict)
+        private static int[] GetAllKeysArray(DataDictionary dict)
         {
-            var keys = new string[dict.Count];
+            var keys = new int[dict.Count];
             var list = dict.GetKeys();
             for (var i = list.Count - 1; i >= 0; i--)
             {
-                keys[i] = list[i].String;
+                keys[i] = list[i].Int;
             }
 
             return keys;
