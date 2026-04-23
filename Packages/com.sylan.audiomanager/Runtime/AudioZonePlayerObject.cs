@@ -30,7 +30,8 @@ namespace Sylan.AudioManager
         private const float IntervalInSeconds = .2f;
         private int audioZoneColliderLayerMask;
         private VRCPlayerApi localPlayer;
-
+        private int hitCount = 0;
+        
         private readonly Collider[] hits = new Collider[25];
         private readonly System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
 
@@ -94,7 +95,7 @@ namespace Sylan.AudioManager
             SwapDictionaries();
 
             stopwatch.Stop();
-            Debug.Log($"finished after {stopwatch.Elapsed.TotalMilliseconds}ms with {hits.Length} hits and {hasZonesChanged}");
+            Debug.Log($"finished after {stopwatch.Elapsed.TotalMilliseconds}ms with {hitCount} hits and {hasZonesChanged}");
             SendCustomEventDelayedSeconds(nameof(ValidateAudioZones), IntervalInSeconds, EventTiming.LateUpdate);
         }
 
@@ -115,9 +116,9 @@ namespace Sylan.AudioManager
         {
             var size = Physics.OverlapSphereNonAlloc(transform.position, .01f, hits, audioZoneColliderLayerMask, QueryTriggerInteraction.Collide);
             var hasZonesChanged = false;
-            for (var hitIndex = 0; hitIndex < size; hitIndex++)
+            for (hitCount = 0; hitCount < size; hitCount++)
             {
-                var hit = hits[hitIndex];
+                var hit = hits[hitCount];
                 AudioZoneCollider audioZoneCollider;
                 if (colliderCache.TryGetValue(hit.gameObject, out var token))
                 {
