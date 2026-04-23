@@ -4,7 +4,6 @@ using UnityEngine;
 using VRC.SDK3.Data;
 using VRC.SDKBase;
 
-
 namespace Sylan.AudioManager
 {
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
@@ -12,7 +11,7 @@ namespace Sylan.AudioManager
     {
         [UdonSynced, SerializeField] private int[] AudioZones = Array.Empty<int>();
 
-        private readonly DataDictionary serialisationHelperDict = new DataDictionary();
+        private readonly DataDictionary serializationHelperDict = new DataDictionary();
 
 
         public override void OnPreSerialization()
@@ -23,10 +22,10 @@ namespace Sylan.AudioManager
             for (var i = 0; i < keys.Count; i++)
             {
                 //TODO can we somehow do it without an this extra dict...?
-                serialisationHelperDict.Remove(keys[i].Int);
+                serializationHelperDict.Remove(keys[i].Int);
             }
 
-            AudioZones = GetAllKeysArray(serialisationHelperDict);
+            AudioZones = GetAllKeysArray(serializationHelperDict);
         }
 
         protected override void NotifyAudioManager(VRCPlayerApi player)
@@ -48,14 +47,14 @@ namespace Sylan.AudioManager
 
         public override void OnValidateAudioZonesStart()
         {
-            serialisationHelperDict.Clear();
+            serializationHelperDict.Clear();
         }
 
         protected override bool AddZoneId(DataDictionary oldDict, int zoneId, bool hasZonesChanged, DataDictionary dict, bool isNegativeZone)
         {
             if (!isNegativeZone)
             {
-                serialisationHelperDict.SetValue(zoneId, true);
+                serializationHelperDict.SetValue(zoneId, true);
             }
 
             return base.AddZoneId(oldDict, zoneId, hasZonesChanged, dict, isNegativeZone);

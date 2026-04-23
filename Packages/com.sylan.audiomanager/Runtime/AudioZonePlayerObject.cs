@@ -1,13 +1,9 @@
-﻿using System;
-using UdonSharp;
+﻿using UdonSharp;
 using UnityEngine;
 using VRC.SDK3.Components;
 using VRC.SDK3.Data;
 using VRC.SDKBase;
-using VRC.Udon;
 using VRC.Udon.Common.Enums;
-using Debug = UnityEngine.Debug;
-
 
 namespace Sylan.AudioManager
 {
@@ -33,7 +29,7 @@ namespace Sylan.AudioManager
         {
             if (AudioZoneManager == null)
             {
-                Debug.Log($" has no {nameof(AudioZoneManager)}.");
+                Debug.Log($"{nameof(AudioZonePlayerObject)} has no {nameof(AudioZoneManager)}.");
                 enabled = false;
                 gameObject.SetActive(false);
                 return;
@@ -42,12 +38,12 @@ namespace Sylan.AudioManager
             audioZonePlayerObjectSync = GetComponent<AbstractAudioZonePlayerObjectSync>();
             if (audioZonePlayerObjectSync == null)
             {
-                Debug.Log($" has no {nameof(audioZonePlayerObjectSync)}.");
+                Debug.Log($"{nameof(AudioZonePlayerObject)} has no {nameof(audioZonePlayerObjectSync)}.");
                 enabled = false;
                 gameObject.SetActive(false);
                 return;
             }
-            
+
             if (!Networking.IsOwner(gameObject)) return;
 
             localPlayer = Networking.LocalPlayer;

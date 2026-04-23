@@ -1,11 +1,7 @@
-using System;
 using UdonSharp;
 using UnityEngine;
-using VRC.SDK3.Components;
 using VRC.SDK3.Data;
 using VRC.SDKBase;
-using VRC.Udon;
-using VRC.Udon.Common.Enums;
 using Debug = UnityEngine.Debug;
 
 namespace Sylan.AudioManager
@@ -24,7 +20,7 @@ namespace Sylan.AudioManager
 
         protected VRCPlayerApi localPlayer;
 
-        void Start()
+        private void Start()
         {
             AudioZonePlayerObject = GetComponent<AudioZonePlayerObject>();
             AudioZoneManager = GetComponent<AudioZonePlayerObject>().AudioZoneManager;
