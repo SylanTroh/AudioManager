@@ -365,4 +365,15 @@ namespace Sylan.AudioManager
             _playerAudioSetting.SetValue((DataToken)playerId, (DataToken)voiceParams);
         }
     }
+    
+    public static class AudioZoneManagerExtensions
+    {
+        // ================================================================
+        // Extensions for VRCPlayerAPI
+        // ================================================================
+        public static string PrintName(this VRCPlayerApi player)
+        {
+            return player.displayName + "-" + player.playerId.ToString();
+        }
+    }
 }

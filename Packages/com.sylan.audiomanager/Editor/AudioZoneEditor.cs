@@ -248,8 +248,7 @@ namespace Sylan.AudioManager
         {
             if (!SerializedPropertyUtils.GetObjects<AudioZoneCollider>(out AudioZoneCollider[] audioZones)) return false;
 
-            var zoneIdDict = new Dictionary<string, int> { { string.Empty, 0 } };
-            var zoneIdCounter = 0;
+            var zoneIdDict = new Dictionary<string, int> { { string.Empty, AudioZoneManager.EmptyZoneIdIndex } };
 
             int collisionLayer = AudioZoneLayerInit.FindAudioZoneLayer(doLogWarning: audioZones.Length != 0);
             if (collisionLayer == -1) collisionLayer = 0;
@@ -258,11 +257,11 @@ namespace Sylan.AudioManager
             {
                 audioZone.gameObject.layer = collisionLayer;
 
-                audioZone.zoneIdIndex = GetOrAdd(zoneIdDict, audioZone.zoneID, ref zoneIdCounter);
+                audioZone.zoneIdIndex = GetOrAdd(zoneIdDict, audioZone.zoneID);
                 audioZone.transitionZoneIdIndexes = new int[audioZone.transitionZoneIDs.Length];
                 for (var i = 0; i < audioZone.transitionZoneIDs.Length; i++)
                 {
-                    audioZone.transitionZoneIdIndexes[i] = GetOrAdd(zoneIdDict, audioZone.transitionZoneIDs[i], ref zoneIdCounter);
+                    audioZone.transitionZoneIdIndexes[i] = GetOrAdd(zoneIdDict, audioZone.transitionZoneIDs[i]);
                 }
             }
 
@@ -276,12 +275,12 @@ namespace Sylan.AudioManager
             return true;
         }
 
-        private static int GetOrAdd(Dictionary<string, int> zoneIdDict, string zoneId, ref int zoneIdCounter)
+        private static int GetOrAdd(Dictionary<string, int> zoneIdDict, string zoneId)
         {
             if (zoneIdDict.TryGetValue(zoneId, out var value)) return value;
 
-            value = zoneIdCounter++;
-            zoneIdDict[zoneId] = value;
+            value = zoneIdDict.Count;
+            zoneIdDict.Add(zoneId, value);
             return value;
         }
 

@@ -11,25 +11,49 @@ namespace Sylan.AudioManager
     {
         [UdonSynced, SerializeField] private int[] AudioZones = Array.Empty<int>();
 
+        public override void OnDeserialization()
+        {
+            base.OnDeserialization();
+            LogAudioZones();
+        }
+
         protected override void InternalOnPreSerialization(int[] audioZonesIndexes, int[] audioSettingsIndexes)
         {
+            AudioZones = audioZonesIndexes;
+            LogAudioZones();
         }
 
-        protected override bool SharesAudioZoneWith(AbstractAudioZonePlayerObjectSync other)
+        private void LogAudioZones()
         {
-            //TODO
-            return true;
-        }
-
-        protected override void NotifyAudioManager(VRCPlayerApi player)
-        {
-            AudioZoneManager.ClearAudioZones(player);
-            foreach (var audioZone in AudioZones)
+            var zoneNames = new string[AudioZones.Length];
+            for (var index = 0; index < AudioZones.Length; index++)
             {
-                AudioZoneManager.EnterAudioZone(player, audioZone, false);
+                var audioZoneIndex = AudioZones[index];
+                zoneNames[index] = AudioZoneManager.ZoneIdMapping[audioZoneIndex];
             }
 
-            AudioZoneManager.UpdateAudioZoneSetting(player);
+            Debug.Log($"Player {OwningPlayer.PrintName()} entered Zones: '{string.Join("', '", zoneNames)}'");
+        }
+
+        public override bool SharesAudioZoneWith(AbstractAudioZonePlayerObjectSync other)
+        {
+            var remoteZoneIds = ((IntegerAudioZonePlayerObjectSync)other).AudioZones;
+
+            var localInNullOrEmpty = AudioZones.Length == 0 || AudioZones[0] == AudioZoneManager.EmptyZoneIdIndex;
+            var remoteInNullOrEmpty = remoteZoneIds.Length == 0 || remoteZoneIds[0] == AudioZoneManager.EmptyZoneIdIndex;
+            
+            if (localInNullOrEmpty && remoteInNullOrEmpty) return true;
+            if (localInNullOrEmpty != remoteInNullOrEmpty) return false;
+            
+            foreach (var remoteZoneId in remoteZoneIds)
+            {
+                if (Array.BinarySearch(AudioZones, remoteZoneId) >= 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public override void OnZoneChanged()

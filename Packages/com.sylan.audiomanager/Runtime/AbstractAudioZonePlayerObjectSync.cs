@@ -1,15 +1,15 @@
 using UdonSharp;
-using UnityEngine;
 using VRC.SDK3.Data;
 using VRC.SDKBase;
 using Debug = UnityEngine.Debug;
 
 namespace Sylan.AudioManager
 {
-    [RequireComponent(typeof(AudioZonePlayerObject))]
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public abstract class AbstractAudioZonePlayerObjectSync : UdonSharpBehaviour
     {
+        public VRCPlayerApi OwningPlayer;
+
         protected AudioZoneManager AudioZoneManager;
         protected AudioZonePlayerObject AudioZonePlayerObject;
 
@@ -25,18 +25,16 @@ namespace Sylan.AudioManager
         private DataDictionary finalAudioZoneIds = new DataDictionary();
         private DataDictionary oldFinalAudioZoneIds = new DataDictionary();
 
-        protected VRCPlayerApi localPlayer;
         private bool hasZonesChanged;
 
-        protected abstract void NotifyAudioManager(VRCPlayerApi player);
         protected abstract void InternalOnPreSerialization(int[] audioZonesIndexes, int[] audioSettingsIndexes);
-        
-        protected abstract bool SharesAudioZoneWith(AbstractAudioZonePlayerObjectSync other);
+
+        public abstract bool SharesAudioZoneWith(AbstractAudioZonePlayerObjectSync other);
 
         private void Start()
         {
-            AudioZonePlayerObject = GetComponent<AudioZonePlayerObject>();
-            AudioZoneManager = GetComponent<AudioZonePlayerObject>().AudioZoneManager;
+            AudioZonePlayerObject = transform.parent.GetComponent<AudioZonePlayerObject>();
+            AudioZoneManager = AudioZonePlayerObject.AudioZoneManager;
             if (AudioZoneManager == null)
             {
                 Debug.Log($" has no {nameof(AudioZoneManager)}.");
@@ -45,9 +43,13 @@ namespace Sylan.AudioManager
                 return;
             }
 
-            if (!Networking.IsOwner(gameObject)) return;
+            AudioZoneManager.Register(this);
+            OwningPlayer = Networking.GetOwner(gameObject);
+        }
 
-            localPlayer = Networking.LocalPlayer;
+        private void OnDestroy()
+        {
+            AudioZoneManager.Deregister(this);
         }
 
         public void OnValidateAudioZonesStart()
@@ -75,26 +77,18 @@ namespace Sylan.AudioManager
 
         public override void OnPreSerialization()
         {
-            InternalOnPreSerialization(GetAllKeysArray(oldFinalAudioZoneIds), GetAllKeysArray(oldAudioZoneIds));
+            InternalOnPreSerialization(GetAllKeysArray(oldFinalAudioZoneIds, true), GetAllKeysArray(oldAudioZoneIds));
         }
 
         public override void OnDeserialization()
         {
-            if (Networking.IsOwner(gameObject)) return;
-            var owner = Networking.GetOwner(gameObject);
-            NotifyAudioManager(owner);
-        }
-
-        public override void OnPlayerJoined(VRCPlayerApi player)
-        {
-            if (player.isLocal) return;
-            RequestSerialization();
+            AudioZoneManager.UpdateAudioZoneSetting(this);
         }
 
         public virtual void OnZoneChanged()
         {
             RequestSerialization();
-            NotifyAudioManager(localPlayer);
+            AudioZoneManager.UpdateAudioZoneSetting(this);
         }
 
         public bool HasZoneChanged()
@@ -153,10 +147,15 @@ namespace Sylan.AudioManager
             newDict.SetValue(zoneId, true);
         }
 
-        private int[] GetAllKeysArray(DataDictionary dict)
+        private int[] GetAllKeysArray(DataDictionary dict, bool sort = false)
         {
             var keys = new int[dict.Count];
             var list = dict.GetKeys();
+            if (sort)
+            {
+                list.Sort();
+            }
+
             for (var i = 0; i < list.Count; i++)
             {
                 keys[i] = list[i].Int;

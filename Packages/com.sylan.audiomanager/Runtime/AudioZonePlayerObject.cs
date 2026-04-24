@@ -36,7 +36,7 @@ namespace Sylan.AudioManager
                 return;
             }
 
-            audioZonePlayerObjectSync = GetComponent<AbstractAudioZonePlayerObjectSync>();
+            audioZonePlayerObjectSync = GetComponentInChildren<AbstractAudioZonePlayerObjectSync>();
             if (audioZonePlayerObjectSync == null)
             {
                 Debug.Log($"{nameof(AudioZonePlayerObject)} has no {nameof(audioZonePlayerObjectSync)}.");
@@ -49,7 +49,7 @@ namespace Sylan.AudioManager
 
             localPlayer = Networking.LocalPlayer;
             audioZoneColliderLayerMask = LayerMask.GetMask("AudioZones");
-            SendCustomEventDelayedSeconds(nameof(ValidateAudioZones), 10, EventTiming.LateUpdate);
+            SendCustomEventDelayedSeconds(nameof(ValidateAudioZones), 1, EventTiming.LateUpdate);
         }
 
         public void ValidateAudioZones()
