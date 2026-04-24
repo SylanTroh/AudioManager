@@ -14,6 +14,7 @@ namespace Sylan.AudioManager
         /// </summary>
         [UdonSynced, SerializeField] private ushort[] AudioZones = Array.Empty<ushort>();
 
+#if AUDIO_MANAGER_DEBUG
         public override void OnDeserialization()
         {
             base.OnDeserialization();
@@ -25,6 +26,7 @@ namespace Sylan.AudioManager
             }
             LogAudioZones(audioZoneIndexes);
         }
+#endif
 
         protected override void InternalOnPreSerialization(int[] audioZonesIndexes, int[] audioSettingsIndexes)
         {
@@ -35,7 +37,9 @@ namespace Sylan.AudioManager
             {
                 AudioZones[i] = (ushort)audioZonesIndexes[i];
             }
+#if AUDIO_MANAGER_DEBUG
             LogAudioZones(audioZonesIndexes);
+#endif
         }
 
         public override bool SharesAudioZoneWith(AudioZoneSyncCore other)

@@ -6,5 +6,6 @@
   - [ ] Deduplication if all settings (including priority) match
   - [ ] extra class which has mapping from index to Settings (voice, priority, ...), to then apply them to AudioSettingsManager on change
 - [ ] Performance checking... somehow???
+- [ ] Change the AudioZones layer in project settings to not collide with anything anymore
 
 - [ ] refactoring, naming, small shit

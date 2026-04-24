@@ -58,19 +58,24 @@ namespace Sylan.AudioManager
             return true;
         }
 
+#if AUDIO_MANAGER_DEBUG
         public override void OnDeserialization()
         {
             base.OnDeserialization();
             LogAudioZones();
         }
+#endif
 
         public override void OnPreSerialization()
         {
             // TODO: handle oldSettingZonesField
             syncedAudioZonesField = oldFinalAudioZonesField;
+#if AUDIO_MANAGER_DEBUG
             LogAudioZones();
+#endif
         }
 
+#if AUDIO_MANAGER_DEBUG
         private void LogAudioZones()
         {
             var audioZoneIndexes = new DataList();
@@ -84,6 +89,7 @@ namespace Sylan.AudioManager
 
             LogAudioZones(ToIntArray(audioZoneIndexes));
         }
+#endif
 
         private int[] ToIntArray(DataList list)
         {

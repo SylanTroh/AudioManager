@@ -35,6 +35,7 @@ namespace Sylan.AudioManager
             AudioZoneManager.Deregister(this);
         }
 
+#if AUDIO_MANAGER_DEBUG
         protected void LogAudioZones(int[] audioZoneIndexes)
         {
             var zoneNames = new string[audioZoneIndexes.Length];
@@ -46,6 +47,7 @@ namespace Sylan.AudioManager
 
             Debug.Log($"Player {OwningPlayer.PrintName()} entered Zones: '{string.Join("', '", zoneNames)}'");
         }
+#endif
 
         public abstract void OnValidateAudioZonesStart();
 

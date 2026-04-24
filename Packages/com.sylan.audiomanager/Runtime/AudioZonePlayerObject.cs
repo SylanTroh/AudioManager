@@ -24,7 +24,9 @@ namespace Sylan.AudioManager
         private readonly DataDictionary audioSettingColliderCache = new DataDictionary();
         private readonly DataDictionary audioZoneColliderCache = new DataDictionary();
         private readonly Collider[] hits = new Collider[25];
+#if AUDIO_MANAGER_DEBUG
         private readonly System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+#endif
 
         private void Start()
         {
@@ -54,16 +56,22 @@ namespace Sylan.AudioManager
 
         public void ValidateAudioZones()
         {
-            // stopwatch.Restart();
+#if AUDIO_MANAGER_DEBUG
+            stopwatch.Restart();
+#endif
             audioZonePlayerObjectSync.OnValidateAudioZonesStart();
             if (TestForChangedAudioZone())
             {
+#if AUDIO_MANAGER_DEBUG
                 Debug.Log("Zone Changed");
+#endif
                 audioZonePlayerObjectSync.OnZoneChanged();
             }
 
-            // stopwatch.Stop();
-            // Debug.Log($"finished after {stopwatch.Elapsed.TotalMilliseconds}ms with {hitCount} hits and {hasZonesChanged}");
+#if AUDIO_MANAGER_DEBUG
+            stopwatch.Stop();
+            Debug.Log($"finished after {stopwatch.Elapsed.TotalMilliseconds}ms with {hitCount} hits");
+#endif
             SendCustomEventDelayedSeconds(nameof(ValidateAudioZones), IntervalInSeconds, EventTiming.LateUpdate);
         }
 
