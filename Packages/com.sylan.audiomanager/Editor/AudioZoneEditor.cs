@@ -244,22 +244,6 @@ namespace Sylan.AudioManager
     [InitializeOnLoad]
     public class AudioZoneInitialize : IVRCSDKBuildRequestedCallback
     {
-        private static int FindAudioZoneLayer()
-        {
-            int layerIndex = -1;
-            for (int i = 22; i < 32; i++)
-            {
-                if (LayerMask.LayerToName(i) == "AudioZones")
-                {
-                    layerIndex = i;
-                    Debug.Log("Found AudioZones layer at index " + i + ".");
-                }
-            }
-
-            Debug.LogWarning("No AudioZones layer found after index 21.");
-            return layerIndex;
-        }
-
         private static bool RunOnBuild()
         {
             if (!SerializedPropertyUtils.GetObjects<AudioZoneCollider>(out AudioZoneCollider[] audioZones)) return false;
@@ -268,7 +252,7 @@ namespace Sylan.AudioManager
             var zoneIdDict = new Dictionary<string, int>();
             var zoneIdCounter = 0;
 
-            int collisionLayer = FindAudioZoneLayer();
+            int collisionLayer = AudioZoneLayerInit.FindAudioZoneLayer();
             if (collisionLayer == -1) collisionLayer = 0;
 
             foreach (var audioZone in audioZones)

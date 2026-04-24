@@ -65,7 +65,7 @@ public class AudioZoneLayerInit : EditorWindow
         Debug.LogWarning("No empty layer found after index 21.");
     }
 
-    private static int FindAudioZoneLayer()
+    public static int FindAudioZoneLayer()
     {
         int layerIndex = -1;
         for (int i = 22; i < 32; i++)
