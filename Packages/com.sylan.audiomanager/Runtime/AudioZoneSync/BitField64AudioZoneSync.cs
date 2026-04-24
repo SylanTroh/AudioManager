@@ -27,6 +27,7 @@ namespace Sylan.AudioManager
 
         public override void NotifyAudioSettingCollider(AudioSettingCollider audioSettingCollider)
         {
+            // TODO: generate SettingIndex flag at build time
             settingZonesField |= 1uL << audioSettingCollider.SettingIndex;
         }
 
@@ -49,10 +50,12 @@ namespace Sylan.AudioManager
             bool hasChanged = oldSettingZonesField != settingZonesField
                 || oldFinalAudioZonesField != finalAudioZonesField;
 
+            if (!hasChanged) return false;
+
             oldSettingZonesField = settingZonesField;
             oldFinalAudioZonesField = finalAudioZonesField;
 
-            return hasChanged;
+            return true;
         }
 
         public override void OnDeserialization()
