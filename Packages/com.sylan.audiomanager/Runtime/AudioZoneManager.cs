@@ -58,7 +58,7 @@ namespace Sylan.AudioManager
             (DataToken)1.0f   //Fade Duration
         };
 
-        private AbstractAudioZonePlayerObjectSync LocalPlayerSync;
+        private AudioZoneSyncCore LocalPlayerSync;
         private readonly DataList RemotePlayerSyncs = new DataList();
 
         private void Start()
@@ -75,7 +75,7 @@ namespace Sylan.AudioManager
         // ================================================================
         // Update Audio Settings
         // ================================================================
-        public void UpdateAudioZoneSetting(AbstractAudioZonePlayerObjectSync playerObjectSync)
+        public void UpdateAudioZoneSetting(AudioZoneSyncCore playerObjectSync)
         {
             if (LocalPlayerSync != playerObjectSync)
             {
@@ -87,13 +87,13 @@ namespace Sylan.AudioManager
                 //If the local player caused the update, update all players
                 for (var i = 0; i < RemotePlayerSyncs.Count; i++)
                 {
-                    var remotePlayerSync = (AbstractAudioZonePlayerObjectSync)RemotePlayerSyncs[i].Reference;
+                    var remotePlayerSync = (AudioZoneSyncCore)RemotePlayerSyncs[i].Reference;
                     ApplyAudioZoneSetting(remotePlayerSync);
                 }
             }
         }
-        
-        private void ApplyAudioZoneSetting(AbstractAudioZonePlayerObjectSync remotePlayerObjectSync)
+
+        private void ApplyAudioZoneSetting(AudioZoneSyncCore remotePlayerObjectSync)
         {
             if (LocalPlayerSync.SharesAudioZoneWith(remotePlayerObjectSync))
             {
@@ -107,7 +107,7 @@ namespace Sylan.AudioManager
             }
         }
 
-        public void Register(AbstractAudioZonePlayerObjectSync playerObjectSync)
+        public void Register(AudioZoneSyncCore playerObjectSync)
         {
             if (Networking.GetOwner(playerObjectSync.gameObject).isLocal)
             {
@@ -119,7 +119,7 @@ namespace Sylan.AudioManager
             }
         }
 
-        public void Deregister(AbstractAudioZonePlayerObjectSync playerObjectSync)
+        public void Deregister(AudioZoneSyncCore playerObjectSync)
         {
             RemotePlayerSyncs.Remove(playerObjectSync);
         }

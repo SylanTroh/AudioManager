@@ -14,7 +14,7 @@ namespace Sylan.AudioManager
         [HideInInspector, SerializeField] public AudioZoneManager AudioZoneManager;
         public const string AudioZoneManagerPropertyName = nameof(AudioZoneManager);
 
-        private AbstractAudioZonePlayerObjectSync audioZonePlayerObjectSync;
+        private AudioZoneSyncCore audioZonePlayerObjectSync;
 
         private const float IntervalInSeconds = .2f;
         private int audioZoneColliderLayerMask;
@@ -36,7 +36,7 @@ namespace Sylan.AudioManager
                 return;
             }
 
-            audioZonePlayerObjectSync = GetComponentInChildren<AbstractAudioZonePlayerObjectSync>();
+            audioZonePlayerObjectSync = GetComponentInChildren<AudioZoneSyncCore>();
             if (audioZonePlayerObjectSync == null)
             {
                 Debug.Log($"{nameof(AudioZonePlayerObject)} has no {nameof(audioZonePlayerObjectSync)}.");

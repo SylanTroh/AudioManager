@@ -1,13 +1,11 @@
 ﻿using System;
 using UdonSharp;
 using UnityEngine;
-using VRC.SDK3.Data;
-using VRC.SDKBase;
 
 namespace Sylan.AudioManager
 {
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
-    public class IntegerAudioZonePlayerObjectSync : AbstractAudioZonePlayerObjectSync
+    public class IntegerAudioZoneSync : AudioZoneSyncCore
     {
         [UdonSynced, SerializeField] private int[] AudioZones = Array.Empty<int>();
 
@@ -35,16 +33,16 @@ namespace Sylan.AudioManager
             Debug.Log($"Player {OwningPlayer.PrintName()} entered Zones: '{string.Join("', '", zoneNames)}'");
         }
 
-        public override bool SharesAudioZoneWith(AbstractAudioZonePlayerObjectSync other)
+        public override bool SharesAudioZoneWith(AudioZoneSyncCore other)
         {
-            var remoteZoneIds = ((IntegerAudioZonePlayerObjectSync)other).AudioZones;
+            var remoteZoneIds = ((IntegerAudioZoneSync)other).AudioZones;
 
             var localInNullOrEmpty = AudioZones.Length == 0 || AudioZones[0] == AudioZoneManager.EmptyZoneIdIndex;
             var remoteInNullOrEmpty = remoteZoneIds.Length == 0 || remoteZoneIds[0] == AudioZoneManager.EmptyZoneIdIndex;
-            
+
             if (localInNullOrEmpty && remoteInNullOrEmpty) return true;
             if (localInNullOrEmpty != remoteInNullOrEmpty) return false;
-            
+
             foreach (var remoteZoneId in remoteZoneIds)
             {
                 if (Array.BinarySearch(AudioZones, remoteZoneId) >= 0)

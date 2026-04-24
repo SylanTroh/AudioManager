@@ -6,7 +6,7 @@ using Debug = UnityEngine.Debug;
 namespace Sylan.AudioManager
 {
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
-    public abstract class AbstractAudioZonePlayerObjectSync : UdonSharpBehaviour
+    public abstract class AudioZoneSyncCore : UdonSharpBehaviour
     {
         public VRCPlayerApi OwningPlayer;
 
@@ -29,7 +29,7 @@ namespace Sylan.AudioManager
 
         protected abstract void InternalOnPreSerialization(int[] audioZonesIndexes, int[] audioSettingsIndexes);
 
-        public abstract bool SharesAudioZoneWith(AbstractAudioZonePlayerObjectSync other);
+        public abstract bool SharesAudioZoneWith(AudioZoneSyncCore other);
 
         private void Start()
         {
@@ -37,7 +37,7 @@ namespace Sylan.AudioManager
             AudioZoneManager = AudioZonePlayerObject.AudioZoneManager;
             if (AudioZoneManager == null)
             {
-                Debug.Log($" has no {nameof(AudioZoneManager)}.");
+                Debug.Log($"{nameof(AudioZoneSyncCore)} has no {nameof(AudioZoneManager)}.");
                 enabled = false;
                 gameObject.SetActive(false);
                 return;
