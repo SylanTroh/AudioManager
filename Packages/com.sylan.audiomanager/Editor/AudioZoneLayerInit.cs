@@ -77,7 +77,8 @@ public class AudioZoneLayerInit : EditorWindow
             }
         }
 
-        Debug.LogWarning("No AudioZones layer found after index 21.");
+        if (layerIndex == -1)
+            Debug.LogWarning("No AudioZones layer found after index 21.");
         return layerIndex;
     }
 
