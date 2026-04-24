@@ -257,12 +257,7 @@ namespace Sylan.AudioManager
             {
                 audioZone.gameObject.layer = collisionLayer;
 
-                audioZone.zoneIdIndex = GetOrAdd(zoneIdDict, audioZone.zoneID);
-                audioZone.transitionZoneIdIndexes = new int[audioZone.transitionZoneIDs.Length];
-                for (var i = 0; i < audioZone.transitionZoneIDs.Length; i++)
-                {
-                    audioZone.transitionZoneIdIndexes[i] = GetOrAdd(zoneIdDict, audioZone.transitionZoneIDs[i]);
-                }
+                PopulateGeneratedIds(zoneIdDict, audioZone);
             }
 
             SerializedPropertyUtils.GetObject<AudioZoneManager>(out var audioZoneManager);
@@ -273,6 +268,44 @@ namespace Sylan.AudioManager
             }
 
             return true;
+        }
+
+        private static void PopulateGeneratedIds(Dictionary<string, int> zoneIdDict, AudioZoneCollider audioZone)
+        {
+            // TODO: Use SerializedObject
+
+            ulong field1 = 0uL;
+            ulong field2 = 0uL;
+            ulong field3 = 0uL;
+
+            audioZone.zoneIdIndex = GetOrAdd(zoneIdDict, audioZone.zoneID);
+            AddIdAsFlag(ref field1, ref field2, ref field3, audioZone.zoneIdIndex);
+
+            audioZone.transitionZoneIdIndexes = new int[audioZone.transitionZoneIDs.Length];
+            for (var i = 0; i < audioZone.transitionZoneIDs.Length; i++)
+            {
+                int zoneIdIndex = GetOrAdd(zoneIdDict, audioZone.transitionZoneIDs[i]);
+                audioZone.transitionZoneIdIndexes[i] = zoneIdIndex;
+                AddIdAsFlag(ref field1, ref field2, ref field3, zoneIdIndex);
+            }
+
+            audioZone.combinedZoneIdsField1 = field1;
+            audioZone.combinedZoneIdsField2 = field2;
+            audioZone.combinedZoneIdsField3 = field3;
+        }
+
+        private static void AddIdAsFlag(ref ulong field1, ref ulong field2, ref ulong field3, int zoneId)
+        {
+            AddIdAsFlag(ref field1, 0, zoneId);
+            AddIdAsFlag(ref field2, 64, zoneId);
+            AddIdAsFlag(ref field3, 128, zoneId);
+        }
+
+        private static void AddIdAsFlag(ref ulong field, int baseShift, int zoneId)
+        {
+            if (zoneId < baseShift || baseShift + 64 <= zoneId)
+                return;
+            field |= 1uL << (zoneId - baseShift);
         }
 
         private static int GetOrAdd(Dictionary<string, int> zoneIdDict, string zoneId)

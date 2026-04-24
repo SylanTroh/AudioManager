@@ -7,6 +7,7 @@ namespace Sylan.AudioManager
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class BitField64AudioZoneSync : AudioZoneSyncCore
     {
+        // TODO: remove SerializeField, just used for testing
         [UdonSynced, SerializeField] private ulong syncedAudioZonesField = 0uL;
 
         private ulong oldSettingZonesField;
@@ -33,22 +34,12 @@ namespace Sylan.AudioManager
         {
             if (audioZoneCollider.isNegativeZone)
             {
-                negativeZonesField |= GetCombinedZoneIds(audioZoneCollider);
+                negativeZonesField |= audioZoneCollider.combinedZoneIdsField1;
             }
             else
             {
-                audioZonesField |= GetCombinedZoneIds(audioZoneCollider);
+                audioZonesField |= audioZoneCollider.combinedZoneIdsField1;
             }
-        }
-
-        private ulong GetCombinedZoneIds(AudioZoneCollider audioZoneCollider) // TODO: Generate this at build time.
-        {
-            ulong fields = 1uL << audioZoneCollider.zoneIdIndex;
-            foreach (var zoneId in audioZoneCollider.transitionZoneIdIndexes)
-            {
-                fields |= 1uL << zoneId;
-            }
-            return fields;
         }
 
         public override bool HasZoneChanged()

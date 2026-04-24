@@ -235,6 +235,9 @@ MonoBehaviour:
   - 
   transitionZoneIdIndexes: 00000000
   isNegativeZone: 0
+  combinedZoneIdsField1: 3
+  combinedZoneIdsField2: 0
+  combinedZoneIdsField3: 0
 --- !u!1 &82235117
 GameObject:
   m_ObjectHideFlags: 0
@@ -543,6 +546,9 @@ MonoBehaviour:
   transitionZoneIDs: []
   transitionZoneIdIndexes: 
   isNegativeZone: 0
+  combinedZoneIdsField1: 4
+  combinedZoneIdsField2: 0
+  combinedZoneIdsField3: 0
 --- !u!1 &399894418
 GameObject:
   m_ObjectHideFlags: 0
@@ -652,6 +658,9 @@ MonoBehaviour:
   transitionZoneIDs: []
   transitionZoneIdIndexes: 
   isNegativeZone: 0
+  combinedZoneIdsField1: 2
+  combinedZoneIdsField2: 0
+  combinedZoneIdsField3: 0
 --- !u!1 &426555498
 GameObject:
   m_ObjectHideFlags: 0
@@ -1160,6 +1169,9 @@ MonoBehaviour:
   transitionZoneIDs: []
   transitionZoneIdIndexes: 
   isNegativeZone: 0
+  combinedZoneIdsField1: 2
+  combinedZoneIdsField2: 0
+  combinedZoneIdsField3: 0
 --- !u!1 &794337259
 GameObject:
   m_ObjectHideFlags: 0
@@ -1603,6 +1615,9 @@ MonoBehaviour:
   transitionZoneIDs: []
   transitionZoneIdIndexes: 
   isNegativeZone: 1
+  combinedZoneIdsField1: 2
+  combinedZoneIdsField2: 0
+  combinedZoneIdsField3: 0
 --- !u!1 &1083962119
 GameObject:
   m_ObjectHideFlags: 0
@@ -1759,6 +1774,9 @@ MonoBehaviour:
   transitionZoneIDs: []
   transitionZoneIdIndexes: 
   isNegativeZone: 0
+  combinedZoneIdsField1: 2
+  combinedZoneIdsField2: 0
+  combinedZoneIdsField3: 0
 --- !u!114 &1084732891
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -2057,6 +2075,9 @@ MonoBehaviour:
   transitionZoneIDs: []
   transitionZoneIdIndexes: 
   isNegativeZone: 0
+  combinedZoneIdsField1: 2
+  combinedZoneIdsField2: 0
+  combinedZoneIdsField3: 0
 --- !u!114 &1250339799
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -2476,7 +2497,7 @@ MonoBehaviour:
       Entry: 6
       Data: 
   _udonSharpBackingUdonBehaviour: {fileID: 1379935560}
-  audioZonesField: 0
+  syncedAudioZonesField: 0
 --- !u!1 &1380004838
 GameObject:
   m_ObjectHideFlags: 0
@@ -2556,6 +2577,9 @@ MonoBehaviour:
   - 
   transitionZoneIdIndexes: 00000000
   isNegativeZone: 0
+  combinedZoneIdsField1: 5
+  combinedZoneIdsField2: 0
+  combinedZoneIdsField3: 0
 --- !u!114 &1524278092
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -3072,6 +3096,9 @@ MonoBehaviour:
   transitionZoneIDs: []
   transitionZoneIdIndexes: 
   isNegativeZone: 0
+  combinedZoneIdsField1: 4
+  combinedZoneIdsField2: 0
+  combinedZoneIdsField3: 0
 --- !u!114 &579945166221762664
 MonoBehaviour:
   m_ObjectHideFlags: 0

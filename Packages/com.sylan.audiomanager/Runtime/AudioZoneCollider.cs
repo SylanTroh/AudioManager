@@ -30,5 +30,9 @@ namespace Sylan.AudioManager
         [HideInInspector] public int[] transitionZoneIdIndexes;
 
         public bool isNegativeZone = false;
+
+        [HideInInspector] public ulong combinedZoneIdsField1;
+        [HideInInspector] public ulong combinedZoneIdsField2;
+        [HideInInspector] public ulong combinedZoneIdsField3;
     }
 }
