@@ -53,6 +53,18 @@ namespace Sylan.AudioManager
             AudioZoneManager.Deregister(this);
         }
 
+        protected void LogAudioZones(int[] audioZoneIndexes)
+        {
+            var zoneNames = new string[audioZoneIndexes.Length];
+            for (var index = 0; index < audioZoneIndexes.Length; index++)
+            {
+                var audioZoneIndex = audioZoneIndexes[index];
+                zoneNames[index] = AudioZoneManager.ZoneIdMapping[audioZoneIndex];
+            }
+
+            Debug.Log($"Player {OwningPlayer.PrintName()} entered Zones: '{string.Join("', '", zoneNames)}'");
+        }
+
         public void OnValidateAudioZonesStart()
         {
             hasSettingZonesChanged = false;

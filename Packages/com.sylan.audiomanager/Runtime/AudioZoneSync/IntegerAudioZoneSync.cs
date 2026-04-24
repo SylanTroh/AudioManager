@@ -16,25 +16,14 @@ namespace Sylan.AudioManager
         public override void OnDeserialization()
         {
             base.OnDeserialization();
-            LogAudioZones();
+            LogAudioZones(AudioZones);
         }
 
         protected override void InternalOnPreSerialization(int[] audioZonesIndexes, int[] audioSettingsIndexes)
         {
+            // TODO: handle audioSettingsIndexes
             AudioZones = audioZonesIndexes;
-            LogAudioZones();
-        }
-
-        private void LogAudioZones()
-        {
-            var zoneNames = new string[AudioZones.Length];
-            for (var index = 0; index < AudioZones.Length; index++)
-            {
-                var audioZoneIndex = AudioZones[index];
-                zoneNames[index] = AudioZoneManager.ZoneIdMapping[audioZoneIndex];
-            }
-
-            Debug.Log($"Player {OwningPlayer.PrintName()} entered Zones: '{string.Join("', '", zoneNames)}'");
+            LogAudioZones(AudioZones);
         }
 
         public override bool SharesAudioZoneWith(AudioZoneSyncCore other)

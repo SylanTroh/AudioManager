@@ -17,7 +17,11 @@ namespace Sylan.AudioManager
         [HideInInspector, SerializeField] private AudioSettingManager _AudioSettingManager;
         public const string AudioSettingManagerPropertyName = nameof(_AudioSettingManager);
 
+        /// <summary>
+        /// <para>Must be 0 as it must sort first, which is what <see cref="IntegerAudioZoneSync"/> relies on.</para>
+        /// </summary>
         public const int EmptyZoneIdIndex = 0;
+        public const ulong EmptyZoneIdBitFlag = 1uL << EmptyZoneIdIndex;
         [HideInInspector] public string[] ZoneIdMapping = Array.Empty<string>();
 
         // ================================================================
