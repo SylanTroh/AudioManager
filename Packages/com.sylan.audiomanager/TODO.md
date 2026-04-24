@@ -1,5 +1,5 @@
 ﻿
-- [ ] Implement other types of AudioZoneSyncCore
+- [x] Implement other types of AudioZoneSyncCore
 - [ ] Editor script to select correct implementation based on amound of AudioZoneColliders
 - [ ] Use AudioSettingColliders in AudioZoneSyncCore implementations to update AudioSettings
   - [ ] Editor script to map Setting from AudioSettingColliders to Index.
