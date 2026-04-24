@@ -16,6 +16,8 @@ namespace Sylan.AudioManager
         public string zoneID = string.Empty;
         [HideInInspector] public int zoneIdIndex;
 
+        public bool useNewApproach = true; //TODO set it on build time or remove Tigger logic completely
+
         [Header("Additional AudioZones. Useful for transitions.", order = 0)]
         [Space(-10, order = 1)]
         [Header("To match players who are not in a zone, set an empty string.", order = 2)]
