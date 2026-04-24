@@ -1,7 +1,5 @@
-﻿
-using UdonSharp;
+﻿using UdonSharp;
 using UnityEngine;
-using VRC.SDKBase;
 
 namespace Sylan.AudioManager
 {
@@ -29,42 +27,6 @@ namespace Sylan.AudioManager
         public string[] transitionZoneIDs;
         [HideInInspector] public int[] transitionZoneIdIndexes;
 
-        [HideInInspector, SerializeField] private AudioZoneManager _AudioZoneManager;
-        public const string AudioZoneManagerPropertyName = nameof(_AudioZoneManager);
-
-        private bool hasAudioSettingComponent = false;
-
         public bool isNegativeZone = false;
-
-        private void Start()
-        {
-            hasAudioSettingComponent = (GetComponent<AudioSettingCollider>() != null);
-        }
-
-        public override void OnPlayerTriggerEnter(VRCPlayerApi triggeringPlayer)
-        {
-            Debug.Log("[AudioManager] " + triggeringPlayer.displayName + "-" + triggeringPlayer.playerId.ToString() + " Entering Zone " + _AudioZoneManager.ZoneIdMapping[zoneIdIndex] + "-" + gameObject.GetInstanceID());
-
-            triggeringPlayer.EnterAudioZone(_AudioZoneManager, zoneIdIndex, isNegativeZone);
-            foreach (var id in transitionZoneIdIndexes)
-            {
-                triggeringPlayer.EnterAudioZone(_AudioZoneManager, id, isNegativeZone);
-            }
-
-            _AudioZoneManager.UpdateAudioZoneSetting(triggeringPlayer, hasAudioSettingComponent);
-        }
-        
-        public override void OnPlayerTriggerExit(VRCPlayerApi triggeringPlayer)
-        {
-            Debug.Log("[AudioManager] " + triggeringPlayer.displayName + "-" + triggeringPlayer.playerId.ToString() + " Exiting Zone " + _AudioZoneManager.ZoneIdMapping[zoneIdIndex] + "-" + gameObject.GetInstanceID());
-
-            triggeringPlayer.ExitAudioZone(_AudioZoneManager, zoneIdIndex, isNegativeZone);
-            foreach (var id in transitionZoneIdIndexes)
-            {
-                triggeringPlayer.ExitAudioZone(_AudioZoneManager, id, isNegativeZone);
-            }
-
-            _AudioZoneManager.UpdateAudioZoneSetting(triggeringPlayer, hasAudioSettingComponent);
-        }
     }
 }

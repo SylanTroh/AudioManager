@@ -261,22 +261,14 @@ namespace Sylan.AudioManager
 
         private static bool RunOnBuild()
         {
-            //Object with Serialized Property(s)
-            if (!SerializedPropertyUtils.GetSerializedObjects<AudioZoneCollider>(out SerializedObject[] serializedObjects)) return false;
-
-            foreach (var serializedObject in serializedObjects)
-            {
-                //Set Serialized Property
-                SerializedPropertyUtils.PopulateSerializedProperty<AudioZoneManager>(serializedObject, AudioZoneCollider.AudioZoneManagerPropertyName);
-            }
+            if (!SerializedPropertyUtils.GetObjects<AudioZoneCollider>(out AudioZoneCollider[] audioZones)) return false;
 
             int collisionLayer = FindAudioZoneLayer();
             if (collisionLayer != -1)
             {
-                SerializedPropertyUtils.GetObjects<AudioZoneCollider>(out AudioZoneCollider[] objects);
-                foreach (var obj in objects)
+                foreach (var audioZone in audioZones)
                 {
-                    obj.gameObject.layer = FindAudioZoneLayer();
+                    audioZone.gameObject.layer = FindAudioZoneLayer();
                 }
             }
 
