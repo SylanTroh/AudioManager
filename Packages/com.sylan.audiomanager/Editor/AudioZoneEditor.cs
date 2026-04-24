@@ -262,13 +262,14 @@ namespace Sylan.AudioManager
         private static bool RunOnBuild()
         {
             if (!SerializedPropertyUtils.GetObjects<AudioZoneCollider>(out AudioZoneCollider[] audioZones)) return false;
+            if (audioZones.Length == 0) return true; // Prevent log message from trying to find the layer.
 
             int collisionLayer = FindAudioZoneLayer();
             if (collisionLayer != -1)
             {
                 foreach (var audioZone in audioZones)
                 {
-                    audioZone.gameObject.layer = FindAudioZoneLayer();
+                    audioZone.gameObject.layer = collisionLayer;
                 }
             }
 

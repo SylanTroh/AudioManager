@@ -269,6 +269,7 @@ namespace Sylan.AudioManager
         {
             //Object with Serialized Property(s)
             if (!SerializedPropertyUtils.GetSerializedObjects<AudioSettingCollider>(out SerializedObject[] serializedObjects)) return false;
+            if (serializedObjects.Length == 0) return true; // Prevent log message from trying to find the layer.
 
             foreach (var serializedObject in serializedObjects)
             {
