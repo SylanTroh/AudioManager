@@ -17,9 +17,6 @@ namespace Sylan.AudioManager
         [HideInInspector, SerializeField] private AudioSettingManager _AudioSettingManager;
         public const string AudioSettingManagerPropertyName = nameof(_AudioSettingManager);
 
-        [HideInInspector, SerializeField] private AudioZoneCollider[] AudioZoneColliders;
-        public const string AudioZoneCollidersPropertyName = nameof(AudioZoneColliders);
-
         public const int EmptyZoneIdIndex = 0;
         [HideInInspector] public string[] ZoneIdMapping = Array.Empty<string>();
 
