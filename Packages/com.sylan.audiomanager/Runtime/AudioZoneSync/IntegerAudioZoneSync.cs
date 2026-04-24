@@ -7,6 +7,10 @@ namespace Sylan.AudioManager
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class IntegerAudioZoneSync : AudioZoneSyncCore
     {
+        /// <summary>
+        /// <para>Sorted ascending. Can check for <see cref="AudioZoneManager.EmptyZoneIdIndex"/> by just
+        /// checking index <c>0</c>, and can use <see cref="Array.BinarySearch(Array, object)"/>.</para>
+        /// </summary>
         [UdonSynced, SerializeField] private int[] AudioZones = Array.Empty<int>();
 
         public override void OnDeserialization()
