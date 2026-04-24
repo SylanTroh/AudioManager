@@ -12,27 +12,27 @@ namespace Sylan.AudioManager
         // ================================================================
         // References
         // ================================================================
-        
+
         public AudioSettingManager AudioSettingManager { get => _AudioSettingManager; private set { _AudioSettingManager = value; } }
         [HideInInspector, SerializeField] private AudioSettingManager _AudioSettingManager;
         public const string AudioSettingManagerPropertyName = nameof(_AudioSettingManager);
 
         [HideInInspector, SerializeField] private AudioZoneCollider[] AudioZoneColliders;
         public const string AudioZoneCollidersPropertyName = nameof(AudioZoneColliders);
-        
+
         [HideInInspector] public string[] ZoneIdMapping = Array.Empty<string>();
 
         // ================================================================
         // Audio Zone Configuration
         // ================================================================
-        
+
         [Header("Set AudioSetting when in different audiozones")]
         [SerializeField] private float voiceGain = 7.0f;
         [SerializeField] private float voiceRangeNear = AudioSettingManager.DEFAULT_VOICE_RANGE_NEAR;
         [SerializeField] private float voiceRangeFar = 1.75f;
         [SerializeField] private float volumetricRadius = AudioSettingManager.DEFAULT_VOICE_VOLUMETRIC_RADIUS;
         [SerializeField] private bool voiceLowpass = AudioSettingManager.DEFAULT_VOICE_LOWPASS;
-        
+
         [Header("Voice Fade Settings")]
         [Tooltip("Enable smooth fading when entering/exiting audio zones")]
         [SerializeField] private bool enableAudioZoneFade = true;
@@ -47,7 +47,7 @@ namespace Sylan.AudioManager
         // ================================================================
         // Data Structures
         // ================================================================
-        
+
         //Key:playerID -> DataDictionary Key:zoneID -> int numOccurences
         private DataDictionary _AudioZoneDict = new DataDictionary();
         private DataDictionary _NegativeAudioZoneDict = new DataDictionary();
@@ -63,7 +63,7 @@ namespace Sylan.AudioManager
             (DataToken)false, //Fade Enabled
             (DataToken)1.0f   //Fade Duration
         };
-                
+
         private void Start()
         {
             AudioZoneAudioSettings[AudioSettingManager.VOICE_GAIN_INDEX] = (DataToken)voiceGain;
@@ -78,7 +78,7 @@ namespace Sylan.AudioManager
         // ================================================================
         // Dictionary Management
         // ================================================================
-        
+
         public DataDictionary GetPlayerAudioZoneDict(VRCPlayerApi player, bool isNegative = false)
         {
             DataDictionary dict;
@@ -154,7 +154,7 @@ namespace Sylan.AudioManager
         {
             RemovePlayerAudioZoneDict(player);
         }
-        
+
         // ================================================================
         // Zone Membership Tracking
         // ================================================================
@@ -162,7 +162,7 @@ namespace Sylan.AudioManager
         {
             EnterAudioZone(player, ZoneIdMapping[zoneIdIndex], isNegative);
         }
-        
+
         public bool ExitAudioZone(VRCPlayerApi player, int zoneIdIndex, bool isNegative = false)
         {
             return ExitAudioZone(player, ZoneIdMapping[zoneIdIndex], isNegative);
@@ -219,11 +219,11 @@ namespace Sylan.AudioManager
             if (!Utilities.IsValid(dict)) return;
             dict.Clear();
         }
-        
+
         // ================================================================
         // Zone Membership Query
         // ================================================================
-        
+
         public bool InAudioZone(VRCPlayerApi player, string zoneID)
         {
             DataDictionary dictPositive = GetPlayerAudioZoneDict(player);
@@ -334,7 +334,7 @@ namespace Sylan.AudioManager
         {
             if (!player.IsValid()) return;
             if (player == Networking.LocalPlayer) return;
-            if (Networking.LocalPlayer.SharesAudioZoneWith(player, this))
+            if (SharesAudioZoneWith(Networking.LocalPlayer, player))
             {
                 //Debug.Log("[AudioManager] Shares AudioZone with" + player.displayName + ".");
                 _AudioSettingManager.RemoveAudioSetting(player, AUDIO_ZONE_SETTING_ID);
@@ -351,38 +351,6 @@ namespace Sylan.AudioManager
         // ================================================================
         // Extensions for VRCPlayerAPI
         // ================================================================
-        public static void EnterAudioZone(this VRCPlayerApi player, AudioZoneManager zoneManager, int zoneIdIndex, bool isNegative)
-        {
-            zoneManager.EnterAudioZone(player, zoneIdIndex, isNegative);
-        }
-        public static bool ExitAudioZone(this VRCPlayerApi player, AudioZoneManager zoneManager, int zoneIdIndex, bool isNegative)
-        {
-            return zoneManager.ExitAudioZone(player, zoneIdIndex, isNegative);
-        }
-        public static void EnterAudioZone(this VRCPlayerApi player, AudioZoneManager zoneManager, string zoneID, bool isNegative)
-        {
-            zoneManager.EnterAudioZone(player, zoneID, isNegative);
-        }
-        public static bool ExitAudioZone(this VRCPlayerApi player, AudioZoneManager zoneManager, string zoneID, bool isNegative)
-        {
-            return zoneManager.ExitAudioZone(player, zoneID, isNegative);
-        }
-        public static bool ExitAllAudioZones(this VRCPlayerApi player, AudioZoneManager zoneManager, string zoneID, bool isNegative)
-        {
-            return zoneManager.ExitAllAudioZones(player, zoneID, isNegative);
-        }
-        public static void ClearAudioZones(this VRCPlayerApi player, AudioZoneManager zoneManager)
-        {
-            zoneManager.ClearAudioZones(player);
-        }
-        public static bool InAudioZone(this VRCPlayerApi player, AudioZoneManager zoneManager, string zoneID)
-        {
-            return zoneManager.InAudioZone(player, zoneID);
-        }
-        public static bool SharesAudioZoneWith(this VRCPlayerApi player1, VRCPlayerApi player2, AudioZoneManager zoneManager)
-        {
-            return zoneManager.SharesAudioZoneWith(player1, player2);
-        }
         public static string PrintName(this VRCPlayerApi player)
         {
             return player.displayName + "-" + player.playerId.ToString();
