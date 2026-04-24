@@ -282,7 +282,10 @@ namespace Sylan.AudioManager
         private static void OnPlayModeStateChanged(PlayModeStateChange state)
         {
             if (state != PlayModeStateChange.ExitingEditMode) return;
-            RunOnBuild();
+            if (!RunOnBuild())
+            {
+                EditorApplication.isPlaying = false;
+            }
         }
         //
         // Run On Build

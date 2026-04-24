@@ -244,6 +244,17 @@ namespace Sylan.AudioManager
     [InitializeOnLoad]
     public class AudioZoneInitialize : IVRCSDKBuildRequestedCallback
     {
+        public static int zoneIdCount;
+
+        private static bool RunAllOnBuild()
+        {
+            if (!RunOnBuild())
+                return false;
+            if (!AudioZoneManagerInitialize.RunOnBuild())
+                return false;
+            return true;
+        }
+
         private static bool RunOnBuild()
         {
             if (!SerializedPropertyUtils.GetObjects<AudioZoneCollider>(out AudioZoneCollider[] audioZones)) return false;
@@ -266,6 +277,8 @@ namespace Sylan.AudioManager
             {
                 audioZoneManager.ZoneIdMapping[keyValuePair.Value] = keyValuePair.Key;
             }
+
+            zoneIdCount = zoneIdDict.Count;
 
             return true;
         }
@@ -328,7 +341,10 @@ namespace Sylan.AudioManager
         private static void OnPlayModeStateChanged(PlayModeStateChange state)
         {
             if (state != PlayModeStateChange.ExitingEditMode) return;
-            RunOnBuild();
+            if (!RunAllOnBuild())
+            {
+                EditorApplication.isPlaying = false;
+            }
         }
         //
         // Run On Build
@@ -338,7 +354,7 @@ namespace Sylan.AudioManager
         public bool OnBuildRequested(VRCSDKRequestedBuildType requestedBuildType)
         {
             if (requestedBuildType != VRCSDKRequestedBuildType.Scene) return false;
-            return RunOnBuild();
+            return RunAllOnBuild();
         }
     }
 }

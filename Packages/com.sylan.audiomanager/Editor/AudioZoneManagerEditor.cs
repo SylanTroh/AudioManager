@@ -1,38 +1,49 @@
 ﻿#if !COMPILER_UDONSHARP && UNITY_EDITOR
 using Sylan.AudioManager.EditorUtilities;
+using UdonSharp;
 using UdonSharpEditor;
 using UnityEditor;
 using UnityEngine;
-using VRC.SDKBase.Editor.BuildPipeline;
 
 namespace Sylan.AudioManager
 {
-    [InitializeOnLoad]
-    public class AudioZoneManagerInitialize : IVRCSDKBuildRequestedCallback
+    public static class AudioZoneManagerInitialize
     {
-        private static bool SetSerializedProperties()
+        public static bool RunOnBuild()
         {
             //Object with Serialized Property(s)
             if (!SerializedPropertyUtils.GetSerializedObject<AudioZoneManager>(out SerializedObject serializedObject)) return false;
+            if (serializedObject == null) return true;
 
             // Get the AudioZoneManager instance
-            AudioZoneManager manager = serializedObject?.targetObject as AudioZoneManager;
-            if (manager != null && IsMissingPlayerObject())
+            AudioZoneManager manager = (AudioZoneManager)serializedObject.targetObject;
+            if (!TryGetPlayerObject(out var playerObject))
             {
-                CreatePlayerObject(manager);
+                playerObject = CreatePlayerObject(manager);
             }
 
             //Set Serialized Property
             SerializedPropertyUtils.PopulateSerializedProperty<AudioSettingManager>(serializedObject, AudioZoneManager.AudioSettingManagerPropertyName);
+
+            RunOnPlayerObjectBuild(playerObject);
+            AudioZoneSyncCore correctPlayerSync = PickAppropriateSyncScript(playerObject);
+
+            if (!EnsureNoUnknownScriptInstances(playerObject)
+                || !EnsureNoUnknownScriptInstances(correctPlayerSync))
+            {
+                return false;
+            }
+
             return true;
         }
 
-        public static bool IsMissingPlayerObject()
+        public static bool TryGetPlayerObject(out AudioZonePlayerObject playerObject)
         {
-            return Object.FindAnyObjectByType<AudioZonePlayerObject>(FindObjectsInactive.Include) == null;
+            playerObject = Object.FindAnyObjectByType<AudioZonePlayerObject>(FindObjectsInactive.Include);
+            return playerObject != null;
         }
 
-        public static void CreatePlayerObject(AudioZoneManager manager)
+        public static AudioZonePlayerObject CreatePlayerObject(AudioZoneManager manager)
         {
             GameObject go = new(nameof(AudioZonePlayerObject));
             Undo.RegisterCreatedObjectUndo(go, $"Create {nameof(AudioZonePlayerObject)}");
@@ -45,30 +56,56 @@ namespace Sylan.AudioManager
             SerializedObject playerObjectSo = new(playerObject);
             playerObjectSo.FindProperty(AudioZonePlayerObject.AudioZoneManagerPropertyName).objectReferenceValue = manager;
             playerObjectSo.ApplyModifiedProperties();
+            return playerObject;
         }
 
-        //
-        //Run On Play
-        //
-        static AudioZoneManagerInitialize()
-        //Rename Static Constructor to match Class name
+        private static void RunOnPlayerObjectBuild(AudioZonePlayerObject playerObject)
         {
-            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+            SerializedPropertyUtils.PopulateSerializedProperty<AudioZoneManager>(new(playerObject), AudioZonePlayerObject.AudioZoneManagerPropertyName);
         }
-        private static void OnPlayModeStateChanged(PlayModeStateChange state)
-        {
-            if (state != PlayModeStateChange.ExitingEditMode) return;
-            SetSerializedProperties();
-        }
-        //
-        // Run On Build
-        //
-        public int callbackOrder => 0;
 
-        public bool OnBuildRequested(VRCSDKRequestedBuildType requestedBuildType)
+        private static AudioZoneSyncCore PickAppropriateSyncScript(AudioZonePlayerObject playerObject)
         {
-            if (requestedBuildType != VRCSDKRequestedBuildType.Scene) return false;
-            return SetSerializedProperties();
+            System.Type scriptType = AudioZoneInitialize.zoneIdCount switch
+            {
+                <= 64 => typeof(BitField64AudioZoneSync),
+                <= 128 => typeof(BitField128AudioZoneSync),
+                <= 192 => typeof(BitField192AudioZoneSync),
+                <= ushort.MaxValue => typeof(ShortAudioZoneSync),
+                _ => typeof(IntegerAudioZoneSync),
+            };
+
+            AudioZoneSyncCore existingScript = playerObject.GetComponentInChildren<AudioZoneSyncCore>();
+            if (existingScript?.GetType() == scriptType) return existingScript;
+
+            GameObject syncGo = existingScript?.gameObject;
+            if (existingScript != null)
+            {
+                UdonSharpUndo.DestroyImmediate(existingScript);
+            }
+
+            if (syncGo == null)
+            {
+                syncGo = new("AudioZoneSync");
+                syncGo.transform.SetParent(playerObject.transform, worldPositionStays: false);
+                Undo.RegisterCreatedObjectUndo(syncGo, "Create AudioZoneSync");
+            }
+
+            return (AudioZoneSyncCore)UdonSharpUndo.AddComponent(syncGo, scriptType);
+        }
+
+        private static bool EnsureNoUnknownScriptInstances<T>(T validInstance)
+            where T : UdonSharpBehaviour
+        {
+            bool valid = true;
+            foreach (T script in Object.FindObjectsByType<T>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (script == validInstance) continue;
+
+                Debug.LogError($"Manually or unintentionally created {typeof(T).Name} script instance found. Should be deleted.", script);
+                valid = false;
+            }
+            return valid;
         }
     }
 
@@ -87,7 +124,7 @@ namespace Sylan.AudioManager
             serializedObject.ApplyModifiedProperties();
 
             // A button for the user to create the AudioZonePlayerObject immediately just for clarity that it is needed.
-            if (AudioZoneManagerInitialize.IsMissingPlayerObject())
+            if (!AudioZoneManagerInitialize.TryGetPlayerObject(out _))
             {
                 EditorGUILayout.Space();
                 if (GUILayout.Button(new GUIContent(

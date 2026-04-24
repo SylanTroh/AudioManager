@@ -42,7 +42,10 @@ namespace Sylan.AudioManager
         private static void OnPlayModeStateChanged(PlayModeStateChange state)
         {
             if (state != PlayModeStateChange.ExitingEditMode) return;
-            SetSerializedProperties();
+            if (!SetSerializedProperties())
+            {
+                EditorApplication.isPlaying = false;
+            }
         }
         //
         // Run On Build
