@@ -1,6 +1,5 @@
 ﻿#if !COMPILER_UDONSHARP && UNITY_EDITOR
 using System;
-using System.Collections.Generic;
 using Sylan.AudioManager.EditorUtilities;
 using UnityEditor;
 using UnityEditor.Build;
@@ -253,7 +252,6 @@ namespace Sylan.AudioManager
         {
             //Object with Serialized Property(s)
             if (!SerializedPropertyUtils.GetSerializedObjects<AudioSettingCollider>(out SerializedObject[] serializedObjects)) return false;
-            if (serializedObjects.Length == 0) return true; // Prevent log message from trying to find the layer.
 
             foreach (var serializedObject in serializedObjects)
             {
@@ -261,7 +259,7 @@ namespace Sylan.AudioManager
                 SerializedPropertyUtils.PopulateSerializedProperty<AudioSettingManager>(serializedObject, AudioSettingCollider.AudioSettingManagerPropertyName);
             }
 
-            int collisionLayer = AudioZoneLayerInit.FindAudioZoneLayer();
+            int collisionLayer = AudioZoneLayerInit.FindAudioZoneLayer(doLogWarning: serializedObjects.Length != 0);
             if (collisionLayer == -1) collisionLayer = 0;
 
             SerializedPropertyUtils.GetObjects<AudioSettingCollider>(out AudioSettingCollider[] audioSettings);

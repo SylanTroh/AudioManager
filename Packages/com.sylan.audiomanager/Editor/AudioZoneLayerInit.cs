@@ -16,9 +16,10 @@ public class AudioZoneLayerInit : EditorWindow
 
     private void OnGUI()
     {
-        if (FindAudioZoneLayer() != -1)
+        int existingLayerIndex = FindAudioZoneLayer(doLogWarning: true);
+        if (existingLayerIndex != -1)
         {
-            GUILayout.Label("AudioZone Layer already exists");
+            Debug.Log("Found AudioZones layer at index " + existingLayerIndex + ".");
             return;
         }
         layerIndex = EditorGUILayout.IntField("Layer Index", layerIndex);
@@ -65,7 +66,7 @@ public class AudioZoneLayerInit : EditorWindow
         Debug.LogWarning("No empty layer found after index 21.");
     }
 
-    public static int FindAudioZoneLayer()
+    public static int FindAudioZoneLayer(bool doLogWarning)
     {
         int layerIndex = -1;
         for (int i = 22; i < 32; i++)
@@ -73,7 +74,6 @@ public class AudioZoneLayerInit : EditorWindow
             if (LayerMask.LayerToName(i) == "AudioZones")
             {
                 layerIndex = i;
-                Debug.Log("Found AudioZones layer at index " + i + ".");
             }
         }
 
