@@ -280,10 +280,10 @@ namespace Sylan.AudioManager
             int collisionLayer = FindAudioZoneLayer();
             if (collisionLayer == -1) collisionLayer = 0;
 
-            SerializedPropertyUtils.GetObjects<AudioZoneCollider>(out AudioZoneCollider[] objects);
-            foreach (var obj in objects)
+            SerializedPropertyUtils.GetObjects<AudioSettingCollider>(out AudioSettingCollider[] audioSettings);
+            foreach (var audioSetting in audioSettings)
             {
-                obj.gameObject.layer = collisionLayer;
+                audioSetting.gameObject.layer = collisionLayer;
             }
 
             return true;
