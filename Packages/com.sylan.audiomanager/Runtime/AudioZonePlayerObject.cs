@@ -21,7 +21,8 @@ namespace Sylan.AudioManager
         private VRCPlayerApi localPlayer;
         private int hitCount = 0;
 
-        private readonly DataDictionary colliderCache = new DataDictionary();
+        private readonly DataDictionary audioSettingColliderCache = new DataDictionary();
+        private readonly DataDictionary audioZoneColliderCache = new DataDictionary();
         private readonly Collider[] hits = new Collider[25];
         private readonly System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
 
@@ -55,13 +56,7 @@ namespace Sylan.AudioManager
         {
             // stopwatch.Restart();
             audioZonePlayerObjectSync.OnValidateAudioZonesStart();
-            var trackingData = localPlayer.GetTrackingData(VRCPlayerApi.TrackingDataType.Head);
-            transform.SetPositionAndRotation(trackingData.position, trackingData.rotation);
-
-            var hasZonesChanged = CheckForAudioZoneColliders();
-            hasZonesChanged = audioZonePlayerObjectSync.SwapDictionaries(hasZonesChanged);
-
-            if (hasZonesChanged)
+            if (TestForChangedAudioZone())
             {
                 Debug.Log("Zone Changed");
                 audioZonePlayerObjectSync.OnZoneChanged();
@@ -72,34 +67,42 @@ namespace Sylan.AudioManager
             SendCustomEventDelayedSeconds(nameof(ValidateAudioZones), IntervalInSeconds, EventTiming.LateUpdate);
         }
 
-        private bool CheckForAudioZoneColliders()
+        private bool TestForChangedAudioZone()
         {
+            var trackingData = localPlayer.GetTrackingData(VRCPlayerApi.TrackingDataType.Head);
+            transform.SetPositionAndRotation(trackingData.position, trackingData.rotation);
+
             var size = Physics.OverlapSphereNonAlloc(transform.position, .01f, hits, audioZoneColliderLayerMask, QueryTriggerInteraction.Collide);
-            var hasZonesChanged = false;
             for (hitCount = 0; hitCount < size; hitCount++)
             {
                 var hit = hits[hitCount];
-                AudioZoneCollider audioZoneCollider;
-                if (colliderCache.TryGetValue(hit.gameObject, out var token))
+                var audioZoneCollider = ComputeIfAbsent<AudioZoneCollider>(hit, audioZoneColliderCache);
+                var audioSettingCollider = ComputeIfAbsent<AudioSettingCollider>(hit, audioSettingColliderCache);
+
+                if (audioZoneCollider != null)
                 {
-                    audioZoneCollider = (AudioZoneCollider)token.Reference;
-                }
-                else
-                {
-                    audioZoneCollider = hit.GetComponent<AudioZoneCollider>();
-                    colliderCache.Add(hit.gameObject, audioZoneCollider);
+                    audioZonePlayerObjectSync.NotifyHitAudioZoneCollider(audioZoneCollider);
                 }
 
-                if (audioZoneCollider == null)
+                if (audioSettingCollider != null)
                 {
-                    Debug.LogError($"hit gameobject {hit.gameObject.name} which has no {nameof(AudioZoneCollider)}.");
-                    continue;
+                    audioZonePlayerObjectSync.NotifyAudioSettingCollider(audioSettingCollider);
                 }
-
-                hasZonesChanged = audioZonePlayerObjectSync.AddZoneId(audioZoneCollider, hasZonesChanged);
             }
 
-            return hasZonesChanged;
+            return audioZonePlayerObjectSync.HasZoneChanged();
+        }
+
+        private static T ComputeIfAbsent<T>(Collider hit, DataDictionary dictionary) where T : UdonSharpBehaviour
+        {
+            if (dictionary.TryGetValue(hit.gameObject, out var token))
+            {
+                return (T)token.Reference;
+            }
+
+            var hitCollider = hit.GetComponent<T>();
+            dictionary.Add(hit.gameObject, hitCollider);
+            return hitCollider;
         }
     }
 }

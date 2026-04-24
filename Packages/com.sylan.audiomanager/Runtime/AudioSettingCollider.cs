@@ -11,6 +11,8 @@ namespace Sylan.AudioManager
         [Header("AudioSetting ID. Used for debugging. Needs to be non-empty and unique.")]
         public string settingID = string.Empty;
 
+        [HideInInspector] public int SettingIndex = 0; //TODO
+
         [Header("Lower number means higher priority", order = 0)]
         [Space(-10, order = 1)]
         [Header("Audiozones have priority 1000", order = 2)]
