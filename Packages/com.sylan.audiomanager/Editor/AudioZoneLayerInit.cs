@@ -96,12 +96,16 @@ public class AudioZoneLayerInit : EditorWindow
 
             tagManager.ApplyModifiedProperties();
 
-            // Set the collision matrix for the layer
-            for (int i = 0; i < 32; i++)
-            {
-                if (i == layerIndex) continue;
-                Physics.IgnoreLayerCollision(layerIndex, i, false);
-            }
+            IgnoreAllLayerCollision(layerIndex);
+        }
+    }
+
+    public static void IgnoreAllLayerCollision(int layerIndex)
+    {
+        // Set the collision matrix for the layer
+        for (int i = 0; i < 32; i++)
+        {
+            Physics.IgnoreLayerCollision(layerIndex, i, true);
         }
     }
 }

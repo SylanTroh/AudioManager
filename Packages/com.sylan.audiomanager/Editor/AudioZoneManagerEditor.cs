@@ -11,6 +11,8 @@ namespace Sylan.AudioManager
     {
         public static bool RunOnBuild()
         {
+            IgnoreAllLayerCollisionForAudioZoneLayer();
+
             //Object with Serialized Property(s)
             if (!SerializedPropertyUtils.GetSerializedObject<AudioZoneManager>(out SerializedObject serializedObject)) return false;
             if (serializedObject == null) return true;
@@ -35,6 +37,14 @@ namespace Sylan.AudioManager
             }
 
             return true;
+        }
+
+        private static void IgnoreAllLayerCollisionForAudioZoneLayer()
+        {
+            int layerIndex = AudioZoneLayerInit.FindAudioZoneLayer(doLogWarning: false);
+            if (layerIndex == -1) return;
+
+            AudioZoneLayerInit.IgnoreAllLayerCollision(layerIndex);
         }
 
         public static bool TryGetPlayerObject(out AudioZonePlayerObject playerObject)
