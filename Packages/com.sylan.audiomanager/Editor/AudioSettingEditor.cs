@@ -276,45 +276,19 @@ namespace Sylan.AudioManager
                 //Set Serialized Property
                 SerializedPropertyUtils.PopulateSerializedProperty<AudioSettingManager>(serializedObject, AudioSettingCollider.AudioSettingManagerPropertyName);
             }
-            
+
             int collisionLayer = FindAudioZoneLayer();
             if (collisionLayer == -1) collisionLayer = 0;
-            
-            var zoneIdDict = new Dictionary<string, int>();
-            var zoneIdCounter = 0;
-            
+
             SerializedPropertyUtils.GetObjects<AudioZoneCollider>(out AudioZoneCollider[] objects);
             foreach (var obj in objects)
             {
                 obj.gameObject.layer = collisionLayer;
-                
-                obj.zoneIdIndex = GetOrAdd(zoneIdDict, obj.zoneID, ref zoneIdCounter);
-                obj.transitionZoneIdIndexes = new int[obj.transitionZoneIDs.Length];
-                for (var i = 0; i < obj.transitionZoneIDs.Length; i++)
-                {
-                    obj.transitionZoneIdIndexes[i] = GetOrAdd(zoneIdDict, obj.transitionZoneIDs[i], ref zoneIdCounter);
-                }
-            }
-            
-            SerializedPropertyUtils.GetObject<AudioZoneManager>(out var audioZoneManager);
-            audioZoneManager.ZoneIdMapping = new string[zoneIdDict.Count];
-            foreach (var keyValuePair in zoneIdDict)
-            {
-                audioZoneManager.ZoneIdMapping[keyValuePair.Value] =  keyValuePair.Key;
             }
 
             return true;
         }
 
-        private static int GetOrAdd(Dictionary<string, int> zoneIdDict, string zoneId, ref int zoneIdCounter)
-        {
-            if (zoneIdDict.TryGetValue(zoneId, out var value)) return value;
-            
-            value = zoneIdCounter++;
-            zoneIdDict[zoneId] = value;
-            return value;
-        }
-        
         //
         //Run On Play
         //
@@ -339,7 +313,7 @@ namespace Sylan.AudioManager
             return RunOnBuild();
         }
     }
-    
+
     public class AudioZoneColliderProcessor : IProcessSceneWithReport
     {
         public int callbackOrder => 0;

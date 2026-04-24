@@ -1,4 +1,5 @@
 ﻿#if !COMPILER_UDONSHARP && UNITY_EDITOR
+using System.Collections.Generic;
 using Sylan.AudioManager.EditorUtilities;
 using UnityEditor;
 using UnityEngine;
@@ -264,17 +265,43 @@ namespace Sylan.AudioManager
             if (!SerializedPropertyUtils.GetObjects<AudioZoneCollider>(out AudioZoneCollider[] audioZones)) return false;
             if (audioZones.Length == 0) return true; // Prevent log message from trying to find the layer.
 
+            var zoneIdDict = new Dictionary<string, int>();
+            var zoneIdCounter = 0;
+
             int collisionLayer = FindAudioZoneLayer();
-            if (collisionLayer != -1)
+            if (collisionLayer == -1) collisionLayer = 0;
+
+            foreach (var audioZone in audioZones)
             {
-                foreach (var audioZone in audioZones)
+                audioZone.gameObject.layer = collisionLayer;
+
+                audioZone.zoneIdIndex = GetOrAdd(zoneIdDict, audioZone.zoneID, ref zoneIdCounter);
+                audioZone.transitionZoneIdIndexes = new int[audioZone.transitionZoneIDs.Length];
+                for (var i = 0; i < audioZone.transitionZoneIDs.Length; i++)
                 {
-                    audioZone.gameObject.layer = collisionLayer;
+                    audioZone.transitionZoneIdIndexes[i] = GetOrAdd(zoneIdDict, audioZone.transitionZoneIDs[i], ref zoneIdCounter);
                 }
+            }
+
+            SerializedPropertyUtils.GetObject<AudioZoneManager>(out var audioZoneManager);
+            audioZoneManager.ZoneIdMapping = new string[zoneIdDict.Count];
+            foreach (var keyValuePair in zoneIdDict)
+            {
+                audioZoneManager.ZoneIdMapping[keyValuePair.Value] = keyValuePair.Key;
             }
 
             return true;
         }
+
+        private static int GetOrAdd(Dictionary<string, int> zoneIdDict, string zoneId, ref int zoneIdCounter)
+        {
+            if (zoneIdDict.TryGetValue(zoneId, out var value)) return value;
+
+            value = zoneIdCounter++;
+            zoneIdDict[zoneId] = value;
+            return value;
+        }
+
         //
         //Run On Play
         //
