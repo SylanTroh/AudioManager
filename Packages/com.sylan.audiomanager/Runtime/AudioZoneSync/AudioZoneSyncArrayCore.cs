@@ -1,18 +1,11 @@
 using UdonSharp;
 using VRC.SDK3.Data;
-using VRC.SDKBase;
-using Debug = UnityEngine.Debug;
 
 namespace Sylan.AudioManager
 {
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
-    public abstract class AudioZoneSyncCore : UdonSharpBehaviour
+    public abstract class AudioZoneSyncArrayCore : AudioZoneSyncCore
     {
-        public VRCPlayerApi OwningPlayer;
-
-        protected AudioZoneManager AudioZoneManager;
-        protected AudioZonePlayerObject AudioZonePlayerObject;
-
         private DataDictionary audioSettingIds = new DataDictionary();
         private DataDictionary oldAudioSettingIds = new DataDictionary();
 
@@ -30,53 +23,18 @@ namespace Sylan.AudioManager
 
         protected abstract void InternalOnPreSerialization(int[] audioZonesIndexes, int[] audioSettingsIndexes);
 
-        public abstract bool SharesAudioZoneWith(AudioZoneSyncCore other);
-
-        private void Start()
-        {
-            AudioZonePlayerObject = transform.parent.GetComponent<AudioZonePlayerObject>();
-            AudioZoneManager = AudioZonePlayerObject.AudioZoneManager;
-            if (AudioZoneManager == null)
-            {
-                Debug.Log($"{nameof(AudioZoneSyncCore)} has no {nameof(AudioZoneManager)}.");
-                enabled = false;
-                gameObject.SetActive(false);
-                return;
-            }
-
-            AudioZoneManager.Register(this);
-            OwningPlayer = Networking.GetOwner(gameObject);
-        }
-
-        private void OnDestroy()
-        {
-            AudioZoneManager.Deregister(this);
-        }
-
-        protected void LogAudioZones(int[] audioZoneIndexes)
-        {
-            var zoneNames = new string[audioZoneIndexes.Length];
-            for (var index = 0; index < audioZoneIndexes.Length; index++)
-            {
-                var audioZoneIndex = audioZoneIndexes[index];
-                zoneNames[index] = AudioZoneManager.ZoneIdMapping[audioZoneIndex];
-            }
-
-            Debug.Log($"Player {OwningPlayer.PrintName()} entered Zones: '{string.Join("', '", zoneNames)}'");
-        }
-
-        public void OnValidateAudioZonesStart()
+        public override void OnValidateAudioZonesStart()
         {
             hasSettingZonesChanged = false;
             hasZonesChanged = false;
         }
 
-        public void NotifyAudioSettingCollider(AudioSettingCollider audioSettingCollider)
+        public override void NotifyAudioSettingCollider(AudioSettingCollider audioSettingCollider)
         {
             AddZoneId(audioSettingCollider.SettingIndex, oldAudioSettingIds, audioSettingIds, ref hasSettingZonesChanged);
         }
 
-        public void NotifyHitAudioZoneCollider(AudioZoneCollider audioZoneCollider)
+        public override void NotifyHitAudioZoneCollider(AudioZoneCollider audioZoneCollider)
         {
             if (audioZoneCollider.isNegativeZone)
             {
@@ -98,14 +56,7 @@ namespace Sylan.AudioManager
             AudioZoneManager.UpdateAudioZoneSetting(this);
         }
 
-        public virtual void OnZoneChanged()
-        {
-            OnPreSerialization(); // TODO remove, just here for testing
-            RequestSerialization();
-            AudioZoneManager.UpdateAudioZoneSetting(this);
-        }
-
-        public bool HasZoneChanged()
+        public override bool HasZoneChanged()
         {
             hasSettingZonesChanged = hasSettingZonesChanged || oldAudioSettingIds.Count != audioSettingIds.Count;
             hasZonesChanged = hasZonesChanged || oldAudioZoneIds.Count != audioZoneIds.Count

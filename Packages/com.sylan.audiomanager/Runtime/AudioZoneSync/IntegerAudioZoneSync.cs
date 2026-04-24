@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Sylan.AudioManager
 {
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
-    public class IntegerAudioZoneSync : AudioZoneSyncCore
+    public class IntegerAudioZoneSync : AudioZoneSyncArrayCore
     {
         /// <summary>
         /// <para>Sorted ascending. Can check for <see cref="AudioZoneManager.EmptyZoneIdIndex"/> by just

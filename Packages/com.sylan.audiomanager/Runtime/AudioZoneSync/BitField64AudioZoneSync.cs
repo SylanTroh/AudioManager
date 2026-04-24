@@ -7,7 +7,62 @@ namespace Sylan.AudioManager
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class BitField64AudioZoneSync : AudioZoneSyncCore
     {
-        [UdonSynced, SerializeField] private ulong audioZonesField = 0uL;
+        [UdonSynced, SerializeField] private ulong syncedAudioZonesField = 0uL;
+
+        private ulong oldSettingZonesField;
+        private ulong oldFinalAudioZonesField;
+        private ulong finalAudioZonesField;
+
+        private ulong settingZonesField;
+        private ulong audioZonesField;
+        private ulong negativeZonesField;
+
+        public override void OnValidateAudioZonesStart()
+        {
+            settingZonesField = 0ul;
+            audioZonesField = 0ul;
+            negativeZonesField = 0ul;
+        }
+
+        public override void NotifyAudioSettingCollider(AudioSettingCollider audioSettingCollider)
+        {
+            settingZonesField |= 1uL << audioSettingCollider.SettingIndex;
+        }
+
+        public override void NotifyHitAudioZoneCollider(AudioZoneCollider audioZoneCollider)
+        {
+            if (audioZoneCollider.isNegativeZone)
+            {
+                negativeZonesField |= GetCombinedZoneIds(audioZoneCollider);
+            }
+            else
+            {
+                audioZonesField |= GetCombinedZoneIds(audioZoneCollider);
+            }
+        }
+
+        private ulong GetCombinedZoneIds(AudioZoneCollider audioZoneCollider) // TODO: Generate this at build time.
+        {
+            ulong fields = 1uL << audioZoneCollider.zoneIdIndex;
+            foreach (var zoneId in audioZoneCollider.transitionZoneIdIndexes)
+            {
+                fields |= 1uL << zoneId;
+            }
+            return fields;
+        }
+
+        public override bool HasZoneChanged()
+        {
+            finalAudioZonesField = audioZonesField & ~negativeZonesField;
+
+            bool hasChanged = oldSettingZonesField != settingZonesField
+                || oldFinalAudioZonesField != finalAudioZonesField;
+
+            oldSettingZonesField = settingZonesField;
+            oldFinalAudioZonesField = finalAudioZonesField;
+
+            return hasChanged;
+        }
 
         public override void OnDeserialization()
         {
@@ -15,14 +70,10 @@ namespace Sylan.AudioManager
             LogAudioZones();
         }
 
-        protected override void InternalOnPreSerialization(int[] audioZonesIndexes, int[] audioSettingsIndexes)
+        public override void OnPreSerialization()
         {
-            // TODO: handle audioSettingsIndexes
-            audioZonesField = 0uL;
-            foreach (var index in audioZonesIndexes)
-            {
-                audioZonesField |= 1uL << index;
-            }
+            // TODO: handle oldSettingZonesField
+            syncedAudioZonesField = oldFinalAudioZonesField;
             LogAudioZones();
         }
 
@@ -31,7 +82,7 @@ namespace Sylan.AudioManager
             var audioZoneIndexes = new DataList();
             for (int i = 0; i < 64; i++)
             {
-                if ((audioZonesField & (1uL << i)) != 0uL)
+                if ((syncedAudioZonesField & (1uL << i)) != 0uL)
                 {
                     audioZoneIndexes.Add(i);
                 }
@@ -53,11 +104,11 @@ namespace Sylan.AudioManager
 
         public override bool SharesAudioZoneWith(AudioZoneSyncCore other)
         {
-            var remoteAudioZonesField = ((BitField64AudioZoneSync)other).audioZonesField;
+            var remoteAudioZonesField = ((BitField64AudioZoneSync)other).syncedAudioZonesField;
 
-            if (IsInNoneOrEmpty(audioZonesField) && IsInNoneOrEmpty(remoteAudioZonesField)) return true;
+            if (IsInNoneOrEmpty(syncedAudioZonesField) && IsInNoneOrEmpty(remoteAudioZonesField)) return true;
 
-            return (audioZonesField & remoteAudioZonesField) != 0uL;
+            return (syncedAudioZonesField & remoteAudioZonesField) != 0uL;
         }
 
         private bool IsInNoneOrEmpty(ulong zonesField)
