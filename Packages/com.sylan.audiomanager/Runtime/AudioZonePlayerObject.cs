@@ -8,7 +8,7 @@ using VRC.Udon.Common.Enums;
 namespace Sylan.AudioManager
 {
     [RequireComponent(typeof(VRCPlayerObject))]
-    [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync)]
+    [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class AudioZonePlayerObject : UdonSharpBehaviour
     {
         [HideInInspector, SerializeField] public AudioZoneManager AudioZoneManager;
