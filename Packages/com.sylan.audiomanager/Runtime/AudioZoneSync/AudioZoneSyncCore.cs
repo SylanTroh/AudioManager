@@ -87,6 +87,7 @@ namespace Sylan.AudioManager
 
         public virtual void OnZoneChanged()
         {
+            OnPreSerialization(); // TODO remove, just here for testing
             RequestSerialization();
             AudioZoneManager.UpdateAudioZoneSetting(this);
         }

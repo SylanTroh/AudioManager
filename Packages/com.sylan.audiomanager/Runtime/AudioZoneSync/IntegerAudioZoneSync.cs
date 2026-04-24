@@ -57,11 +57,5 @@ namespace Sylan.AudioManager
 
             return false;
         }
-
-        public override void OnZoneChanged()
-        {
-            OnPreSerialization(); //TODO remove, just here for testing
-            base.OnZoneChanged();
-        }
     }
 }
