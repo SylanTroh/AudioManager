@@ -3,11 +3,7 @@ using System;
 using System.Collections.Generic;
 using Sylan.AudioManager.EditorUtilities;
 using UnityEditor;
-using UnityEditor.Build;
-using UnityEditor.Build.Reporting;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using Object = UnityEngine.Object;
 
 namespace Sylan.AudioManager
 {
@@ -357,21 +353,6 @@ namespace Sylan.AudioManager
                 result.Add(enableFade);
                 result.Add(fadeDuration);
                 return result.ToHashCode();
-            }
-        }
-    }
-
-    public class AudioZoneColliderProcessor : IProcessSceneWithReport
-    {
-        public int callbackOrder => 0;
-
-        public void OnProcessScene(Scene scene, BuildReport report)
-        {
-            //This will only temporary remove the string ZoneIds before PlayMode & upload. We dont need them anymore and can save some memory
-            foreach (var audioZoneCollider in Object.FindObjectsByType<AudioZoneCollider>(FindObjectsInactive.Include, FindObjectsSortMode.None))
-            {
-                audioZoneCollider.zoneID = string.Empty;
-                audioZoneCollider.transitionZoneIDs = Array.Empty<string>();
             }
         }
     }

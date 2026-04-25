@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using Sylan.AudioManager.EditorUtilities;
 using UnityEditor;
+using UnityEditor.Build;
+using UnityEditor.Build.Reporting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using VRC.SDKBase.Editor.BuildPipeline;
 
 namespace Sylan.AudioManager
@@ -356,6 +359,21 @@ namespace Sylan.AudioManager
         {
             if (requestedBuildType != VRCSDKRequestedBuildType.Scene) return false;
             return RunAllOnBuild();
+        }
+    }
+
+    public class AudioZoneColliderProcessor : IProcessSceneWithReport
+    {
+        public int callbackOrder => 0;
+
+        public void OnProcessScene(Scene scene, BuildReport report)
+        {
+            //This will only temporary remove the string ZoneIds before PlayMode & upload. We dont need them anymore and can save some memory
+            foreach (var audioZoneCollider in Object.FindObjectsByType<AudioZoneCollider>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                audioZoneCollider.zoneID = string.Empty;
+                audioZoneCollider.transitionZoneIDs = System.Array.Empty<string>();
+            }
         }
     }
 }
