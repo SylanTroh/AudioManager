@@ -248,16 +248,14 @@ namespace Sylan.AudioManager
 
         private static bool RunAllOnBuild()
         {
-            if (!RunOnBuild())
-                return false;
-            if (!AudioZoneManagerInitialize.RunOnBuild())
-                return false;
-            return true;
+            return RunOnBuild()
+                && AudioZoneManagerInitialize.RunOnBuild();
         }
 
         private static bool RunOnBuild()
         {
             if (!SerializedPropertyUtils.GetObjects<AudioZoneCollider>(out AudioZoneCollider[] audioZones)) return false;
+            if (audioZones.Length == 0) return true;
 
             var zoneIdDict = new Dictionary<string, int> { { string.Empty, AudioZoneManager.EmptyZoneIdIndex } };
 
@@ -267,18 +265,20 @@ namespace Sylan.AudioManager
             foreach (var audioZone in audioZones)
             {
                 audioZone.gameObject.layer = collisionLayer;
-
                 PopulateGeneratedIds(zoneIdDict, audioZone);
             }
 
-            SerializedPropertyUtils.GetObject<AudioZoneManager>(out var audioZoneManager);
-            audioZoneManager.ZoneIdMapping = new string[zoneIdDict.Count];
-            foreach (var keyValuePair in zoneIdDict)
-            {
-                audioZoneManager.ZoneIdMapping[keyValuePair.Value] = keyValuePair.Key;
-            }
-
             zoneIdCount = zoneIdDict.Count;
+
+            if (!SerializedPropertyUtils.GetObject<AudioZoneManager>(out var audioZoneManager)) return false;
+            if (audioZoneManager != null)
+            {
+                audioZoneManager.ZoneIdMapping = new string[zoneIdDict.Count];
+                foreach (var keyValuePair in zoneIdDict)
+                {
+                    audioZoneManager.ZoneIdMapping[keyValuePair.Value] = keyValuePair.Key;
+                }
+            }
 
             return true;
         }
