@@ -20,7 +20,9 @@ public class AudioZoneLayerInit : EditorWindow
         if (existingLayerIndex != -1)
         {
             using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
+            {
                 GUILayout.Label("Found AudioZones layer at index " + existingLayerIndex + ".", EditorStyles.wordWrappedLabel);
+            }
             return;
         }
         layerIndex = EditorGUILayout.IntField("Layer Index", layerIndex);
