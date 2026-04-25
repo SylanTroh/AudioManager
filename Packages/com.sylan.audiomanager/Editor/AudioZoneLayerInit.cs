@@ -19,7 +19,8 @@ public class AudioZoneLayerInit : EditorWindow
         int existingLayerIndex = FindAudioZoneLayer(doLogWarning: true);
         if (existingLayerIndex != -1)
         {
-            Debug.Log("Found AudioZones layer at index " + existingLayerIndex + ".");
+            using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
+                GUILayout.Label("Found AudioZones layer at index " + existingLayerIndex + ".", EditorStyles.wordWrappedLabel);
             return;
         }
         layerIndex = EditorGUILayout.IntField("Layer Index", layerIndex);
