@@ -6,9 +6,6 @@ namespace Sylan.AudioManager
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public abstract class AudioZoneSyncArrayCore : AudioZoneSyncCore
     {
-        private DataDictionary audioSettingIds = new DataDictionary();
-        private DataDictionary oldAudioSettingIds = new DataDictionary();
-
         private DataDictionary audioZoneIds = new DataDictionary();
         private DataDictionary oldAudioZoneIds = new DataDictionary();
 
@@ -18,20 +15,12 @@ namespace Sylan.AudioManager
         private DataDictionary finalAudioZoneIds = new DataDictionary();
         private DataDictionary oldFinalAudioZoneIds = new DataDictionary();
 
-        private bool hasSettingZonesChanged;
         private bool hasZonesChanged;
-
-        protected abstract void InternalOnPreSerialization(int[] audioZonesIndexes, int[] audioSettingsIndexes);
 
         public override void OnValidateAudioZonesStart()
         {
-            hasSettingZonesChanged = false;
+            base.OnValidateAudioZonesStart();
             hasZonesChanged = false;
-        }
-
-        public override void NotifyAudioSettingCollider(AudioSettingCollider audioSettingCollider)
-        {
-            AddZoneId(audioSettingCollider.SettingIndex, oldAudioSettingIds, audioSettingIds, ref hasSettingZonesChanged);
         }
 
         public override void NotifyHitAudioZoneCollider(AudioZoneCollider audioZoneCollider)
@@ -46,19 +35,15 @@ namespace Sylan.AudioManager
             }
         }
 
-        public override void OnPreSerialization()
-        {
-            InternalOnPreSerialization(GetAllKeysArray(oldFinalAudioZoneIds, true), GetAllKeysArray(oldAudioZoneIds));
-        }
+        protected abstract void InternalOnPreSerialization(int[] audioZonesIndexes, int audioSettingIndex);
 
-        public override void OnDeserialization()
+        protected override void InternalOnPreSerialization(int audioSettingIndex)
         {
-            AudioZoneManager.UpdateAudioZoneSetting(this);
+            InternalOnPreSerialization(GetAllKeysArray(oldFinalAudioZoneIds), audioSettingIndex);
         }
 
         public override bool HasZoneChanged()
         {
-            hasSettingZonesChanged = hasSettingZonesChanged || oldAudioSettingIds.Count != audioSettingIds.Count;
             hasZonesChanged = hasZonesChanged || oldAudioZoneIds.Count != audioZoneIds.Count
                                               || oldNegativeZoneIds.Count != negativeZoneIds.Count;
 
@@ -78,11 +63,10 @@ namespace Sylan.AudioManager
                 SwapDictionaries(ref finalAudioZoneIds, ref oldFinalAudioZoneIds);
             }
 
-            SwapDictionaries(ref audioSettingIds, ref oldAudioSettingIds);
             SwapDictionaries(ref audioZoneIds, ref oldAudioZoneIds);
             SwapDictionaries(ref negativeZoneIds, ref oldNegativeZoneIds);
 
-            return hasSettingZonesChanged || hasZonesChanged;
+            return hasZonesChanged || base.HasZoneChanged();
         }
 
         private void SwapDictionaries(ref DataDictionary newDict, ref DataDictionary oldDict)
@@ -112,14 +96,11 @@ namespace Sylan.AudioManager
             newDict.SetValue(zoneId, true);
         }
 
-        private int[] GetAllKeysArray(DataDictionary dict, bool sort = false)
+        private int[] GetAllKeysArray(DataDictionary dict)
         {
             var keys = new int[dict.Count];
             var list = dict.GetKeys();
-            if (sort)
-            {
-                list.Sort();
-            }
+            list.Sort(); // Sorted such that 1) empty id goes first and 2) binary searches can be used.
 
             for (var i = 0; i < list.Count; i++)
             {

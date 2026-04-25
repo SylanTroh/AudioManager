@@ -12,6 +12,9 @@ namespace Sylan.AudioManager
         protected AudioZoneManager AudioZoneManager;
         protected AudioZonePlayerObject AudioZonePlayerObject;
 
+        // TODO: remove SerializeField, just used for testing
+        [SerializeField] protected int syncedAudioSettingIndex;
+
         public abstract bool SharesAudioZoneWith(AudioZoneSyncCore other);
 
         private void Start()
@@ -49,26 +52,66 @@ namespace Sylan.AudioManager
         }
 #endif
 
-        public abstract void OnValidateAudioZonesStart();
+        private AudioSettingCollider activeSettingZone;
+        private AudioSettingCollider oldActiveSettingZone;
 
-        public abstract void NotifyAudioSettingCollider(AudioSettingCollider audioSettingCollider);
+        public virtual void OnValidateAudioZonesStart()
+        {
+            activeSettingZone = null;
+        }
+
+        public void NotifyAudioSettingCollider(AudioSettingCollider audioSettingCollider)
+        {
+            if (activeSettingZone == null
+                || audioSettingCollider.priority < activeSettingZone.priority
+                // Fallback to setting id purely for consistency, though that "consistency" may change between builds.
+                // SettingIndexes are not guaranteed to be assigned in any specific order.
+                || (audioSettingCollider.priority == activeSettingZone.priority
+                    && audioSettingCollider.SettingIndex < activeSettingZone.SettingIndex))
+            {
+                activeSettingZone = audioSettingCollider;
+            }
+        }
 
         public abstract void NotifyHitAudioZoneCollider(AudioZoneCollider audioZoneCollider);
 
-        public override void OnDeserialization()
+        /// <summary>
+        /// <para>The core class only detects setting zone changes.</para>
+        /// <para>Deriving classes must implement audio zone change detection.</para>
+        /// </summary>
+        /// <returns></returns>
+        public virtual bool HasZoneChanged()
         {
-            AudioZoneManager.UpdateAudioZoneSetting(this);
+            bool hasSettingZoneChanged = activeSettingZone == oldActiveSettingZone;
+            oldActiveSettingZone = activeSettingZone;
+            return hasSettingZoneChanged;
         }
 
-        public override void OnPreSerialization() { } // TODO remove, just here for testing
+        /// <summary>
+        /// </summary>
+        /// <param name="audioSettingIndex"><c>-1</c> when not in any <see cref="AudioSettingCollider"/>.</param>
+        protected abstract void InternalOnPreSerialization(int audioSettingIndex);
+
+        public override void OnPreSerialization()
+        {
+            // Saving which setting zone the local player is in this "synced" variable too purely for cleanliness.
+            // The local player does not actually care about which setting zones they themselves are in,
+            // so this is not actually used locally.
+            syncedAudioSettingIndex = oldActiveSettingZone == null ? -1 : oldActiveSettingZone.SettingIndex;
+            InternalOnPreSerialization(syncedAudioSettingIndex);
+        }
+
+        public override void OnDeserialization()
+        {
+            AudioZoneManager.UpdateSettingZoneAudioSetting(this, syncedAudioSettingIndex, doApply: false);
+            AudioZoneManager.UpdateAudioZoneSetting(this, doApply: true);
+        }
 
         public void OnZoneChanged()
         {
             OnPreSerialization(); // TODO remove, just here for testing
             RequestSerialization();
-            AudioZoneManager.UpdateAudioZoneSetting(this);
+            AudioZoneManager.UpdateAudioZoneSetting(this, doApply: true);
         }
-
-        public abstract bool HasZoneChanged();
     }
 }

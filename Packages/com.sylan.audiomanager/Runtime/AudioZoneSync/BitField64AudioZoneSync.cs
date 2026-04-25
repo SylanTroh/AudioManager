@@ -5,30 +5,25 @@ using VRC.SDK3.Data;
 namespace Sylan.AudioManager
 {
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
-    public class BitField64AudioZoneSync : AudioZoneSyncCore
+    public class BitField64AudioZoneSync : BitFieldAudioZoneSync
     {
         // TODO: remove SerializeField, just used for testing
-        [UdonSynced, SerializeField] private ulong syncedAudioZonesField = 0uL;
+        /// <summary>
+        /// <para>Packed into <see cref="highestSyncedAudioZonesField"/> for actual syncing.</para>
+        /// </summary>
+        [SerializeField] private ulong syncedAudioZonesField;
 
-        private ulong oldSettingZonesField;
         private ulong oldFinalAudioZonesField;
         private ulong finalAudioZonesField;
 
-        private ulong settingZonesField;
         private ulong audioZonesField;
         private ulong negativeZonesField;
 
         public override void OnValidateAudioZonesStart()
         {
-            settingZonesField = 0ul;
+            base.OnValidateAudioZonesStart();
             audioZonesField = 0ul;
             negativeZonesField = 0ul;
-        }
-
-        public override void NotifyAudioSettingCollider(AudioSettingCollider audioSettingCollider)
-        {
-            // TODO: generate SettingIndex flag at build time
-            settingZonesField |= 1uL << audioSettingCollider.SettingIndex;
         }
 
         public override void NotifyHitAudioZoneCollider(AudioZoneCollider audioZoneCollider)
@@ -47,29 +42,28 @@ namespace Sylan.AudioManager
         {
             finalAudioZonesField = audioZonesField & ~negativeZonesField;
 
-            bool hasChanged = oldSettingZonesField != settingZonesField
-                || oldFinalAudioZonesField != finalAudioZonesField;
+            bool hasChanged = oldFinalAudioZonesField != finalAudioZonesField;
 
-            if (!hasChanged) return false;
+            if (!hasChanged) return base.HasZoneChanged();
 
-            oldSettingZonesField = settingZonesField;
             oldFinalAudioZonesField = finalAudioZonesField;
 
             return true;
         }
 
+        protected override void InternalOnPreSerialization(ulong shiftedAudioSettingIndex)
+        {
+            syncedAudioZonesField = oldFinalAudioZonesField;
+            highestSyncedAudioZonesField = syncedAudioZonesField | shiftedAudioSettingIndex;
 #if AUDIO_MANAGER_DEBUG
+            LogAudioZones();
+#endif
+        }
+
         public override void OnDeserialization()
         {
+            syncedAudioZonesField = highestSyncedAudioZonesField & ~AudioZoneManager.audioSettingsIndexBitMask;
             base.OnDeserialization();
-            LogAudioZones();
-        }
-#endif
-
-        public override void OnPreSerialization()
-        {
-            // TODO: handle oldSettingZonesField
-            syncedAudioZonesField = oldFinalAudioZonesField;
 #if AUDIO_MANAGER_DEBUG
             LogAudioZones();
 #endif
@@ -89,7 +83,6 @@ namespace Sylan.AudioManager
 
             LogAudioZones(ToIntArray(audioZoneIndexes));
         }
-#endif
 
         private int[] ToIntArray(DataList list)
         {
@@ -101,6 +94,7 @@ namespace Sylan.AudioManager
             }
             return result;
         }
+#endif
 
         public override bool SharesAudioZoneWith(AudioZoneSyncCore other)
         {

@@ -7,35 +7,62 @@ namespace Sylan.AudioManager
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class IntegerAudioZoneSync : AudioZoneSyncArrayCore
     {
-        // TODO: remove SerializeField, just used for testing
         /// <summary>
         /// <para>Sorted ascending. Can check for <see cref="AudioZoneManager.EmptyZoneIdIndex"/> by just
         /// checking index <c>0</c>, and can use <see cref="Array.BinarySearch(Array, object)"/>.</para>
         /// </summary>
-        [UdonSynced, SerializeField] private int[] AudioZones = Array.Empty<int>();
+        [UdonSynced] private int[] syncedIds = Array.Empty<int>();
+        // TODO: remove SerializeField, just used for testing
+        [SerializeField] private int[] syncedAudioZones;
 
-#if AUDIO_MANAGER_DEBUG
         public override void OnDeserialization()
         {
-            base.OnDeserialization();
-            LogAudioZones(AudioZones);
-        }
-#endif
+            // Basically identical to ShortAudioZoneSync.
+            int count = syncedIds.Length;
+            if (count == 0 || syncedIds[count - 1] < AudioZoneManager.totalAudioZonesCount)
+            {
+                syncedAudioSettingIndex = -1;
+                syncedAudioZones = syncedIds;
+            }
+            else
+            {
+                syncedAudioSettingIndex = syncedIds[count - 1] - AudioZoneManager.totalAudioZonesCount;
+                syncedAudioZones = new int[count - 1];
+                Array.Copy(syncedIds, syncedAudioZones, count - 1);
+            }
 
-        protected override void InternalOnPreSerialization(int[] audioZonesIndexes, int[] audioSettingsIndexes)
-        {
-            // TODO: handle audioSettingsIndexes
-            AudioZones = audioZonesIndexes;
+            base.OnDeserialization();
 #if AUDIO_MANAGER_DEBUG
-            LogAudioZones(AudioZones);
+            LogAudioZones(syncedAudioZones);
+#endif
+        }
+
+        protected override void InternalOnPreSerialization(int[] audioZonesIndexes, int audioSettingsIndex)
+        {
+            // Basically identical to ShortAudioZoneSync.
+            syncedAudioZones = audioZonesIndexes;
+            if (audioSettingsIndex == -1)
+            {
+                syncedIds = syncedAudioZones;
+            }
+            else
+            {
+                int newCount = syncedAudioZones.Length + 1;
+                syncedIds = new int[newCount];
+                Array.Copy(syncedAudioZones, syncedIds, newCount - 1);
+                syncedIds[newCount - 1] = audioSettingsIndex + AudioZoneManager.totalAudioZonesCount;
+            }
+
+#if AUDIO_MANAGER_DEBUG
+            LogAudioZones(syncedAudioZones);
 #endif
         }
 
         public override bool SharesAudioZoneWith(AudioZoneSyncCore other)
         {
-            var remoteZoneIds = ((IntegerAudioZoneSync)other).AudioZones;
+            var remoteZoneIds = ((IntegerAudioZoneSync)other).syncedAudioZones;
 
-            var localInNullOrEmpty = AudioZones.Length == 0 || AudioZones[0] == AudioZoneManager.EmptyZoneIdIndex;
+            var localInNullOrEmpty = syncedAudioZones.Length == 0 || syncedAudioZones[0] == AudioZoneManager.EmptyZoneIdIndex;
             var remoteInNullOrEmpty = remoteZoneIds.Length == 0 || remoteZoneIds[0] == AudioZoneManager.EmptyZoneIdIndex;
 
             if (localInNullOrEmpty && remoteInNullOrEmpty) return true;
@@ -43,7 +70,7 @@ namespace Sylan.AudioManager
 
             foreach (var remoteZoneId in remoteZoneIds)
             {
-                if (Array.BinarySearch(AudioZones, remoteZoneId) >= 0)
+                if (Array.BinarySearch(syncedAudioZones, remoteZoneId) >= 0)
                 {
                     return true;
                 }

@@ -277,6 +277,11 @@ namespace Sylan.AudioManager
             if (!SerializedPropertyUtils.GetObject<AudioZoneManager>(out var audioZoneManager)) return false;
             if (audioZoneManager != null)
             {
+                audioZoneManager.totalAudioZonesCount = zoneIdCount;
+                var shift = zoneIdCount % 64;
+                audioZoneManager.audioSettingsIndexBitShift = shift;
+                audioZoneManager.audioSettingsIndexBitMask = ulong.MaxValue << shift;
+
                 audioZoneManager.ZoneIdMapping = new string[zoneIdDict.Count];
                 foreach (var keyValuePair in zoneIdDict)
                 {

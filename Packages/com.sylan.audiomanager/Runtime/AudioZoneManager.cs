@@ -28,9 +28,16 @@ namespace Sylan.AudioManager
         // Audio Setting Zones
         // ================================================================
 
+        // Yes audio zones, not setting zones. This is used as an offset to distinguish between the two.
+        [HideInInspector] public int totalAudioZonesCount;
+        [HideInInspector] public int audioSettingsIndexBitShift;
+        [HideInInspector] public ulong audioSettingsIndexBitMask;
+
         [HideInInspector] public int[] allAudioSettingsPriority;
         [NonSerialized] public DataList[] allAudioSettings;
+        public const string SETTING_ZONE_SETTING_ID = "SETTINGZONEVOICESETTING";
 
+        // All these are purely used on Start to populate the allAudioSettings array.
         [HideInInspector] public float[] allAudioSettingsVoiceGain;
         [HideInInspector] public float[] allAudioSettingsVoiceNear;
         [HideInInspector] public float[] allAudioSettingsVoiceFar;
@@ -119,14 +126,41 @@ namespace Sylan.AudioManager
         }
 
         // ================================================================
-        // Update Audio Settings
+        // Update Setting Zone Audio Settings
         // ================================================================
-        public void UpdateAudioZoneSetting(AudioZoneSyncCore playerObjectSync)
+
+        public void UpdateSettingZoneAudioSetting(AudioZoneSyncCore playerObjectSync, int settingIndex, bool doApply)
+        {
+            if (LocalPlayerSync == playerObjectSync) return;
+
+            if (settingIndex == -1)
+            {
+                _AudioSettingManager.RemoveAudioSetting(playerObjectSync.OwningPlayer, SETTING_ZONE_SETTING_ID);
+            }
+            else
+            {
+                int actualIndex = settingIndex + 1;
+                int priority = allAudioSettingsPriority[actualIndex];
+                DataList setting = allAudioSettings[actualIndex];
+                _AudioSettingManager.AddAudioSetting(playerObjectSync.OwningPlayer, SETTING_ZONE_SETTING_ID, priority, setting);
+            }
+
+            if (doApply)
+            {
+                _AudioSettingManager.ApplyAudioSetting(playerObjectSync.OwningPlayer);
+            }
+        }
+
+        // ================================================================
+        // Update Audio Zone Audio Settings
+        // ================================================================
+
+        public void UpdateAudioZoneSetting(AudioZoneSyncCore playerObjectSync, bool doApply)
         {
             if (LocalPlayerSync != playerObjectSync)
             {
                 //If someone else caused the update, update triggering player
-                ApplyAudioZoneSetting(playerObjectSync);
+                ApplyAudioZoneSetting(playerObjectSync, doApply);
             }
             else
             {
@@ -134,12 +168,12 @@ namespace Sylan.AudioManager
                 for (var i = 0; i < RemotePlayerSyncs.Count; i++)
                 {
                     var remotePlayerSync = (AudioZoneSyncCore)RemotePlayerSyncs[i].Reference;
-                    ApplyAudioZoneSetting(remotePlayerSync);
+                    ApplyAudioZoneSetting(remotePlayerSync, doApply);
                 }
             }
         }
 
-        private void ApplyAudioZoneSetting(AudioZoneSyncCore remotePlayerObjectSync)
+        private void ApplyAudioZoneSetting(AudioZoneSyncCore remotePlayerObjectSync, bool doApply)
         {
             if (LocalPlayerSync.SharesAudioZoneWith(remotePlayerObjectSync))
             {
@@ -154,6 +188,11 @@ namespace Sylan.AudioManager
                 Debug.Log("[AudioManager] Does not share AudioZone with " + remotePlayerObjectSync.OwningPlayer.displayName + ".");
 #endif
                 _AudioSettingManager.AddAudioSetting(remotePlayerObjectSync.OwningPlayer, AUDIO_ZONE_SETTING_ID, audioZonePriority, AudioZoneAudioSettings);
+            }
+
+            if (doApply)
+            {
+                _AudioSettingManager.ApplyAudioSetting(remotePlayerObjectSync.OwningPlayer);
             }
         }
 

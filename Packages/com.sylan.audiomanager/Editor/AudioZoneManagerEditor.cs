@@ -76,11 +76,23 @@ namespace Sylan.AudioManager
 
         private static AudioZoneSyncCore PickAppropriateSyncScript(AudioZonePlayerObject playerObject)
         {
-            System.Type scriptType = AudioZoneInitialize.zoneIdCount switch
+            int requiredSettingZoneBits = 0;
+            while ((1u << requiredSettingZoneBits) <= ((uint)AudioSettingInitialize.zoneIdCount + 1u))
+            {
+                requiredSettingZoneBits++;
+            }
+            int totalRequiredBits = AudioZoneInitialize.zoneIdCount + requiredSettingZoneBits;
+            int totalIdCount = AudioZoneInitialize.zoneIdCount + AudioSettingInitialize.zoneIdCount;
+
+            System.Type scriptType = totalRequiredBits switch
             {
                 <= 64 => typeof(BitField64AudioZoneSync),
                 <= 128 => typeof(BitField128AudioZoneSync),
                 <= 192 => typeof(BitField192AudioZoneSync),
+                _ => null,
+            };
+            scriptType ??= totalIdCount switch
+            {
                 <= ushort.MaxValue => typeof(ShortAudioZoneSync),
                 _ => typeof(IntegerAudioZoneSync),
             };
