@@ -7,5 +7,6 @@
   - [ ] extra class which has mapping from index to Settings (voice, priority, ...), to then apply them to AudioSettingsManager on change
 - [ ] Performance checking... somehow???
 - [x] Change the AudioZones layer in project settings to not collide with anything anymore
+- [ ] Handle network congestion, using `Networking.Suffering`
 
 - [ ] refactoring, naming, small shit
