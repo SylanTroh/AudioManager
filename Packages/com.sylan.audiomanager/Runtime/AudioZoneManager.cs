@@ -25,6 +25,21 @@ namespace Sylan.AudioManager
         [HideInInspector] public string[] ZoneIdMapping = Array.Empty<string>();
 
         // ================================================================
+        // Audio Setting Zones
+        // ================================================================
+
+        [HideInInspector] public int[] allAudioSettingsPriority;
+        [NonSerialized] public DataList[] allAudioSettings;
+
+        [HideInInspector] public float[] allAudioSettingsVoiceGain;
+        [HideInInspector] public float[] allAudioSettingsVoiceNear;
+        [HideInInspector] public float[] allAudioSettingsVoiceFar;
+        [HideInInspector] public float[] allAudioSettingsVolumetricRadius;
+        [HideInInspector] public bool[] allAudioSettingsLowpassFilter;
+        [HideInInspector] public bool[] allAudioSettingsEnableFade;
+        [HideInInspector] public float[] allAudioSettingsFadeDuration;
+
+        // ================================================================
         // Audio Zone Configuration
         // ================================================================
 
@@ -74,6 +89,33 @@ namespace Sylan.AudioManager
             AudioZoneAudioSettings[AudioSettingManager.VOICE_LOWPASS_INDEX] = (DataToken)voiceLowpass;
             AudioZoneAudioSettings[AudioSettingManager.FADE_ENABLED_INDEX] = (DataToken)enableAudioZoneFade;
             AudioZoneAudioSettings[AudioSettingManager.FADE_DURATION_INDEX] = (DataToken)audioZoneFadeDuration;
+            BuildAllAudioZoneSettings();
+        }
+
+        private void BuildAllAudioZoneSettings()
+        {
+            int count = allAudioSettingsPriority.Length;
+            allAudioSettings = new DataList[count];
+            for (int i = 0; i < count; i++)
+            {
+                allAudioSettings[i] = new DataList(new DataToken[]
+                {
+                    allAudioSettingsVoiceGain[i],
+                    allAudioSettingsVoiceNear[i],
+                    allAudioSettingsVoiceFar[i],
+                    allAudioSettingsVolumetricRadius[i],
+                    allAudioSettingsLowpassFilter[i],
+                    allAudioSettingsEnableFade[i],
+                    allAudioSettingsFadeDuration[i],
+                });
+            }
+            allAudioSettingsVoiceGain = null;
+            allAudioSettingsVoiceNear = null;
+            allAudioSettingsVoiceFar = null;
+            allAudioSettingsVolumetricRadius = null;
+            allAudioSettingsLowpassFilter = null;
+            allAudioSettingsEnableFade = null;
+            allAudioSettingsFadeDuration = null;
         }
 
         // ================================================================

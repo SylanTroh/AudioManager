@@ -1,12 +1,12 @@
 ﻿#if !COMPILER_UDONSHARP && UNITY_EDITOR
 using System;
+using System.Collections.Generic;
 using Sylan.AudioManager.EditorUtilities;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using VRC.SDKBase.Editor.BuildPipeline;
 using Object = UnityEngine.Object;
 
 namespace Sylan.AudioManager
@@ -245,57 +245,119 @@ namespace Sylan.AudioManager
             }
         }
     }
-    [InitializeOnLoad]
-    public class AudioSettingInitialize : IVRCSDKBuildRequestedCallback
+
+    public static class AudioSettingInitialize
     {
-        private static bool RunOnBuild()
+        public static int zoneIdCount;
+
+        public static bool RunOnBuild()
         {
-            //Object with Serialized Property(s)
-            if (!SerializedPropertyUtils.GetSerializedObjects<AudioSettingCollider>(out SerializedObject[] serializedObjects)) return false;
+            if (!SerializedPropertyUtils.GetObjects<AudioSettingCollider>(out AudioSettingCollider[] settingZones)) return false;
+            if (settingZones.Length == 0) return true;
 
-            foreach (var serializedObject in serializedObjects)
-            {
-                //Set Serialized Property
-                SerializedPropertyUtils.PopulateSerializedProperty<AudioSettingManager>(serializedObject, AudioSettingCollider.AudioSettingManagerPropertyName);
-            }
-
-            int collisionLayer = AudioZoneLayerInit.FindAudioZoneLayer(doLogWarning: serializedObjects.Length != 0);
+            int collisionLayer = AudioZoneLayerInit.FindAudioZoneLayer(doLogWarning: settingZones.Length != 0);
             if (collisionLayer == -1) collisionLayer = 0;
 
-            SerializedPropertyUtils.GetObjects<AudioSettingCollider>(out AudioSettingCollider[] audioSettings);
-            foreach (var audioSetting in audioSettings)
+            var settingIdDict = new Dictionary<AudioSettingData, int>();
+            var allAudioSettings = new List<AudioSettingData>();
+
+            foreach (var settingZone in settingZones)
             {
-                audioSetting.gameObject.layer = collisionLayer;
+                settingZone.gameObject.layer = collisionLayer;
+                settingZone.SettingIndex = GetOrAdd(settingIdDict, allAudioSettings, new AudioSettingData(settingZone));
+            }
+
+            zoneIdCount = allAudioSettings.Count;
+
+            if (!SerializedPropertyUtils.GetSerializedObject<AudioZoneManager>(out var managerSo)) return false;
+            if (managerSo != null)
+            {
+                void SetArray(string propertyName, Action<SerializedProperty, AudioSettingData> setValue)
+                {
+                    SerializedPropertyUtils.SetArrayProperty(managerSo.FindProperty(propertyName), allAudioSettings, setValue);
+                }
+                SetArray(nameof(AudioZoneManager.allAudioSettingsPriority), (p, v) => p.intValue = v.priority);
+                SetArray(nameof(AudioZoneManager.allAudioSettingsVoiceGain), (p, v) => p.floatValue = v.voiceGain);
+                SetArray(nameof(AudioZoneManager.allAudioSettingsVoiceNear), (p, v) => p.floatValue = v.voiceNear);
+                SetArray(nameof(AudioZoneManager.allAudioSettingsVoiceFar), (p, v) => p.floatValue = v.voiceFar);
+                SetArray(nameof(AudioZoneManager.allAudioSettingsVolumetricRadius), (p, v) => p.floatValue = v.volumetricRadius);
+                SetArray(nameof(AudioZoneManager.allAudioSettingsLowpassFilter), (p, v) => p.boolValue = v.lowpassFilter);
+                SetArray(nameof(AudioZoneManager.allAudioSettingsEnableFade), (p, v) => p.boolValue = v.enableFade);
+                SetArray(nameof(AudioZoneManager.allAudioSettingsFadeDuration), (p, v) => p.floatValue = v.fadeDuration);
+                managerSo.ApplyModifiedProperties();
             }
 
             return true;
         }
 
-        //
-        //Run On Play
-        //
-        static AudioSettingInitialize()
-        //Rename Static Constructor to match Class name
+        private static int GetOrAdd(
+            Dictionary<AudioSettingData, int> settingIdDict,
+            List<AudioSettingData> allAudioSettings,
+            AudioSettingData settingData)
         {
-            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
-        }
-        private static void OnPlayModeStateChanged(PlayModeStateChange state)
-        {
-            if (state != PlayModeStateChange.ExitingEditMode) return;
-            if (!RunOnBuild())
-            {
-                EditorApplication.isPlaying = false;
-            }
-        }
-        //
-        // Run On Build
-        //
-        public int callbackOrder => 0;
+            if (settingIdDict.TryGetValue(settingData, out var value)) return value;
 
-        public bool OnBuildRequested(VRCSDKRequestedBuildType requestedBuildType)
+            value = settingIdDict.Count;
+            settingIdDict.Add(settingData, value);
+            allAudioSettings.Add(settingData);
+            return value;
+        }
+
+        private readonly struct AudioSettingData : IEquatable<AudioSettingData>
         {
-            if (requestedBuildType != VRCSDKRequestedBuildType.Scene) return false;
-            return RunOnBuild();
+            public readonly int priority;
+
+            public readonly float voiceGain;
+            public readonly float voiceNear;
+            public readonly float voiceFar;
+            public readonly float volumetricRadius;
+            public readonly bool lowpassFilter;
+
+            public readonly bool enableFade;
+            public readonly float fadeDuration;
+
+            public AudioSettingData(AudioSettingCollider settingZone)
+            {
+                priority = settingZone.priority;
+                voiceGain = settingZone.voiceGain;
+                voiceNear = settingZone.voiceNear;
+                voiceFar = settingZone.voiceFar;
+                volumetricRadius = settingZone.volumetricRadius;
+                lowpassFilter = settingZone.lowpassFilter;
+                enableFade = settingZone.enableFade;
+                fadeDuration = settingZone.fadeDuration;
+            }
+
+            public override readonly bool Equals(object obj)
+            {
+                return obj is AudioSettingData data && Equals(data);
+            }
+
+            public readonly bool Equals(AudioSettingData other)
+            {
+                return priority == other.priority
+                    && voiceGain == other.voiceGain
+                    && voiceNear == other.voiceNear
+                    && voiceFar == other.voiceFar
+                    && volumetricRadius == other.volumetricRadius
+                    && lowpassFilter == other.lowpassFilter
+                    && enableFade == other.enableFade
+                    && fadeDuration == other.fadeDuration;
+            }
+
+            public override readonly int GetHashCode()
+            {
+                var result = new HashCode();
+                result.Add(priority);
+                result.Add(voiceGain);
+                result.Add(voiceNear);
+                result.Add(voiceFar);
+                result.Add(volumetricRadius);
+                result.Add(lowpassFilter);
+                result.Add(enableFade);
+                result.Add(fadeDuration);
+                return result.ToHashCode();
+            }
         }
     }
 

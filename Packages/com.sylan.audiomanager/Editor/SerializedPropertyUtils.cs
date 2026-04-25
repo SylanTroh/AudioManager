@@ -1,4 +1,5 @@
 ﻿#if !COMPILER_UDONSHARP && UNITY_EDITOR
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -80,6 +81,23 @@ namespace Sylan.AudioManager.EditorUtilities
             }
             // Apply the changes to the component
             serializedObject.ApplyModifiedProperties();
+        }
+        /// <summary>
+        /// <para>Must call <see cref="SerializedObject.ApplyModifiedProperties()"/> afterwards.</para>
+        /// </summary>
+        /// <typeparam name="T">Any type.</typeparam>
+        /// <param name="property">An array property.</param>
+        /// <param name="newValues">The values to populate the array with.</param>
+        /// <param name="setValue">Delegate assigning one element (property) in the array its value.</param>
+        public static void SetArrayProperty<T>(SerializedProperty property, ICollection<T> newValues, System.Action<SerializedProperty, T> setValue)
+        {
+            property.ClearArray();
+            property.arraySize = newValues.Count;
+            int i = 0;
+            foreach (T value in newValues)
+            {
+                setValue(property.GetArrayElementAtIndex(i++), value);
+            }
         }
         /// <summary>
         /// Find an object of Type T in the scene hierarchy as a SerializedObject.

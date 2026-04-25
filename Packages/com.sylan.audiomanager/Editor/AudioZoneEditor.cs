@@ -249,6 +249,7 @@ namespace Sylan.AudioManager
         private static bool RunAllOnBuild()
         {
             return RunOnBuild()
+                && AudioSettingInitialize.RunOnBuild()
                 && AudioZoneManagerInitialize.RunOnBuild();
         }
 
