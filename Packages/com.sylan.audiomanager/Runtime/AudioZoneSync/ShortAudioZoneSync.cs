@@ -33,8 +33,8 @@ namespace Sylan.AudioManager
 
             base.OnDeserialization();
 #if AUDIO_MANAGER_DEBUG
-            var audioZoneIndexes = new int[count];
-            for (int i = 0; i < count; i++)
+            var audioZoneIndexes = new int[syncedAudioZones.Length];
+            for (int i = 0; i < syncedAudioZones.Length; i++)
             {
                 audioZoneIndexes[i] = syncedAudioZones[i];
             }
