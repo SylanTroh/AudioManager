@@ -17,5 +17,6 @@
 - [ ] Log which sync script is used for bug report purposes
 - [ ] Maybe change AddAudioSetting to accept a bool to indicate overwriting if that id is already used
   - [ ] But like also refactor the entire settings manager at that point :P
+- [ ] Set audioZoneColliderLayerMask at build time
 
 - [ ] refactoring, naming, small shit
