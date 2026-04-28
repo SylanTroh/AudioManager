@@ -230,7 +230,6 @@ MonoBehaviour:
   _udonSharpBackingUdonBehaviour: {fileID: 6670465}
   zoneID: Room
   zoneIdIndex: 1
-  useNewApproach: 1
   transitionZoneIDs:
   - 
   transitionZoneIdIndexes: 00000000
@@ -263,13 +262,177 @@ Transform:
   m_GameObject: {fileID: 82235117}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.07, y: -0.608, z: 4.83}
+  m_LocalPosition: {x: 1.48, y: -0.608, z: 14.81}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1084732893}
   - {fileID: 1250339801}
   - {fileID: 982809930}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &90552517
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 90552523}
+  - component: {fileID: 90552522}
+  - component: {fileID: 90552521}
+  - component: {fileID: 90552520}
+  - component: {fileID: 90552519}
+  - component: {fileID: 90552518}
+  m_Layer: 22
+  m_Name: AudioSettingZone (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &90552518
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 90552517}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45115577ef41a5b4ca741ed302693907, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactTextPlacement: {fileID: 0}
+  interactText: Use
+  interactTextGO: {fileID: 0}
+  proximity: 2
+  SynchronizePosition: 0
+  AllowCollisionOwnershipTransfer: 0
+  Reliable: 0
+  _syncMethod: 1
+  serializedProgramAsset: {fileID: 11400000, guid: b1366b87b2973904dba6ddabeb0b9c8e,
+    type: 2}
+  programSource: {fileID: 11400000, guid: eb1d53ee268949145960770e28a1ce67, type: 2}
+  serializedPublicVariablesBytesString: Ai8AAAAAATIAAABWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgAuAFUAZABvAG4AVgBhAHIAaQBhAGIAbABlAFQAYQBiAGwAZQAsACAAVgBSAEMALgBVAGQAbwBuAC4AQwBvAG0AbQBvAG4AAAAAAAYBAAAAAAAAACcBBAAAAHQAeQBwAGUAAWgAAABTAHkAcwB0AGUAbQAuAEMAbwBsAGwAZQBjAHQAaQBvAG4AcwAuAEcAZQBuAGUAcgBpAGMALgBMAGkAcwB0AGAAMQBbAFsAVgBSAEMALgBVAGQAbwBuAC4AQwBvAG0AbQBvAG4ALgBJAG4AdABlAHIAZgBhAGMAZQBzAC4ASQBVAGQAbwBuAFYAYQByAGkAYQBiAGwAZQAsACAAVgBSAEMALgBVAGQAbwBuAC4AQwBvAG0AbQBvAG4AXQBdACwAIABtAHMAYwBvAHIAbABpAGIAAQEJAAAAVgBhAHIAaQBhAGIAbABlAHMALwEAAAABaAAAAFMAeQBzAHQAZQBtAC4AQwBvAGwAbABlAGMAdABpAG8AbgBzAC4ARwBlAG4AZQByAGkAYwAuAEwAaQBzAHQAYAAxAFsAWwBWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgAuAEkAbgB0AGUAcgBmAGEAYwBlAHMALgBJAFUAZABvAG4AVgBhAHIAaQBhAGIAbABlACwAIABWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgBdAF0ALAAgAG0AcwBjAG8AcgBsAGkAYgABAAAABgEAAAAAAAAAAi8CAAAAAUkAAABWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgAuAFUAZABvAG4AVgBhAHIAaQBhAGIAbABlAGAAMQBbAFsAUwB5AHMAdABlAG0ALgBJAG4AdAAzADIALAAgAG0AcwBjAG8AcgBsAGkAYgBdAF0ALAAgAFYAUgBDAC4AVQBkAG8AbgAuAEMAbwBtAG0AbwBuAAIAAAAGAgAAAAAAAAAnAQQAAAB0AHkAcABlAAEXAAAAUwB5AHMAdABlAG0ALgBTAHQAcgBpAG4AZwAsACAAbQBzAGMAbwByAGwAaQBiACcBCgAAAFMAeQBtAGIAbwBsAE4AYQBtAGUAAR8AAABfAF8AXwBVAGQAbwBuAFMAaABhAHIAcABCAGUAaABhAHYAaQBvAHUAcgBWAGUAcgBzAGkAbwBuAF8AXwBfACcBBAAAAHQAeQBwAGUAARYAAABTAHkAcwB0AGUAbQAuAEkAbgB0ADMAMgAsACAAbQBzAGMAbwByAGwAaQBiABcBBQAAAFYAYQBsAHUAZQACAAAABwUHBQcF
+  publicVariablesUnityEngineObjects: []
+  publicVariablesSerializationDataFormat: 0
+--- !u!114 &90552519
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 90552517}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de0e166a12f03e14ab984e630bff8d29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  _udonSharpBackingUdonBehaviour: {fileID: 90552518}
+  SettingIndex: 0
+  priority: 750
+  voiceGain: 13
+  voiceNear: 0
+  voiceFar: 10
+  volumetricRadius: 0
+  lowpassFilter: 1
+  enableFade: 1
+  fadeDuration: 1
+--- !u!65 &90552520
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 90552517}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &90552521
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 90552517}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 2716be126b51b64fe9c47fe1eb4adcab, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &90552522
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 90552517}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &90552523
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 90552517}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 8.651, y: 1.5, z: -20.04}
+  m_LocalScale: {x: 5, y: 3, z: 5}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!43 &173411751
@@ -490,8 +653,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 9.056707, y: 4.1373696, z: 13.695042}
-  m_Center: {x: 4.9752226, y: 2.314368, z: -7.2902985}
+  m_Size: {x: 9.056707, y: 4.1373696, z: 19.657372}
+  m_Center: {x: 4.9752226, y: 2.314368, z: -10.271463}
 --- !u!114 &366743454
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -542,7 +705,6 @@ MonoBehaviour:
   _udonSharpBackingUdonBehaviour: {fileID: 366743454}
   zoneID: Room2
   zoneIdIndex: 2
-  useNewApproach: 1
   transitionZoneIDs: []
   transitionZoneIdIndexes: 
   isNegativeZone: 0
@@ -602,8 +764,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 5.4333615, y: 4.148411, z: 19.584602}
-  m_Center: {x: 6.683237, y: 2.3814907, z: -10.336967}
+  m_Size: {x: 6.0563045, y: 4.148411, z: 20.144053}
+  m_Center: {x: 6.6684055, y: 2.3814907, z: -10.286254}
 --- !u!114 &399894421
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -654,13 +816,176 @@ MonoBehaviour:
   _udonSharpBackingUdonBehaviour: {fileID: 399894421}
   zoneID: Room
   zoneIdIndex: 1
-  useNewApproach: 1
   transitionZoneIDs: []
   transitionZoneIdIndexes: 
   isNegativeZone: 0
   combinedZoneIdsField1: 2
   combinedZoneIdsField2: 0
   combinedZoneIdsField3: 0
+--- !u!1 &403809180
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 403809186}
+  - component: {fileID: 403809185}
+  - component: {fileID: 403809184}
+  - component: {fileID: 403809183}
+  - component: {fileID: 403809182}
+  - component: {fileID: 403809181}
+  m_Layer: 22
+  m_Name: AudioSettingZone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &403809181
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 403809180}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45115577ef41a5b4ca741ed302693907, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactTextPlacement: {fileID: 0}
+  interactText: Use
+  interactTextGO: {fileID: 0}
+  proximity: 2
+  SynchronizePosition: 0
+  AllowCollisionOwnershipTransfer: 0
+  Reliable: 0
+  _syncMethod: 1
+  serializedProgramAsset: {fileID: 11400000, guid: b1366b87b2973904dba6ddabeb0b9c8e,
+    type: 2}
+  programSource: {fileID: 11400000, guid: eb1d53ee268949145960770e28a1ce67, type: 2}
+  serializedPublicVariablesBytesString: Ai8AAAAAATIAAABWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgAuAFUAZABvAG4AVgBhAHIAaQBhAGIAbABlAFQAYQBiAGwAZQAsACAAVgBSAEMALgBVAGQAbwBuAC4AQwBvAG0AbQBvAG4AAAAAAAYBAAAAAAAAACcBBAAAAHQAeQBwAGUAAWgAAABTAHkAcwB0AGUAbQAuAEMAbwBsAGwAZQBjAHQAaQBvAG4AcwAuAEcAZQBuAGUAcgBpAGMALgBMAGkAcwB0AGAAMQBbAFsAVgBSAEMALgBVAGQAbwBuAC4AQwBvAG0AbQBvAG4ALgBJAG4AdABlAHIAZgBhAGMAZQBzAC4ASQBVAGQAbwBuAFYAYQByAGkAYQBiAGwAZQAsACAAVgBSAEMALgBVAGQAbwBuAC4AQwBvAG0AbQBvAG4AXQBdACwAIABtAHMAYwBvAHIAbABpAGIAAQEJAAAAVgBhAHIAaQBhAGIAbABlAHMALwEAAAABaAAAAFMAeQBzAHQAZQBtAC4AQwBvAGwAbABlAGMAdABpAG8AbgBzAC4ARwBlAG4AZQByAGkAYwAuAEwAaQBzAHQAYAAxAFsAWwBWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgAuAEkAbgB0AGUAcgBmAGEAYwBlAHMALgBJAFUAZABvAG4AVgBhAHIAaQBhAGIAbABlACwAIABWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgBdAF0ALAAgAG0AcwBjAG8AcgBsAGkAYgABAAAABgEAAAAAAAAAAi8CAAAAAUkAAABWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgAuAFUAZABvAG4AVgBhAHIAaQBhAGIAbABlAGAAMQBbAFsAUwB5AHMAdABlAG0ALgBJAG4AdAAzADIALAAgAG0AcwBjAG8AcgBsAGkAYgBdAF0ALAAgAFYAUgBDAC4AVQBkAG8AbgAuAEMAbwBtAG0AbwBuAAIAAAAGAgAAAAAAAAAnAQQAAAB0AHkAcABlAAEXAAAAUwB5AHMAdABlAG0ALgBTAHQAcgBpAG4AZwAsACAAbQBzAGMAbwByAGwAaQBiACcBCgAAAFMAeQBtAGIAbwBsAE4AYQBtAGUAAR8AAABfAF8AXwBVAGQAbwBuAFMAaABhAHIAcABCAGUAaABhAHYAaQBvAHUAcgBWAGUAcgBzAGkAbwBuAF8AXwBfACcBBAAAAHQAeQBwAGUAARYAAABTAHkAcwB0AGUAbQAuAEkAbgB0ADMAMgAsACAAbQBzAGMAbwByAGwAaQBiABcBBQAAAFYAYQBsAHUAZQACAAAABwUHBQcF
+  publicVariablesUnityEngineObjects: []
+  publicVariablesSerializationDataFormat: 0
+--- !u!114 &403809182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 403809180}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de0e166a12f03e14ab984e630bff8d29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  _udonSharpBackingUdonBehaviour: {fileID: 403809181}
+  SettingIndex: 1
+  priority: 500
+  voiceGain: 12
+  voiceNear: 0
+  voiceFar: 5
+  volumetricRadius: 0
+  lowpassFilter: 1
+  enableFade: 1
+  fadeDuration: 1
+--- !u!65 &403809183
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 403809180}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &403809184
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 403809180}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 2716be126b51b64fe9c47fe1eb4adcab, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &403809185
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 403809180}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &403809186
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 403809180}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 11.151, y: 1.5, z: -22.54}
+  m_LocalScale: {x: 5, y: 3, z: 5}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &426555498
 GameObject:
   m_ObjectHideFlags: 0
@@ -966,6 +1291,86 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1001 &640852191
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 585582455804627884, guid: 057164f89fbc47398a8142934f3f13c8,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 585582455804627884, guid: 057164f89fbc47398a8142934f3f13c8,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 585582455804627884, guid: 057164f89fbc47398a8142934f3f13c8,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 585582455804627884, guid: 057164f89fbc47398a8142934f3f13c8,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 585582455804627884, guid: 057164f89fbc47398a8142934f3f13c8,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 585582455804627884, guid: 057164f89fbc47398a8142934f3f13c8,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 585582455804627884, guid: 057164f89fbc47398a8142934f3f13c8,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 585582455804627884, guid: 057164f89fbc47398a8142934f3f13c8,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 585582455804627884, guid: 057164f89fbc47398a8142934f3f13c8,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 585582455804627884, guid: 057164f89fbc47398a8142934f3f13c8,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4140285882209078907, guid: 057164f89fbc47398a8142934f3f13c8,
+        type: 3}
+      propertyPath: serializedProgramAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 49c38271bf5bd4cc09ad26c2483e762d,
+        type: 2}
+    - target: {fileID: 4579108556790994804, guid: 057164f89fbc47398a8142934f3f13c8,
+        type: 3}
+      propertyPath: m_Name
+      value: QuickDebugUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 4983674764575862573, guid: 057164f89fbc47398a8142934f3f13c8,
+        type: 3}
+      propertyPath: serializationData.Prefab
+      value: 
+      objectReference: {fileID: 4983674764575862573, guid: 057164f89fbc47398a8142934f3f13c8,
+        type: 3}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 057164f89fbc47398a8142934f3f13c8, type: 3}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -1113,8 +1518,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 9.056707, y: 4.1373696, z: 13.695042}
-  m_Center: {x: 4.9752226, y: 2.314368, z: -7.2902985}
+  m_Size: {x: 9.59066, y: 4.1373696, z: 14.525627}
+  m_Center: {x: 4.9455585, y: 2.314368, z: -7.4089527}
 --- !u!114 &716597930
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -1165,7 +1570,6 @@ MonoBehaviour:
   _udonSharpBackingUdonBehaviour: {fileID: 716597930}
   zoneID: Room
   zoneIdIndex: 1
-  useNewApproach: 1
   transitionZoneIDs: []
   transitionZoneIdIndexes: 
   isNegativeZone: 0
@@ -1190,7 +1594,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &739952403
 Transform:
   m_ObjectHideFlags: 0
@@ -1256,6 +1660,10 @@ MonoBehaviour:
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 739952404}
   AudioZoneManager: {fileID: 1565303862}
+  qd: {fileID: 1534206675}
+  audioZoneColliderLayerMask:
+    serializedVersion: 2
+    m_Bits: 4194304
 --- !u!114 &739952406
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1707,7 +2115,6 @@ MonoBehaviour:
   _udonSharpBackingUdonBehaviour: {fileID: 982809932}
   zoneID: Room
   zoneIdIndex: 1
-  useNewApproach: 1
   transitionZoneIDs: []
   transitionZoneIdIndexes: 
   isNegativeZone: 1
@@ -1866,7 +2273,6 @@ MonoBehaviour:
   _udonSharpBackingUdonBehaviour: {fileID: 1084732891}
   zoneID: Room
   zoneIdIndex: 1
-  useNewApproach: 1
   transitionZoneIDs: []
   transitionZoneIdIndexes: 
   isNegativeZone: 0
@@ -2167,7 +2573,6 @@ MonoBehaviour:
   _udonSharpBackingUdonBehaviour: {fileID: 1250339799}
   zoneID: Room
   zoneIdIndex: 1
-  useNewApproach: 1
   transitionZoneIDs: []
   transitionZoneIdIndexes: 
   isNegativeZone: 0
@@ -2285,7 +2690,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   launchedFromSDKPipeline: 0
   completedSDKPipeline: 0
-  blueprintId: wrld_9b28b9a5-5bf7-4a84-b4b7-b1194a75b389
+  blueprintId: wrld_acfd2bd3-9e67-41e1-8e6f-d1462aeeb588
   contentType: 1
   assetBundleUnityVersion: 
   fallbackStatus: 0
@@ -2313,7 +2718,7 @@ MonoBehaviour:
   interactThruLayers: 0
   autoSpatializeAudioSources: 0
   gravity: {x: 0, y: -9.81, z: 0}
-  layerCollisionArr: 01010100010001010101010100010001010101000101010101010101000000010101010001000101010101010001000101010100010101010101010100000001010101000100010101010101000100010101010001010101010101010000000100000001000000000000000000000000000000000000010101010101000000010101010001000101010101010001000101010100010101010101010100000001000000000000010100000000000000000000000000000101010101010000000101010100010101010101010101010101010101010101010101010101010101010101010001010101010101010101010101010101010101010101010101010101010101000100010101010101000100010101010001010101010101010000000101010100010001010100000100000000000001000101010101010101000000010101010001000101010000010000000000000100010101010101010100000001010101000100010101010101000100010101010001010101010101010000000100000000000001010000000000000000000000000000010101010101000000010101010001000101010000010001010101010000000001010101010100000001000000000000010100000000000100000000000000000101010101010000000101010100010001010100000100010001010101000101010101010101000000010101010001000101010000010001000101010100010101010101010100000001010101000100010101000001000100010101010001010101010101010000000101010100010001010101010100000001010101000101010101010101000000010000000000000101000000000000000000000000000001010101010100000001010101000100010101010101000000010101010001010101010101010000000101010100010001010101010100000001010101000101010101010101000000010101010101010101010101010101010101010101010100010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101000000010101010101010101010101010101010101010101010101010101010100000001010101010101010101010101010101010101010101010101010101010000000101010101010101010101010101010101010101010101010101010101000000010000000000000101000000000000000000000000000001010000000000000001000000000000010100000000000000000000000000000101000000000000000100000000000001010000000000000000000000000000010100000000000000010101010101010101010101010101010101010101010101010101010101010101
+  layerCollisionArr: 01010100010001010101010100010001010101000101000101010101000000010101010001000101010101010001000101010100010100010101010100000001010101000100010101010101000100010101010001010001010101010000000100000001000000000000000000000000000000000000000101010101000000010101010001000101010101010001000101010100010100010101010100000001000000000000010100000000000000000000000000000001010101010000000101010100010101010101010101010101010101010101000101010101010101010101010001010101010101010101010101010101010100010101010101010101010101000100010101010101000100010101010001010001010101010000000101010100010001010100000100000000000001000101000101010101000000010101010001000101010000010000000000000100010100010101010100000001010101000100010101010101000100010101010001010001010101010000000100000000000001010000000000000000000000000000000101010101000000010101010001000101010000010001010101010000000000010101010100000001000000000000010100000000000100000000000000000001010101010000000101010100010001010100000100010001010101000101000101010101000000010101010001000101010000010001000101010100010100010101010100000001010101000100010101000001000100010101010001010001010101010000000101010100010001010101010100000001010101000101000101010101000000010000000000000101000000000000000000000000000000010101010100000001010101000100010101010101000000010101010001010001010101010000000101010100010001010101010100000001010101000101000101010101000000010000000000000000000000000000000000000000000000000000000000000000010101010101010101010101010101010101010101010001010101010101010101010101010101010101010101010101010101010101000101010101000000010101010101010101010101010101010101010101010100010101010100000001010101010101010101010101010101010101010101010001010101010000000101010101010101010101010101010101010101010101000101010101000000010000000000000101000000000000000000000000000000010000000000000001000000000000010100000000000000000000000000000001000000000000000100000000000001010000000000000000000000000000000100000000000000010101010101010101010101010101010101010101010100010101010101010101
   capacity: 0
   contentSex: 0
   contentViolence: 0
@@ -2331,6 +2736,8 @@ MonoBehaviour:
   DynamicPrefabs: []
   DynamicMaterials:
   - {fileID: 2100000, guid: 5aa95b3fa56e28f43a84e301c3d19e08, type: 2}
+  - {fileID: 2100000, guid: 1c987494452b85f4ab4cac3322415907, type: 2}
+  - {fileID: 2100000, guid: 2716be126b51b64fe9c47fe1eb4adcab, type: 2}
   - {fileID: 2100000, guid: 76ff537c8e1a84345868e6aeee938ab3, type: 2}
   LightMapsNear: []
   LightMapsFar: []
@@ -2451,9 +2858,22 @@ MonoBehaviour:
     ID: 33
     SerializedTypeNames:
     - VRC.Udon.UdonBehaviour
+  - gameObject: {fileID: 403809180}
+    ID: 34
+    SerializedTypeNames:
+    - VRC.Udon.UdonBehaviour
+  - gameObject: {fileID: 90552517}
+    ID: 35
+    SerializedTypeNames:
+    - VRC.Udon.UdonBehaviour
+  - gameObject: {fileID: 1534206673}
+    ID: 36
+    SerializedTypeNames:
+    - VRC.Udon.UdonBehaviour
   portraitCameraPositionOffset: {x: 0, y: 0, z: 0}
   portraitCameraRotationOffset: {x: 0, y: 1, z: 0, w: -0.00000004371139}
-  PlayerPersistence: []
+  PlayerPersistence:
+  - {fileID: 739952406}
   NavigationAreas: []
 --- !u!114 &1344707369
 MonoBehaviour:
@@ -2583,7 +3003,6 @@ MonoBehaviour:
   _udonSharpBackingUdonBehaviour: {fileID: 1524278092}
   zoneID: Room2
   zoneIdIndex: 2
-  useNewApproach: 1
   transitionZoneIDs:
   - 
   transitionZoneIdIndexes: 00000000
@@ -2655,6 +3074,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 491102007}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1534206673 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4579108556790994804, guid: 057164f89fbc47398a8142934f3f13c8,
+    type: 3}
+  m_PrefabInstance: {fileID: 640852191}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1534206675 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4983674764575862573, guid: 057164f89fbc47398a8142934f3f13c8,
+    type: 3}
+  m_PrefabInstance: {fileID: 640852191}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1534206673}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc4988c7324887ac480a94e0e8a6ebe5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1565303860
 GameObject:
   m_ObjectHideFlags: 0
@@ -2726,6 +3163,27 @@ MonoBehaviour:
   - 
   - Room
   - Room2
+  totalAudioZonesCount: 3
+  audioSettingsIndexBitShift: 3
+  audioSettingsIndexBitMask: 18446744073709551608
+  allAudioSettingsPriority: ee020000f4010000
+  allAudioSettingsVoiceGain:
+  - 13
+  - 12
+  allAudioSettingsVoiceNear:
+  - 0
+  - 0
+  allAudioSettingsVoiceFar:
+  - 10
+  - 5
+  allAudioSettingsVolumetricRadius:
+  - 0
+  - 0
+  allAudioSettingsLowpassFilter: 0101
+  allAudioSettingsEnableFade: 0101
+  allAudioSettingsFadeDuration:
+  - 1
+  - 1
   voiceGain: 7
   voiceRangeNear: 0
   voiceRangeFar: 1.75
@@ -2956,9 +3414,9 @@ MonoBehaviour:
   AllowCollisionOwnershipTransfer: 0
   Reliable: 0
   _syncMethod: 3
-  serializedProgramAsset: {fileID: 11400000, guid: d989bb950b6058bcf83b98666d01fedf,
+  serializedProgramAsset: {fileID: 11400000, guid: 8e511d1ff43cab9af82a2116c5849502,
     type: 2}
-  programSource: {fileID: 11400000, guid: 8c4a99d0ec300f2388a707078d3cb88f, type: 2}
+  programSource: {fileID: 11400000, guid: e2334b9961c961206a8a0871790dcd79, type: 2}
   serializedPublicVariablesBytesString: Ai8AAAAAATIAAABWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgAuAFUAZABvAG4AVgBhAHIAaQBhAGIAbABlAFQAYQBiAGwAZQAsACAAVgBSAEMALgBVAGQAbwBuAC4AQwBvAG0AbQBvAG4AAAAAAAYBAAAAAAAAACcBBAAAAHQAeQBwAGUAAWgAAABTAHkAcwB0AGUAbQAuAEMAbwBsAGwAZQBjAHQAaQBvAG4AcwAuAEcAZQBuAGUAcgBpAGMALgBMAGkAcwB0AGAAMQBbAFsAVgBSAEMALgBVAGQAbwBuAC4AQwBvAG0AbQBvAG4ALgBJAG4AdABlAHIAZgBhAGMAZQBzAC4ASQBVAGQAbwBuAFYAYQByAGkAYQBiAGwAZQAsACAAVgBSAEMALgBVAGQAbwBuAC4AQwBvAG0AbQBvAG4AXQBdACwAIABtAHMAYwBvAHIAbABpAGIAAQEJAAAAVgBhAHIAaQBhAGIAbABlAHMALwEAAAABaAAAAFMAeQBzAHQAZQBtAC4AQwBvAGwAbABlAGMAdABpAG8AbgBzAC4ARwBlAG4AZQByAGkAYwAuAEwAaQBzAHQAYAAxAFsAWwBWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgAuAEkAbgB0AGUAcgBmAGEAYwBlAHMALgBJAFUAZABvAG4AVgBhAHIAaQBhAGIAbABlACwAIABWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgBdAF0ALAAgAG0AcwBjAG8AcgBsAGkAYgABAAAABgEAAAAAAAAAAi8CAAAAAUkAAABWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgAuAFUAZABvAG4AVgBhAHIAaQBhAGIAbABlAGAAMQBbAFsAUwB5AHMAdABlAG0ALgBJAG4AdAAzADIALAAgAG0AcwBjAG8AcgBsAGkAYgBdAF0ALAAgAFYAUgBDAC4AVQBkAG8AbgAuAEMAbwBtAG0AbwBuAAIAAAAGAgAAAAAAAAAnAQQAAAB0AHkAcABlAAEXAAAAUwB5AHMAdABlAG0ALgBTAHQAcgBpAG4AZwAsACAAbQBzAGMAbwByAGwAaQBiACcBCgAAAFMAeQBtAGIAbwBsAE4AYQBtAGUAAR8AAABfAF8AXwBVAGQAbwBuAFMAaABhAHIAcABCAGUAaABhAHYAaQBvAHUAcgBWAGUAcgBzAGkAbwBuAF8AXwBfACcBBAAAAHQAeQBwAGUAARYAAABTAHkAcwB0AGUAbQAuAEkAbgB0ADMAMgAsACAAbQBzAGMAbwByAGwAaQBiABcBBQAAAFYAYQBsAHUAZQACAAAABwUHBQcF
   publicVariablesUnityEngineObjects: []
   publicVariablesSerializationDataFormat: 0
@@ -2971,7 +3429,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2032092309}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0910a5cc19b6573179f17496dc4f9cc8, type: 3}
+  m_Script: {fileID: 11500000, guid: 13a3ba2cef83e02d7a900f6dc3e95120, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   serializationData:
@@ -2987,7 +3445,8 @@ MonoBehaviour:
       Entry: 6
       Data: 
   _udonSharpBackingUdonBehaviour: {fileID: 2032092311}
-  syncedAudioZonesField: 0
+  syncedAudioSettingIndex: 0
+  syncedAudioZones: 
 --- !u!1 &2101463961
 GameObject:
   m_ObjectHideFlags: 0
@@ -3041,8 +3500,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 5.4333615, y: 4.148411, z: 19.584602}
-  m_Center: {x: 6.683237, y: 2.3814907, z: -10.336967}
+  m_Size: {x: 2.9028168, y: 4.1373696, z: 5.1945305}
+  m_Center: {x: 1.8982768, y: 2.314368, z: -17.502886}
 --- !u!114 &2101463964
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -3093,10 +3552,9 @@ MonoBehaviour:
   _udonSharpBackingUdonBehaviour: {fileID: 2101463964}
   zoneID: Room2
   zoneIdIndex: 2
-  useNewApproach: 1
   transitionZoneIDs: []
   transitionZoneIdIndexes: 
-  isNegativeZone: 0
+  isNegativeZone: 1
   combinedZoneIdsField1: 4
   combinedZoneIdsField2: 0
   combinedZoneIdsField3: 0
@@ -3365,3 +3823,6 @@ SceneRoots:
   - {fileID: 7551841052617083213}
   - {fileID: 856011383}
   - {fileID: 82235118}
+  - {fileID: 403809186}
+  - {fileID: 90552523}
+  - {fileID: 640852191}
