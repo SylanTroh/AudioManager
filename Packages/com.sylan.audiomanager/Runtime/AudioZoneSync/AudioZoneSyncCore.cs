@@ -45,10 +45,11 @@ namespace Sylan.AudioManager
             for (var index = 0; index < audioZoneIndexes.Length; index++)
             {
                 var audioZoneIndex = audioZoneIndexes[index];
-                zoneNames[index] = AudioZoneManager.ZoneIdMapping[audioZoneIndex];
+                zoneNames[index] = $"\"{AudioZoneManager.ZoneIdMapping[audioZoneIndex]}\"";
             }
 
-            Debug.Log($"Player: {OwningPlayer.PrintName()}, Setting: {syncedAudioSettingIndex}, Zones: '{string.Join("', '", zoneNames)}'");
+            Debug.Log($"[AudioManager] Player: {OwningPlayer.PrintName()}, Setting: {syncedAudioSettingIndex}, "
+                + $"Zones ({zoneNames.Length}): {string.Join(", ", zoneNames)}");
         }
 #endif
 
