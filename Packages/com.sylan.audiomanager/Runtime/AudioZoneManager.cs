@@ -135,6 +135,9 @@ namespace Sylan.AudioManager
 
             if (settingIndex == -1)
             {
+#if AUDIO_MANAGER_DEBUG
+                Debug.Log("[AudioManager] No Setting Zone for " + playerObjectSync.OwningPlayer.displayName + ".");
+#endif
                 _AudioSettingManager.RemoveAudioSetting(playerObjectSync.OwningPlayer, SETTING_ZONE_SETTING_ID);
             }
             else
@@ -142,6 +145,9 @@ namespace Sylan.AudioManager
                 int actualIndex = settingIndex + 1;
                 int priority = allAudioSettingsPriority[actualIndex];
                 DataList setting = allAudioSettings[actualIndex];
+#if AUDIO_MANAGER_DEBUG
+                Debug.Log("[AudioManager] Using Setting Zone " + actualIndex + " for " + playerObjectSync.OwningPlayer.displayName + ".");
+#endif
                 _AudioSettingManager.AddAudioSetting(playerObjectSync.OwningPlayer, SETTING_ZONE_SETTING_ID, priority, setting);
             }
 

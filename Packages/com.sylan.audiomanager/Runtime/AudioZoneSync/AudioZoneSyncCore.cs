@@ -48,7 +48,7 @@ namespace Sylan.AudioManager
                 zoneNames[index] = AudioZoneManager.ZoneIdMapping[audioZoneIndex];
             }
 
-            Debug.Log($"Player {OwningPlayer.PrintName()} entered Zones: '{string.Join("', '", zoneNames)}'");
+            Debug.Log($"Player: {OwningPlayer.PrintName()}, Setting: {syncedAudioSettingIndex}, Zones: '{string.Join("', '", zoneNames)}'");
         }
 #endif
 
