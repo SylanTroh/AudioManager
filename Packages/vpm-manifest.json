@@ -5,6 +5,9 @@
     },
     "com.vrchat.worlds": {
       "version": "3.10.3"
+    },
+    "com.jansharp.common": {
+      "version": "1.3.1"
     }
   },
   "locked": {
@@ -21,6 +24,12 @@
     "com.vrchat.base": {
       "version": "3.10.3",
       "dependencies": {}
+    },
+    "com.jansharp.common": {
+      "version": "1.3.1",
+      "dependencies": {
+        "com.vrchat.worlds": "^3.6.x"
+      }
     }
   }
 }

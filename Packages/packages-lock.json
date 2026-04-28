@@ -1,5 +1,11 @@
 {
   "dependencies": {
+    "com.jansharp.common": {
+      "version": "file:com.jansharp.common",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.sylan.audiomanager": {
       "version": "file:com.sylan.audiomanager",
       "depth": 0,
