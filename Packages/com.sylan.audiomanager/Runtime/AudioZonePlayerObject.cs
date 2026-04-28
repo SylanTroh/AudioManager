@@ -13,6 +13,9 @@ namespace Sylan.AudioManager
     {
         [HideInInspector, SerializeField] public AudioZoneManager AudioZoneManager;
         public const string AudioZoneManagerPropertyName = nameof(AudioZoneManager);
+#if AUDIO_MANAGER_DEBUG_SW
+        [HideInInspector, SerializeField, JanSharp.SingletonReference] private JanSharp.QuickDebugUI qd;
+#endif
 
         private AudioZoneSyncCore audioZonePlayerObjectSync;
 
@@ -28,8 +31,11 @@ namespace Sylan.AudioManager
         private readonly DataDictionary audioSettingColliderCache = new DataDictionary();
         private readonly DataDictionary audioZoneColliderCache = new DataDictionary();
         private readonly Collider[] hits = new Collider[25];
-#if AUDIO_MANAGER_DEBUG
+#if AUDIO_MANAGER_DEBUG_SW
         private readonly System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+        private object[] stopwatchData;
+        private double lastPhysicsLoopTime = 0d;
+        private int lastHitCount = 0;
 #endif
 
         private void Start()
@@ -53,27 +59,48 @@ namespace Sylan.AudioManager
 
             if (!Networking.IsOwner(gameObject)) return;
 
+#if AUDIO_MANAGER_DEBUG_SW
+            Debug.Log($"[AudioManager] audioZoneColliderLayerMask: 0x{(int)audioZoneColliderLayerMask:x8}");
+            stopwatchData = JanSharp.StopwatchUtil.CreateDataContainer();
+            qd.Add(this, "Zones Update", nameof(UpdateStopwatchUI1));
+            qd.Add(this, "Zones Last Update", nameof(UpdateStopwatchUI2));
+            qd.Add(this, "Last Hit Count", nameof(UpdateLastHitCountUI));
+#endif
+
             localPlayer = Networking.LocalPlayer;
             SendCustomEventDelayedSeconds(nameof(ValidateAudioZones), 1, EventTiming.LateUpdate);
         }
 
+#if AUDIO_MANAGER_DEBUG_SW
+        public void UpdateStopwatchUI1()
+        {
+            qd.DisplayValue = JanSharp.StopwatchUtil.FormatAvgMinMax(stopwatch, stopwatchData);
+            stopwatch.Reset();
+        }
+
+        public void UpdateStopwatchUI2() => qd.DisplayValue = $"{lastPhysicsLoopTime:f3}ms";
+
+        public void UpdateLastHitCountUI() => qd.DisplayValue = lastHitCount.ToString();
+#endif
+
         public void ValidateAudioZones()
         {
-#if AUDIO_MANAGER_DEBUG
+#if AUDIO_MANAGER_DEBUG_SW
             stopwatch.Restart();
 #endif
             audioZonePlayerObjectSync.OnValidateAudioZonesStart();
             if (TestForChangedAudioZone())
             {
-#if AUDIO_MANAGER_DEBUG
-                Debug.Log("Zone Changed");
+#if AUDIO_MANAGER_DEBUG_SW
+                Debug.Log("[AudioManager] Zone Changed");
 #endif
                 audioZonePlayerObjectSync.OnZoneChanged();
             }
 
-#if AUDIO_MANAGER_DEBUG
+#if AUDIO_MANAGER_DEBUG_SW
             stopwatch.Stop();
-            Debug.Log($"finished after {stopwatch.Elapsed.TotalMilliseconds}ms with {hitCount} hits");
+            lastPhysicsLoopTime = stopwatch.Elapsed.TotalMilliseconds;
+            // Debug.Log($"[AudioManager] Finished after {stopwatch.Elapsed.TotalMilliseconds}ms with {hitCount} hits");
 #endif
             SendCustomEventDelayedSeconds(nameof(ValidateAudioZones), IntervalInSeconds, EventTiming.LateUpdate);
         }
@@ -84,6 +111,9 @@ namespace Sylan.AudioManager
             transform.SetPositionAndRotation(trackingData.position, trackingData.rotation);
 
             var size = Physics.OverlapSphereNonAlloc(transform.position, .01f, hits, audioZoneColliderLayerMask, QueryTriggerInteraction.Collide);
+#if AUDIO_MANAGER_DEBUG_SW
+            lastHitCount = size;
+#endif
             for (hitCount = 0; hitCount < size; hitCount++)
             {
                 var hit = hits[hitCount];
