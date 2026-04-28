@@ -36,7 +36,7 @@ namespace Sylan.AudioManager
             var audioZoneIndexes = new int[count];
             for (int i = 0; i < count; i++)
             {
-                audioZoneIndexes[i] = AudioZones[i];
+                audioZoneIndexes[i] = syncedAudioZones[i];
             }
             LogAudioZones(audioZoneIndexes);
 #endif
