@@ -83,7 +83,7 @@ namespace Sylan.AudioManager
         /// <returns></returns>
         public virtual bool HasZoneChanged()
         {
-            bool hasSettingZoneChanged = activeSettingZone == oldActiveSettingZone;
+            bool hasSettingZoneChanged = activeSettingZone != oldActiveSettingZone;
             oldActiveSettingZone = activeSettingZone;
             return hasSettingZoneChanged;
         }
