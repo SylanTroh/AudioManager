@@ -184,7 +184,7 @@ namespace Sylan.AudioManager
             if (LocalPlayerSync.SharesAudioZoneWith(remotePlayerObjectSync))
             {
 #if AUDIO_MANAGER_DEBUG
-                Debug.Log("[AudioManager] Shares AudioZone with" + remotePlayerObjectSync.OwningPlayer.displayName + ".");
+                Debug.Log("[AudioManager] Shares AudioZone with " + remotePlayerObjectSync.OwningPlayer.displayName + ".");
 #endif
                 _AudioSettingManager.RemoveAudioSetting(remotePlayerObjectSync.OwningPlayer, AUDIO_ZONE_SETTING_ID);
             }
