@@ -147,6 +147,7 @@ namespace Sylan.AudioManager
 #if AUDIO_MANAGER_DEBUG
                 Debug.Log("[AudioManager] Using Setting Zone " + settingIndex + " for " + playerObjectSync.OwningPlayer.displayName + ".");
 #endif
+                _AudioSettingManager.RemoveAudioSetting(playerObjectSync.OwningPlayer, SETTING_ZONE_SETTING_ID);
                 _AudioSettingManager.AddAudioSetting(playerObjectSync.OwningPlayer, SETTING_ZONE_SETTING_ID, priority, setting);
             }
 

@@ -14,5 +14,8 @@
   - [ ] Or add an option for the physics overlap sphere to be a bigger radius, that matching the player capsule collider, which has a radius of 0.2. The player capsule collider is constant, does not change with avatar eye height or sizing of any kind
 - [ ] Remove the editor scripting for shrinking zones to "prevent clipping" since that is no longer relevant
 - [ ] Remove dependency on com.jansharp.common and any test code using it before merging
+- [ ] Log which sync script is used for bug report purposes
+- [ ] Maybe change AddAudioSetting to accept a bool to indicate overwriting if that id is already used
+  - [ ] But like also refactor the entire settings manager at that point :P
 
 - [ ] refactoring, naming, small shit
