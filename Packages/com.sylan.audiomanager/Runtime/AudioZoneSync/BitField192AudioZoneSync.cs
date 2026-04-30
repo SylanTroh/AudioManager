@@ -131,6 +131,7 @@ namespace Sylan.AudioManager
                     audioZoneIndexes.Add(128 + i);
                 }
             }
+            audioZoneIndexes.Sort();
 
             LogAudioZones(ToIntArray(audioZoneIndexes));
         }
