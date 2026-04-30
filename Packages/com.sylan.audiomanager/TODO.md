@@ -23,5 +23,18 @@
   - [x] If it does not exist, show a drop down on the `AudioZoneManager` with a sane default (Probably `Ignore Raycast` or `Environment`)
   - [x] Also if it does not exist, show a button in the `AudioZoneManager` inspector to create that layer
   - [x] Set the layer of all zone colliders as well as `audioZoneColliderLayerMask` accordingly
+- [ ] Ensure `IsTrigger` for Collider of `AudioSettingCollider`
+- [ ] Ensure `IsTrigger` for Collider of `AudioZoneCollider`
 
 - [ ] refactoring, naming, small shit
+
+
+- [ ] Update Readme for Major version change
+  - [ ] Remove Video Guide or at least mention what parts are no longer up to date
+  - [ ] Update Known Issues
+  - [ ] Inform about potential migration actions (un-shrink zones?)
+  - [ ] Update `Update Log` for Version 2.0.0
+    - Reworked Logic to detect Zones a Player is in to work with Stations. It now uses PlayerObject which automatically gets added to scene
+    - Removed Shrink Button for `AudioSettingCollider` and `AudioZoneCollider` which is no longer needed
+    - Added Option to `AudioZoneManager` to set default Layer
+    - Added Button to `AudioZoneManager` to initialize "AudioZones" Layer
