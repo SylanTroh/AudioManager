@@ -6,7 +6,7 @@
   - [x] Deduplication if all settings (including priority) match
   - [x] ~~extra class~~ audio zone manager which has mapping from index to Settings (voice, priority, ...)
     - [x] to then apply them to AudioSettingsManager on change
-- [ ] Performance checking... somehow???
+- [x] Performance checking... somehow???
 - [x] Change the AudioZones layer in project settings to not collide with anything anymore
 - [ ] Handle network congestion, using `Networking.Suffering`
 - [ ] Do something about the fact that zones are now probed at specifically the head position and no longer the player capsule, migration wise. This is a rather annoying breaking change for people to update to as it stands currently
