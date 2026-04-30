@@ -17,8 +17,12 @@ namespace Sylan.AudioManager
 
         public abstract bool SharesAudioZoneWith(AudioZoneSyncCore other);
 
+        protected abstract string SyncScriptName { get; }
+
         private void Start()
         {
+            Debug.Log($"[AudioManager] Using the {SyncScriptName} script for syncing audio and setting zones.");
+
             AudioZonePlayerObject = transform.parent.GetComponent<AudioZonePlayerObject>();
             AudioZoneManager = AudioZonePlayerObject.AudioZoneManager;
             if (AudioZoneManager == null)

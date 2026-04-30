@@ -7,6 +7,8 @@ namespace Sylan.AudioManager
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class BitField64AudioZoneSync : BitFieldAudioZoneSync
     {
+        protected override string SyncScriptName => nameof(BitField64AudioZoneSync);
+
         // TODO: remove SerializeField, just used for testing
         /// <summary>
         /// <para>Packed into <see cref="highestSyncedAudioZonesField"/> for actual syncing.</para>

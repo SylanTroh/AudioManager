@@ -7,6 +7,8 @@ namespace Sylan.AudioManager
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class ShortAudioZoneSync : AudioZoneSyncArrayCore
     {
+        protected override string SyncScriptName => nameof(ShortAudioZoneSync);
+
         /// <summary>
         /// <para>Sorted ascending. Can check for <see cref="AudioZoneManager.EmptyZoneIdIndex"/> by just
         /// checking index <c>0</c>, and can use <see cref="Array.BinarySearch(Array, object)"/>.</para>
