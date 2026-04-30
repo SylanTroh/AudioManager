@@ -36,7 +36,7 @@ public class AudioZoneLayerInit : EditorWindow
         {
             if (layerIndex == -1)
             {
-                Debug.LogError("Please enter a valid layer index.");
+                Debug.LogError("[AudioManager] Please enter a valid layer index.");
                 return;
             }
 
@@ -61,12 +61,12 @@ public class AudioZoneLayerInit : EditorWindow
             if (LayerMask.LayerToName(i) == "")
             {
                 layerIndex = i;
-                Debug.Log("Found empty layer at index " + i + ".");
+                Debug.Log("[AudioManager] Found empty layer at index " + i + ".");
                 return;
             }
         }
 
-        Debug.LogWarning("No empty layer found after index 21.");
+        Debug.LogWarning("[AudioManager] No empty layer found after index 21.");
     }
 
     public static int FindAudioZoneLayer(bool doLogWarning)
@@ -81,7 +81,7 @@ public class AudioZoneLayerInit : EditorWindow
         }
 
         if (layerIndex == -1)
-            Debug.LogWarning("No AudioZones layer found after index 21.");
+            Debug.LogWarning("[AudioManager] No AudioZones layer found after index 21.");
         return layerIndex;
     }
 

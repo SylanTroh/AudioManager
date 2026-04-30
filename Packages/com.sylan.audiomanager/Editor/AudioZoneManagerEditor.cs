@@ -124,7 +124,7 @@ namespace Sylan.AudioManager
             {
                 if (script == validInstance) continue;
 
-                Debug.LogError($"Manually or unintentionally created {typeof(T).Name} script instance found. Should be deleted.", script);
+                Debug.LogError($"[AudioManager] Manually or unintentionally created {typeof(T).Name} script instance found. Should be deleted.", script);
                 valid = false;
             }
             return valid;

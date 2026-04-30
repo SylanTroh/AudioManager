@@ -37,10 +37,9 @@ namespace AudioManager.Editor
             {
                 string finalDefineString = string.Join(";", defineSet.ToArray());
                 PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTarget, finalDefineString);
-                Debug.LogFormat("Set Scripting Define Symbols for selected build target ({0}) to: {1}", buildTarget.ToString(), finalDefineString);
+                Debug.Log($"[AudioManager] Set Scripting Define Symbols for selected build target ({buildTarget}) to: {finalDefineString}");
             }
         }
     }
-
 }
 #endif
