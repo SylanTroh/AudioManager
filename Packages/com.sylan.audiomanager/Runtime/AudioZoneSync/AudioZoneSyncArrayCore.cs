@@ -27,11 +27,11 @@ namespace Sylan.AudioManager
         {
             if (audioZoneCollider.isNegativeZone)
             {
-                AddZoneIds(audioZoneCollider, oldNegativeZoneIds, negativeZoneIds, ref hasZonesChanged);
+                AddZoneIds(audioZoneCollider, oldNegativeZoneIds, negativeZoneIds);
             }
             else
             {
-                AddZoneIds(audioZoneCollider, oldAudioZoneIds, audioZoneIds, ref hasZonesChanged);
+                AddZoneIds(audioZoneCollider, oldAudioZoneIds, audioZoneIds);
             }
         }
 
@@ -49,13 +49,15 @@ namespace Sylan.AudioManager
 
             if (hasZonesChanged)
             {
+                // When positive and or negative zones changed, determine if zones actually changed after
+                // said positive and negative zones have been combined.
                 hasZonesChanged = false;
                 var keys = audioZoneIds.GetKeys();
                 for (var i = 0; i < keys.Count; i++)
                 {
                     if (!negativeZoneIds.ContainsKey(keys[i].Int))
                     {
-                        AddZoneId(keys[i].Int, oldFinalAudioZoneIds, finalAudioZoneIds, ref hasZonesChanged);
+                        AddZoneId(keys[i].Int, oldFinalAudioZoneIds, finalAudioZoneIds);
                     }
                 }
 
@@ -77,20 +79,20 @@ namespace Sylan.AudioManager
             newDict.Clear();
         }
 
-        private void AddZoneIds(AudioZoneCollider audioZoneCollider, DataDictionary oldDict, DataDictionary newDict, ref bool hasChanged)
+        private void AddZoneIds(AudioZoneCollider audioZoneCollider, DataDictionary oldDict, DataDictionary newDict)
         {
-            AddZoneId(audioZoneCollider.zoneIdIndex, oldDict, newDict, ref hasChanged);
+            AddZoneId(audioZoneCollider.zoneIdIndex, oldDict, newDict);
             foreach (var zoneId in audioZoneCollider.transitionZoneIdIndexes)
             {
-                AddZoneId(zoneId, oldDict, newDict, ref hasChanged);
+                AddZoneId(zoneId, oldDict, newDict);
             }
         }
 
-        private void AddZoneId(int zoneId, DataDictionary oldDict, DataDictionary newDict, ref bool hasChanged)
+        private void AddZoneId(int zoneId, DataDictionary oldDict, DataDictionary newDict)
         {
             if (!oldDict.ContainsKey(zoneId))
             {
-                hasChanged = true;
+                hasZonesChanged = true;
             }
 
             newDict.SetValue(zoneId, true);
