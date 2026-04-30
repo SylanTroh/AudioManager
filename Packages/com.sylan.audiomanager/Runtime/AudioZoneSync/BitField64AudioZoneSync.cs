@@ -11,7 +11,7 @@ namespace Sylan.AudioManager
 
         // TODO: remove SerializeField, just used for testing
         /// <summary>
-        /// <para>Packed into <see cref="highestSyncedAudioZonesField"/> for actual syncing.</para>
+        /// <para>Packed into <see cref="BitFieldAudioZoneSync.highestSyncedAudioZonesField"/> for actual syncing.</para>
         /// </summary>
         [SerializeField] private ulong syncedAudioZonesField;
 

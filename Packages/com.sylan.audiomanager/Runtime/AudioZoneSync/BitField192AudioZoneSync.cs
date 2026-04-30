@@ -13,7 +13,7 @@ namespace Sylan.AudioManager
         [UdonSynced, SerializeField] private ulong syncedAudioZonesField1 = 0uL;
         [UdonSynced, SerializeField] private ulong syncedAudioZonesField2 = 0uL;
         /// <summary>
-        /// <para>Packed into <see cref="highestSyncedAudioZonesField"/> for actual syncing.</para>
+        /// <para>Packed into <see cref="BitFieldAudioZoneSync.highestSyncedAudioZonesField"/> for actual syncing.</para>
         /// </summary>
         [SerializeField] private ulong syncedAudioZonesField3;
 
