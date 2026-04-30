@@ -39,7 +39,7 @@ namespace Sylan.AudioManager
 
         protected override void InternalOnPreSerialization(int audioSettingIndex)
         {
-            InternalOnPreSerialization(GetAllKeysArray(oldFinalAudioZoneIds), audioSettingIndex);
+            InternalOnPreSerialization(GetAllKeysArraySorted(oldFinalAudioZoneIds), audioSettingIndex);
         }
 
         public override bool HasZoneChanged()
@@ -98,7 +98,7 @@ namespace Sylan.AudioManager
             newDict.SetValue(zoneId, true);
         }
 
-        private int[] GetAllKeysArray(DataDictionary dict)
+        private int[] GetAllKeysArraySorted(DataDictionary dict)
         {
             var keys = new int[dict.Count];
             var list = dict.GetKeys();
