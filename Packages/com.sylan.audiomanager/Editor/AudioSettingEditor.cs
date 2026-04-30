@@ -250,9 +250,8 @@ namespace Sylan.AudioManager
         {
             if (!SerializedPropertyUtils.GetObjects<AudioSettingCollider>(out AudioSettingCollider[] settingZones)) return false;
             if (settingZones.Length == 0) return true;
-
-            int collisionLayer = AudioZoneLayerInit.FindAudioZoneLayer(doLogWarning: settingZones.Length != 0);
-            if (collisionLayer == -1) collisionLayer = 0;
+            if (!SerializedPropertyUtils.GetSerializedObject<AudioZoneManager>(out var managerSo)) return false;
+            AudioZoneLayerInit.TryFindAudioZoneLayer(out var collisionLayer, managerSo);
 
             var settingIdDict = new Dictionary<AudioSettingData, int>();
             var allAudioSettings = new List<AudioSettingData>();
@@ -265,7 +264,6 @@ namespace Sylan.AudioManager
 
             zoneIdCount = allAudioSettings.Count;
 
-            if (!SerializedPropertyUtils.GetSerializedObject<AudioZoneManager>(out var managerSo)) return false;
             if (managerSo != null)
             {
                 void SetArray(string propertyName, Action<SerializedProperty, AudioSettingData> setValue)

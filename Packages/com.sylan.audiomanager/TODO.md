@@ -18,10 +18,10 @@
 - [ ] Maybe change AddAudioSetting to accept a bool to indicate overwriting if that id is already used
   - [ ] But like also refactor the entire settings manager at that point :P
 - [x] Set audioZoneColliderLayerMask at build time
-- [ ] Better handle a lack of the AudioZones layer
-  - [ ] If the AudioZones layer exists, use that
-  - [ ] If it does not exist, show a drop down on the `AudioZoneManager` with a sane default (Probably `Ignore Raycast` or `Environment`)
-  - [ ] Also if it does not exist, show a button in the `AudioZoneManager` inspector to create that layer
-  - [ ] Set the layer of all zone colliders as well as `audioZoneColliderLayerMask` accordingly
+- [x] Better handle a lack of the AudioZones layer
+  - [x] If the AudioZones layer exists, use that
+  - [x] If it does not exist, show a drop down on the `AudioZoneManager` with a sane default (Probably `Ignore Raycast` or `Environment`)
+  - [x] Also if it does not exist, show a button in the `AudioZoneManager` inspector to create that layer
+  - [x] Set the layer of all zone colliders as well as `audioZoneColliderLayerMask` accordingly
 
 - [ ] refactoring, naming, small shit

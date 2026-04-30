@@ -11,11 +11,11 @@ namespace Sylan.AudioManager
     {
         public static bool RunOnBuild()
         {
-            IgnoreAllLayerCollisionForAudioZoneLayer();
 
             //Object with Serialized Property(s)
             if (!SerializedPropertyUtils.GetSerializedObject<AudioZoneManager>(out SerializedObject serializedObject)) return false;
             if (serializedObject == null) return true;
+            IgnoreAllLayerCollisionForAudioZoneLayer(serializedObject);
 
             // Get the AudioZoneManager instance
             AudioZoneManager manager = (AudioZoneManager)serializedObject.targetObject;
@@ -39,10 +39,9 @@ namespace Sylan.AudioManager
             return true;
         }
 
-        private static void IgnoreAllLayerCollisionForAudioZoneLayer()
+        private static void IgnoreAllLayerCollisionForAudioZoneLayer(SerializedObject serializedObject)
         {
-            int layerIndex = AudioZoneLayerInit.FindAudioZoneLayer(doLogWarning: false);
-            if (layerIndex == -1) return;
+            if (!AudioZoneLayerInit.TryFindAudioZoneLayer(out var layerIndex, serializedObject)) return;
 
             AudioZoneLayerInit.IgnoreAllLayerCollision(layerIndex);
         }
@@ -65,8 +64,7 @@ namespace Sylan.AudioManager
         {
             SerializedObject playerObjectSo = new(playerObject);
             playerObjectSo.FindProperty(AudioZonePlayerObject.AudioZoneManagerPropertyName).objectReferenceValue = manager;
-            int layer = AudioZoneLayerInit.FindAudioZoneLayer(doLogWarning: false);
-            if (layer == -1) layer = 0;
+            AudioZoneLayerInit.TryFindAudioZoneLayer(out var layer, manager);
             playerObjectSo.FindProperty(AudioZonePlayerObject.AudioZoneColliderLayerMaskPropertyName).intValue = 1 << layer;
             playerObjectSo.ApplyModifiedProperties();
         }
@@ -140,6 +138,11 @@ namespace Sylan.AudioManager
 
             serializedObject.Update();
             DrawPropertiesExcluding(serializedObject, "m_Script");
+            
+            if (!AudioZoneLayerInit.TryFindAudioZoneLayer(out var layerIndex, serializedObject))
+            {
+                DrawDefaultLayerSettings();
+            }
             serializedObject.ApplyModifiedProperties();
 
             // A button for the user to create the AudioZonePlayerObject immediately just for clarity that it is needed.
@@ -153,6 +156,38 @@ namespace Sylan.AudioManager
                     AudioZoneManagerInitialize.CreatePlayerObject((AudioZoneManager)targets[0]);
                 }
             }
+        }
+
+        private void DrawDefaultLayerSettings()
+        {
+            EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);  
+            EditorGUILayout.HelpBox(
+                "AudioZones Layer could not be found. Either select a Layer to use or Init AudioZones layer",
+                MessageType.Info
+            );
+                
+            EditorGUI.BeginChangeCheck();
+            
+            var defaultLayerIndexProp = serializedObject.FindProperty(nameof(AudioZoneManager.DefaultLayerIndex));
+            var newLayer = EditorGUILayout.LayerField(
+                "Default Layer",
+                defaultLayerIndexProp.intValue
+            );
+            
+            if (EditorGUI.EndChangeCheck())
+            {
+                defaultLayerIndexProp.intValue = newLayer;
+            }
+            
+            EditorGUILayout.Space();
+            if (GUILayout.Button(new GUIContent(
+                    "Init AudioZones Layer",
+                    "This is an optional but highly recommended step to improve performance by preventing unnecessary collisions.")))
+            {
+                AudioZoneLayerInit.ShowWindow();
+            }
+                
+            EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
         }
     }
 }

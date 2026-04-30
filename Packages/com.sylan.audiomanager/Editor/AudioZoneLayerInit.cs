@@ -1,23 +1,22 @@
 ﻿#if !COMPILER_UDONSHARP && UNITY_EDITOR
+using Sylan.AudioManager;
 using UnityEditor;
 using UnityEngine;
 
 public class AudioZoneLayerInit : EditorWindow
 {
     public const string layerName = "AudioZones";
-
     private int layerIndex = -1;
 
     [MenuItem("Tools/Sylan/Initialize AudioZone Layer")]
-    private static void ShowWindow()
+    public static void ShowWindow()
     {
         GetWindow(typeof(AudioZoneLayerInit));
     }
 
     private void OnGUI()
     {
-        int existingLayerIndex = FindAudioZoneLayer(doLogWarning: true);
-        if (existingLayerIndex != -1)
+        if (TryFindAudioZoneLayer(out var existingLayerIndex))
         {
             using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
             {
@@ -68,21 +67,24 @@ public class AudioZoneLayerInit : EditorWindow
 
         Debug.LogWarning("[AudioManager] No empty layer found after index 21.");
     }
-
-    public static int FindAudioZoneLayer(bool doLogWarning)
+    
+    public static bool TryFindAudioZoneLayer(out int layerIndex, object source = null)
     {
-        int layerIndex = -1;
-        for (int i = 22; i < 32; i++)
+        var manager = source switch
         {
-            if (LayerMask.LayerToName(i) == "AudioZones")
-            {
-                layerIndex = i;
-            }
-        }
+            SerializedObject serializedObject => serializedObject.targetObject as AudioZoneManager,
+            AudioZoneManager audioZoneManager => audioZoneManager,
+            _ => null
+        };
+        manager = manager != null? manager : FindFirstObjectByType<AudioZoneManager>();
 
-        if (layerIndex == -1)
-            Debug.LogWarning("[AudioManager] No AudioZones layer found after index 21.");
-        return layerIndex;
+        layerIndex = LayerMask.NameToLayer(layerName);
+        var success = layerIndex != -1;
+        if (!success)
+        {
+            layerIndex = manager != null ? manager.DefaultLayerIndex : -1;
+        }
+        return success;
     }
 
     private void Initialize()

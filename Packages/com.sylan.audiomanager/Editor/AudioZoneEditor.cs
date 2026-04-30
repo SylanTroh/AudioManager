@@ -260,11 +260,11 @@ namespace Sylan.AudioManager
         {
             if (!SerializedPropertyUtils.GetObjects<AudioZoneCollider>(out AudioZoneCollider[] audioZones)) return false;
             if (audioZones.Length == 0) return true;
+            if (!SerializedPropertyUtils.GetObject<AudioZoneManager>(out var audioZoneManager)) return false;
 
             var zoneIdDict = new Dictionary<string, int> { { string.Empty, AudioZoneManager.EmptyZoneIdIndex } };
 
-            int collisionLayer = AudioZoneLayerInit.FindAudioZoneLayer(doLogWarning: audioZones.Length != 0);
-            if (collisionLayer == -1) collisionLayer = 0;
+            AudioZoneLayerInit.TryFindAudioZoneLayer(out var collisionLayer, audioZoneManager);
 
             foreach (var audioZone in audioZones)
             {
@@ -274,7 +274,6 @@ namespace Sylan.AudioManager
 
             zoneIdCount = zoneIdDict.Count;
 
-            if (!SerializedPropertyUtils.GetObject<AudioZoneManager>(out var audioZoneManager)) return false;
             if (audioZoneManager != null)
             {
                 audioZoneManager.totalAudioZonesCount = zoneIdCount;
