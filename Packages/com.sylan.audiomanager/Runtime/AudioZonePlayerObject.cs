@@ -24,7 +24,8 @@ namespace Sylan.AudioManager
         /// <para>Cannot use <see cref="LayerMask.GetMask(string[])"/> with <c>"AudioZones"</c> at runtime
         /// because that returns <c>0</c> in VRChat.</para>
         /// </summary>
-        [SerializeField] private LayerMask audioZoneColliderLayerMask;
+        [HideInInspector, SerializeField] private LayerMask audioZoneColliderLayerMask;
+        public const string AudioZoneColliderLayerMaskPropertyName = nameof(audioZoneColliderLayerMask);
         private VRCPlayerApi localPlayer;
         private int hitCount = 0;
 

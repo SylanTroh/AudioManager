@@ -27,7 +27,7 @@ namespace Sylan.AudioManager
             //Set Serialized Property
             SerializedPropertyUtils.PopulateSerializedProperty<AudioSettingManager>(serializedObject, AudioZoneManager.AudioSettingManagerPropertyName);
 
-            RunOnPlayerObjectBuild(playerObject);
+            RunOnPlayerObjectBuild(playerObject, manager);
             AudioZoneSyncCore correctPlayerSync = PickAppropriateSyncScript(playerObject);
 
             if (!EnsureNoUnknownScriptInstances(playerObject)
@@ -58,20 +58,17 @@ namespace Sylan.AudioManager
             GameObject go = new(nameof(AudioZonePlayerObject));
             Undo.RegisterCreatedObjectUndo(go, $"Create {nameof(AudioZonePlayerObject)}");
             go.transform.SetParent(manager.transform, worldPositionStays: false);
-
-            AudioZonePlayerObject playerObject = UdonSharpUndo.AddComponent<AudioZonePlayerObject>(go);
-
-            // Immediately populate the manager both for clarity for the user
-            // as well as not having to rely on order of operations during on build.
-            SerializedObject playerObjectSo = new(playerObject);
-            playerObjectSo.FindProperty(AudioZonePlayerObject.AudioZoneManagerPropertyName).objectReferenceValue = manager;
-            playerObjectSo.ApplyModifiedProperties();
-            return playerObject;
+            return UdonSharpUndo.AddComponent<AudioZonePlayerObject>(go);
         }
 
-        private static void RunOnPlayerObjectBuild(AudioZonePlayerObject playerObject)
+        private static void RunOnPlayerObjectBuild(AudioZonePlayerObject playerObject, AudioZoneManager manager)
         {
-            SerializedPropertyUtils.PopulateSerializedProperty<AudioZoneManager>(new(playerObject), AudioZonePlayerObject.AudioZoneManagerPropertyName);
+            SerializedObject playerObjectSo = new(playerObject);
+            playerObjectSo.FindProperty(AudioZonePlayerObject.AudioZoneManagerPropertyName).objectReferenceValue = manager;
+            int layer = AudioZoneLayerInit.FindAudioZoneLayer(doLogWarning: false);
+            if (layer == -1) layer = 0;
+            playerObjectSo.FindProperty(AudioZonePlayerObject.AudioZoneColliderLayerMaskPropertyName).intValue = 1 << layer;
+            playerObjectSo.ApplyModifiedProperties();
         }
 
         private static AudioZoneSyncCore PickAppropriateSyncScript(AudioZonePlayerObject playerObject)

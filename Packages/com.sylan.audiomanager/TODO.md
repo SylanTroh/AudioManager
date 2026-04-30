@@ -17,7 +17,7 @@
 - [x] Log which sync script is used for bug report purposes
 - [ ] Maybe change AddAudioSetting to accept a bool to indicate overwriting if that id is already used
   - [ ] But like also refactor the entire settings manager at that point :P
-- [ ] Set audioZoneColliderLayerMask at build time
+- [x] Set audioZoneColliderLayerMask at build time
 - [ ] Better handle a lack of the AudioZones layer
   - [ ] If the AudioZones layer exists, use that
   - [ ] If it does not exist, show a drop down on the `AudioZoneManager` with a sane default (Probably `Ignore Raycast` or `Environment`)
