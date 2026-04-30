@@ -17,9 +17,6 @@ namespace Sylan.AudioManager
         /// </summary>
         [SerializeField] private ulong syncedAudioZonesField3;
 
-        private ulong oldSettingZonesField1;
-        private ulong oldSettingZonesField2;
-        private ulong oldSettingZonesField3;
         private ulong oldFinalAudioZonesField1;
         private ulong oldFinalAudioZonesField2;
         private ulong oldFinalAudioZonesField3;
@@ -27,9 +24,6 @@ namespace Sylan.AudioManager
         private ulong finalAudioZonesField2;
         private ulong finalAudioZonesField3;
 
-        private ulong settingZonesField1;
-        private ulong settingZonesField2;
-        private ulong settingZonesField3;
         private ulong audioZonesField1;
         private ulong audioZonesField2;
         private ulong audioZonesField3;
@@ -40,9 +34,6 @@ namespace Sylan.AudioManager
         public override void OnValidateAudioZonesStart()
         {
             base.OnValidateAudioZonesStart();
-            settingZonesField1 = 0ul;
-            settingZonesField2 = 0ul;
-            settingZonesField3 = 0ul;
             audioZonesField1 = 0ul;
             audioZonesField2 = 0ul;
             audioZonesField3 = 0ul;
@@ -73,18 +64,12 @@ namespace Sylan.AudioManager
             finalAudioZonesField2 = audioZonesField2 & ~negativeZonesField2;
             finalAudioZonesField3 = audioZonesField3 & ~negativeZonesField3;
 
-            bool hasChanged = oldSettingZonesField1 != settingZonesField1
-                           || oldSettingZonesField2 != settingZonesField2
-                           || oldSettingZonesField3 != settingZonesField3
-                           || oldFinalAudioZonesField1 != finalAudioZonesField1
+            bool hasChanged = oldFinalAudioZonesField1 != finalAudioZonesField1
                            || oldFinalAudioZonesField2 != finalAudioZonesField2
                            || oldFinalAudioZonesField3 != finalAudioZonesField3;
 
             if (!hasChanged) return base.HasZoneChanged();
 
-            oldSettingZonesField1 = settingZonesField1;
-            oldSettingZonesField2 = settingZonesField2;
-            oldSettingZonesField3 = settingZonesField3;
             oldFinalAudioZonesField1 = finalAudioZonesField1;
             oldFinalAudioZonesField2 = finalAudioZonesField2;
             oldFinalAudioZonesField3 = finalAudioZonesField3;
