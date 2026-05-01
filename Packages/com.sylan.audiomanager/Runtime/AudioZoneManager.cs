@@ -29,9 +29,26 @@ namespace Sylan.AudioManager
         // Audio Setting Zones
         // ================================================================
 
-        // Yes audio zones, not setting zones. This is used as an offset to distinguish between the two.
+        /// <summary>
+        /// <para>This is used as an offset to distinguish between audio zone and setting zone indexes when
+        /// using using <see cref="AudioZoneSyncArrayCore"/>.</para>
+        /// <para>Setting zone indexes get "shifted" up by this value for syncing purposes. In other words the
+        /// id range from <c>0</c> (inclusive) to <see cref="totalAudioZonesCount"/> (exclusive) is used for
+        /// <see cref="AudioZoneCollider"/>s, the id range starting at <see cref="totalAudioZonesCount"/>
+        /// (inclusive) is used for <see cref="AudioSettingCollider"/>s.</para>
+        /// </summary>
         [HideInInspector] public int totalAudioZonesCount;
+        /// <summary>
+        /// <para>When using <see cref="BitFieldAudioZoneSync"/> this defines how many of the lower bits of
+        /// the <see cref="BitFieldAudioZoneSync.highestSyncedAudioZonesField"/> are used for audio zones. The
+        /// remaining higher bits are used as an id/index for a setting zone.</para>
+        /// </summary>
         [HideInInspector] public int audioSettingsIndexBitShift;
+        /// <summary>
+        /// <para>When using <see cref="BitFieldAudioZoneSync"/> this is the mask for all the bits in the
+        /// <see cref="BitFieldAudioZoneSync.highestSyncedAudioZonesField"/> which are used as an id/index for
+        /// a setting zone.</para>
+        /// </summary>
         [HideInInspector] public ulong audioSettingsIndexBitMask;
 
         [HideInInspector] public int[] allAudioSettingsPriority;
