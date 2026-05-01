@@ -108,6 +108,8 @@ namespace Sylan.AudioManager
         /// </summary>
         private readonly DataList RemotePlayerSyncs = new DataList();
 
+        private bool killed;
+
         private void Start()
         {
             AudioZoneAudioSettings[AudioSettingManager.VOICE_GAIN_INDEX] = (DataToken)voiceGain;
@@ -152,6 +154,7 @@ namespace Sylan.AudioManager
 
         public void UpdateSettingZoneAudioSetting(AudioZoneSyncCore playerObjectSync, int settingIndex, bool doApply)
         {
+            if (killed) return;
             if (LocalPlayerSync == null) return; // The order in which player objects get created is undefined behavior.
             if (!Utilities.IsValid(playerObjectSync.OwningPlayer)) return; // Major trust issues.
             if (LocalPlayerSync == playerObjectSync) return;
@@ -186,6 +189,7 @@ namespace Sylan.AudioManager
 
         public void UpdateAudioZoneSetting(AudioZoneSyncCore playerObjectSync, bool doApply)
         {
+            if (killed) return;
             if (LocalPlayerSync == null) return; // The order in which player objects get created is undefined behavior.
             if (!Utilities.IsValid(playerObjectSync.OwningPlayer)) return; // Major trust issues.
             if (LocalPlayerSync != playerObjectSync)
@@ -237,12 +241,7 @@ namespace Sylan.AudioManager
                 // Apply any or all zone settings which may have been ignored previously
                 // due to LocalPlayerSync being null at the time since the
                 // creation order of player objects and each other's deserialization is undefined behavior.
-                for (int i = 0; i < RemotePlayerSyncs.Count; i++)
-                {
-                    var remotePlayerSync = (AudioZoneSyncCore)RemotePlayerSyncs[i].Reference;
-                    if (!Utilities.IsValid(remotePlayerSync.OwningPlayer)) continue; // Major trust issues.
-                    remotePlayerSync.ApplySettingAndAudioZoneSetting();
-                }
+                ApplyAllRemotePlayerSettingAndAudioZoneSetting();
             }
             else
             {
@@ -250,9 +249,34 @@ namespace Sylan.AudioManager
             }
         }
 
+        private void ApplyAllRemotePlayerSettingAndAudioZoneSetting()
+        {
+            for (int i = 0; i < RemotePlayerSyncs.Count; i++)
+            {
+                var remotePlayerSync = (AudioZoneSyncCore)RemotePlayerSyncs[i].Reference;
+                if (!Utilities.IsValid(remotePlayerSync.OwningPlayer)) continue; // Major trust issues.
+                remotePlayerSync.ApplySettingAndAudioZoneSetting();
+            }
+        }
+
         public void Deregister(AudioZoneSyncCore playerObjectSync)
         {
             RemotePlayerSyncs.Remove(playerObjectSync);
+        }
+
+        // ================================================================
+        // Kill Switch
+        // ================================================================
+
+        public void Kill()
+        {
+            killed = true;
+        }
+
+        public void Revive()
+        {
+            killed = false;
+            ApplyAllRemotePlayerSettingAndAudioZoneSetting();
         }
     }
 }
