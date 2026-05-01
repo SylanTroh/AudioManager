@@ -153,6 +153,7 @@ namespace Sylan.AudioManager
         public void UpdateSettingZoneAudioSetting(AudioZoneSyncCore playerObjectSync, int settingIndex, bool doApply)
         {
             if (LocalPlayerSync == null) return; // The order in which player objects get created is undefined behavior.
+            if (!Utilities.IsValid(playerObjectSync.OwningPlayer)) return; // Major trust issues.
             if (LocalPlayerSync == playerObjectSync) return;
 
             if (settingIndex == -1)
@@ -186,6 +187,7 @@ namespace Sylan.AudioManager
         public void UpdateAudioZoneSetting(AudioZoneSyncCore playerObjectSync, bool doApply)
         {
             if (LocalPlayerSync == null) return; // The order in which player objects get created is undefined behavior.
+            if (!Utilities.IsValid(playerObjectSync.OwningPlayer)) return; // Major trust issues.
             if (LocalPlayerSync != playerObjectSync)
             {
                 //If someone else caused the update, update triggering player
@@ -197,6 +199,8 @@ namespace Sylan.AudioManager
                 for (var i = 0; i < RemotePlayerSyncs.Count; i++)
                 {
                     var remotePlayerSync = (AudioZoneSyncCore)RemotePlayerSyncs[i].Reference;
+                    // Deletion order of remote VRCPlayerApis and their player objects is undefined behavior.
+                    if (!Utilities.IsValid(remotePlayerSync.OwningPlayer)) continue;
                     ApplyAudioZoneSetting(remotePlayerSync, doApply);
                 }
             }
@@ -236,6 +240,7 @@ namespace Sylan.AudioManager
                 for (int i = 0; i < RemotePlayerSyncs.Count; i++)
                 {
                     var remotePlayerSync = (AudioZoneSyncCore)RemotePlayerSyncs[i].Reference;
+                    if (!Utilities.IsValid(remotePlayerSync.OwningPlayer)) continue; // Major trust issues.
                     remotePlayerSync.ApplySettingAndAudioZoneSetting();
                 }
             }
