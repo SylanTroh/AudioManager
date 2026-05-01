@@ -103,6 +103,9 @@ namespace Sylan.AudioManager
         };
 
         private AudioZoneSyncCore LocalPlayerSync;
+        /// <summary>
+        /// <para>List of <see cref="AudioZoneSyncCore"/>.</para>
+        /// </summary>
         private readonly DataList RemotePlayerSyncs = new DataList();
 
         private void Start()
@@ -149,6 +152,7 @@ namespace Sylan.AudioManager
 
         public void UpdateSettingZoneAudioSetting(AudioZoneSyncCore playerObjectSync, int settingIndex, bool doApply)
         {
+            if (LocalPlayerSync == null) return; // The order in which player objects get created is undefined behavior.
             if (LocalPlayerSync == playerObjectSync) return;
 
             if (settingIndex == -1)
@@ -181,6 +185,7 @@ namespace Sylan.AudioManager
 
         public void UpdateAudioZoneSetting(AudioZoneSyncCore playerObjectSync, bool doApply)
         {
+            if (LocalPlayerSync == null) return; // The order in which player objects get created is undefined behavior.
             if (LocalPlayerSync != playerObjectSync)
             {
                 //If someone else caused the update, update triggering player
@@ -225,6 +230,14 @@ namespace Sylan.AudioManager
             if (Networking.GetOwner(playerObjectSync.gameObject).isLocal)
             {
                 LocalPlayerSync = playerObjectSync;
+                // Apply any or all zone settings which may have been ignored previously
+                // due to LocalPlayerSync being null at the time since the
+                // creation order of player objects and each other's deserialization is undefined behavior.
+                for (int i = 0; i < RemotePlayerSyncs.Count; i++)
+                {
+                    var remotePlayerSync = (AudioZoneSyncCore)RemotePlayerSyncs[i].Reference;
+                    remotePlayerSync.ApplySettingAndAudioZoneSetting();
+                }
             }
             else
             {

@@ -15,7 +15,11 @@ namespace Sylan.AudioManager
         /// </summary>
         [UdonSynced] private ushort[] syncedIds = Array.Empty<ushort>();
         // TODO: remove SerializeField, just used for testing
-        [SerializeField] private ushort[] syncedAudioZones;
+        /// <summary>
+        /// <para>Must not be <see langword="null"/>, could be used before running
+        /// <see cref="OnDeserialization"/> nor <see cref="InternalOnPreSerialization(int[], int)"/>.</para>
+        /// </summary>
+        [SerializeField] private ushort[] syncedAudioZones = Array.Empty<ushort>();
 
         public override void OnDeserialization()
         {

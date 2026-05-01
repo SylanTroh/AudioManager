@@ -15,7 +15,11 @@ namespace Sylan.AudioManager
         /// </summary>
         [UdonSynced] private int[] syncedIds = Array.Empty<int>();
         // TODO: remove SerializeField, just used for testing
-        [SerializeField] private int[] syncedAudioZones;
+        /// <summary>
+        /// <para>Must not be <see langword="null"/>, could be used before running
+        /// <see cref="OnDeserialization"/> nor <see cref="InternalOnPreSerialization(int[], int)"/>.</para>
+        /// </summary>
+        [SerializeField] private int[] syncedAudioZones = Array.Empty<int>();
 
         public override void OnDeserialization()
         {

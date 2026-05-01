@@ -108,6 +108,11 @@ namespace Sylan.AudioManager
 
         public override void OnDeserialization()
         {
+            ApplySettingAndAudioZoneSetting();
+        }
+
+        public void ApplySettingAndAudioZoneSetting()
+        {
             AudioZoneManager.UpdateSettingZoneAudioSetting(this, syncedAudioSettingIndex, doApply: false);
             AudioZoneManager.UpdateAudioZoneSetting(this, doApply: true);
         }
