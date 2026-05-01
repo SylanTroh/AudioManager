@@ -58,7 +58,7 @@ namespace Sylan.AudioManager
 
             if (!_AudioSettingDict.TryGetValue((DataToken)player.playerId, TokenType.DataList, out DataToken value))
             {
-                Debug.LogError("[AudioManager] Failed to get AudioSettings for " + player.displayName + "-" + player.playerId.ToString());
+                Debug.LogError("[AudioManager] Failed to get AudioSettings for " + player.PrintName());
                 return null;
             }
             return value.DataList;
@@ -70,7 +70,7 @@ namespace Sylan.AudioManager
 
             if (_AudioSettingDict.TryGetValue((DataToken)player.playerId, TokenType.DataDictionary, out DataToken value))
             {
-                Debug.Log("[AudioManager] AudioSettigs already initialized for " + player.displayName + "-" + player.playerId.ToString());
+                Debug.Log("[AudioManager] AudioSettigs already initialized for " + player.PrintName());
                 return;
             }
 
@@ -89,7 +89,7 @@ namespace Sylan.AudioManager
             DefaultDictEntry[SETTING_INDEX].DataList.Add((DataToken)DefaultAudioSettings);
 
             _AudioSettingDict.SetValue(key: (DataToken)player.playerId, value: (DataToken)DefaultDictEntry);
-            Debug.Log("[AudioManager] Initialize AudioSettings for " + player.displayName + "-" + player.playerId.ToString());
+            Debug.Log("[AudioManager] Initialize AudioSettings for " + player.PrintName());
         }
         private DataList RemovePlayerAudioSettingDict(VRCPlayerApi player)
         {
@@ -98,10 +98,10 @@ namespace Sylan.AudioManager
 
             if (!_AudioSettingDict.Remove(key: (DataToken)player.playerId, out DataToken value))
             {
-                Debug.LogError("[AudioManager] Failed to remove AudioSettingDict for " + player.displayName + "-" + player.playerId.ToString());
+                Debug.LogError("[AudioManager] Failed to remove AudioSettingDict for " + player.PrintName());
                 return null;
             }
-            Debug.Log("[AudioManager] Removed AudioSettingDict for " + player.displayName + "-" + player.playerId.ToString());
+            Debug.Log("[AudioManager] Removed AudioSettingDict for " + player.PrintName());
             return value.DataList;
         }
         public override void OnPlayerJoined(VRCPlayerApi joiningPlayer)
@@ -290,7 +290,7 @@ namespace Sylan.AudioManager
 
             _VoiceApplicator.ApplyVoiceSetting(player, audioSetting);
 
-            string debugString = "[AudioManager] Setting " + player.displayName + "-" + player.playerId.ToString() + " Audio:";
+            string debugString = "[AudioManager] Setting " + player.PrintName() + " Audio:";
             debugString += " SettingID:" + list[SETTING_ID_INDEX].DataList[0].String;
             debugString += ", VoiceGain:" + audioSetting[VOICE_GAIN_INDEX].Float.ToString();
             debugString += ", VoiceNear:" + audioSetting[RANGE_NEAR_INDEX].Float.ToString();

@@ -140,7 +140,7 @@ namespace Sylan.AudioManager
             player.SetVoiceVolumetricRadius(volumetric);
             player.SetVoiceLowpass(lowpass);
             
-            Debug.Log("[AudioManager] VoiceApplicator: Applied voice settings to " + player.displayName + 
+            Debug.Log("[AudioManager] VoiceApplicator: Applied voice settings to " + player.PrintName() + 
                       " (gain:" + gain + ", near:" + near + ", far:" + far + ", volumetric:" + volumetric + ", lowpass:" + lowpass + ")");
         }
         
@@ -180,7 +180,7 @@ namespace Sylan.AudioManager
             
             _activePlayerFade.SetValue((DataToken)playerId, (DataToken)fadeData);
             
-            Debug.Log("[AudioManager] VoiceApplicator: Started fade for " + player.displayName +
+            Debug.Log("[AudioManager] VoiceApplicator: Started fade for " + player.PrintName() +
                       " (duration:" + duration + "s, from gain:" + fromSettings[AudioSettingManager.VOICE_GAIN_INDEX].Float +
                       " to gain:" + toSettings[AudioSettingManager.VOICE_GAIN_INDEX].Float + ")");
         }
@@ -198,7 +198,7 @@ namespace Sylan.AudioManager
             if (_activePlayerFade.ContainsKey((DataToken)playerId))
             {
                 _activePlayerFade.Remove((DataToken)playerId);
-                Debug.Log("[AudioManager] VoiceApplicator: Cancelled fade for " + player.displayName);
+                Debug.Log("[AudioManager] VoiceApplicator: Cancelled fade for " + player.PrintName());
             }
         }
         
@@ -283,7 +283,7 @@ namespace Sylan.AudioManager
                     
                     _playerAudioSetting.SetValue((DataToken)playerId, (DataToken)finalSettings);
                     
-                    Debug.Log("[AudioManager] VoiceApplicator: Completed fade for " + player.displayName);
+                    Debug.Log("[AudioManager] VoiceApplicator: Completed fade for " + player.PrintName());
                 }
                 else
                 {

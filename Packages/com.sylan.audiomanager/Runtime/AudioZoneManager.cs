@@ -159,7 +159,7 @@ namespace Sylan.AudioManager
             if (settingIndex == -1)
             {
 #if AUDIO_MANAGER_DEBUG
-                Debug.Log("[AudioManager] No Setting Zone for " + playerObjectSync.OwningPlayer.displayName + ".");
+                Debug.Log("[AudioManager] No Setting Zone for " + playerObjectSync.OwningPlayer.PrintName() + ".");
 #endif
                 _AudioSettingManager.RemoveAudioSetting(playerObjectSync.OwningPlayer, SETTING_ZONE_SETTING_ID);
             }
@@ -168,7 +168,7 @@ namespace Sylan.AudioManager
                 int priority = allAudioSettingsPriority[settingIndex];
                 DataList setting = allAudioSettings[settingIndex];
 #if AUDIO_MANAGER_DEBUG
-                Debug.Log("[AudioManager] Using Setting Zone " + settingIndex + " for " + playerObjectSync.OwningPlayer.displayName + ".");
+                Debug.Log("[AudioManager] Using Setting Zone " + settingIndex + " for " + playerObjectSync.OwningPlayer.PrintName() + ".");
 #endif
                 _AudioSettingManager.RemoveAudioSetting(playerObjectSync.OwningPlayer, SETTING_ZONE_SETTING_ID);
                 _AudioSettingManager.AddAudioSetting(playerObjectSync.OwningPlayer, SETTING_ZONE_SETTING_ID, priority, setting);
@@ -211,14 +211,14 @@ namespace Sylan.AudioManager
             if (LocalPlayerSync.SharesAudioZoneWith(remotePlayerObjectSync))
             {
 #if AUDIO_MANAGER_DEBUG
-                Debug.Log("[AudioManager] Shares AudioZone with " + remotePlayerObjectSync.OwningPlayer.displayName + ".");
+                Debug.Log("[AudioManager] Shares AudioZone with " + remotePlayerObjectSync.OwningPlayer.PrintName() + ".");
 #endif
                 _AudioSettingManager.RemoveAudioSetting(remotePlayerObjectSync.OwningPlayer, AUDIO_ZONE_SETTING_ID);
             }
             else
             {
 #if AUDIO_MANAGER_DEBUG
-                Debug.Log("[AudioManager] Does not share AudioZone with " + remotePlayerObjectSync.OwningPlayer.displayName + ".");
+                Debug.Log("[AudioManager] Does not share AudioZone with " + remotePlayerObjectSync.OwningPlayer.PrintName() + ".");
 #endif
                 _AudioSettingManager.AddAudioSetting(remotePlayerObjectSync.OwningPlayer, AUDIO_ZONE_SETTING_ID, audioZonePriority, AudioZoneAudioSettings);
             }
