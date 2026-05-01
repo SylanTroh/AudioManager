@@ -5,6 +5,10 @@ namespace Sylan.AudioManager
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public abstract class BitFieldAudioZoneSync : AudioZoneSyncCore
     {
+        /// <summary>
+        /// <para>Uses lower bits as audio zone indexes.</para>
+        /// <para>Uses higher bits for the audio setting zone index.</para>
+        /// </summary>
         [UdonSynced] protected ulong highestSyncedAudioZonesField = 0uL;
 
         protected abstract void InternalOnPreSerialization(ulong shiftedAudioSettingIndex);

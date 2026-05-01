@@ -13,7 +13,14 @@ namespace Sylan.AudioManager
         protected AudioZonePlayerObject AudioZonePlayerObject;
 
         // TODO: remove SerializeField, just used for testing
+        /// <summary>
+        /// <para><c>-1</c> indicates not being in any setting zone.</para>
+        /// <para>Not marked with <see cref="UdonSyncedAttribute"/>, deriving classes must sync this value.</para>
+        /// </summary>
         [SerializeField] protected int syncedAudioSettingIndex;
+
+        private AudioSettingCollider activeSettingZone;
+        private AudioSettingCollider oldActiveSettingZone;
 
         public abstract bool SharesAudioZoneWith(AudioZoneSyncCore other);
 
@@ -56,9 +63,6 @@ namespace Sylan.AudioManager
                 + $"Zones ({zoneNames.Length}): {string.Join(", ", zoneNames)}");
         }
 #endif
-
-        private AudioSettingCollider activeSettingZone;
-        private AudioSettingCollider oldActiveSettingZone;
 
         public virtual void OnValidateAudioZonesStart()
         {

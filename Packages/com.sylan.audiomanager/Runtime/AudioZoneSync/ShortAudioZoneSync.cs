@@ -12,6 +12,8 @@ namespace Sylan.AudioManager
         /// <summary>
         /// <para>Sorted ascending. Can check for <see cref="AudioZoneManager.EmptyZoneIdIndex"/> by just
         /// checking index <c>0</c>, and can use <see cref="Array.BinarySearch(Array, object)"/>.</para>
+        /// <para>When <see cref="AudioZoneSyncCore.syncedAudioSettingIndex"/> is not <c>-1</c>, it will be
+        /// contained in this array at the end, with <see cref="AudioZoneManager.totalAudioZonesCount"/> added to it.</para>
         /// </summary>
         [UdonSynced] private ushort[] syncedIds = Array.Empty<ushort>();
         // TODO: remove SerializeField, just used for testing
