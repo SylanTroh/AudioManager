@@ -8,15 +8,17 @@
     - [x] to then apply them to AudioSettingsManager on change
 - [x] Performance checking... somehow???
 - [x] Change the AudioZones layer in project settings to not collide with anything anymore
-- [ ] Handle network congestion, using `Networking.Suffering`
+- [ ] Handle network congestion, using `VRC.SDK3.Network.Stats.Suffering`
 - [ ] Do something about the fact that zones are now probed at specifically the head position and no longer the player capsule, migration wise. This is a rather annoying breaking change for people to update to as it stands currently
-  - [ ] Either add editor scripting to grow zones, the inverse of the shrink buttons currently there
-  - [ ] Or add an option for the physics overlap sphere to be a bigger radius, that matching the player capsule collider, which has a radius of 0.2. The player capsule collider is constant, does not change with avatar eye height or sizing of any kind
-- [ ] Remove the editor scripting for shrinking zones to "prevent clipping" since that is no longer relevant
+  - [ ] Add editor scripting to grow zones, the inverse of the shrink buttons currently there
+  - [ ] Add an option for the physics overlap sphere to be a bigger radius, that matching the player capsule collider, which has a radius of 0.2. The player capsule collider is constant, does not change with avatar eye height or sizing of any kind
+  - [ ] Add an editor window for migrations
+    - [ ] Detect package version changes
+- [x] ~~Remove the editor scripting for shrinking zones to "prevent clipping" since that is no longer relevant~~ keep it along side a new grow button
 - [ ] Remove dependency on com.jansharp.common and any test code using it before merging
 - [x] Log which sync script is used for bug report purposes
-- [ ] Maybe change AddAudioSetting to accept a bool to indicate overwriting if that id is already used
-  - [ ] But like also refactor the entire settings manager at that point :P
+- [x] ~~Maybe change AddAudioSetting to accept a bool to indicate overwriting if that id is already used~~
+  - [x] But like also refactor the entire settings manager at that point :P
 - [x] Set audioZoneColliderLayerMask at build time
 - [x] Better handle a lack of the AudioZones layer
   - [x] If the AudioZones layer exists, use that
