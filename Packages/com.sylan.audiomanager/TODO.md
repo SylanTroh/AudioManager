@@ -15,7 +15,7 @@
   - [ ] Add an editor window for migrations
     - [ ] Detect package version changes
 - [x] ~~Remove the editor scripting for shrinking zones to "prevent clipping" since that is no longer relevant~~ keep it along side a new grow button
-- [ ] Remove dependency on com.jansharp.common and any test code using it before merging
+- [x] Remove dependency on com.jansharp.common and any test code using it before merging
 - [x] Log which sync script is used for bug report purposes
 - [x] ~~Maybe change AddAudioSetting to accept a bool to indicate overwriting if that id is already used~~
   - [x] But like also refactor the entire settings manager at that point :P
