@@ -27,7 +27,7 @@
 - [ ] Ensure `IsTrigger` for Collider of `AudioZoneCollider`
 - [ ] Fix players joining in late not having their voice settings updated
 - [x] Fix players already existing in the world not having their voice settings updated when joining
-- [ ] Fix duplicated info log message about which sync script is use
+- [x] Fix duplicated info log message about which sync script is in use
 
 - [ ] refactoring, naming, small stuff
 

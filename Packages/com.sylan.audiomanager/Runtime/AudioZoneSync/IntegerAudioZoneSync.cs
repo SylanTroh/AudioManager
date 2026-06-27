@@ -7,7 +7,7 @@ namespace Sylan.AudioManager
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public class IntegerAudioZoneSync : AudioZoneSyncArrayCore
     {
-        protected override string SyncScriptName => nameof(IntegerAudioZoneSync);
+        public override string SyncScriptName => nameof(IntegerAudioZoneSync);
 
         /// <summary>
         /// <para>Sorted ascending. Can check for <see cref="AudioZoneManager.EmptyZoneIdIndex"/> by just

@@ -60,6 +60,8 @@ namespace Sylan.AudioManager
 
             if (!Networking.IsOwner(gameObject)) return;
 
+            Debug.Log($"[AudioManager] Using the {audioZonePlayerObjectSync.SyncScriptName} script for syncing audio and setting zones.");
+
 #if AUDIO_MANAGER_DEBUG_SW
             Debug.Log($"[AudioManager] audioZoneColliderLayerMask: 0x{(int)audioZoneColliderLayerMask:x8}");
             stopwatchData = JanSharp.StopwatchUtil.CreateDataContainer();
