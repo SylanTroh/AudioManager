@@ -65,5 +65,7 @@ Assets/PackageMakerWindowData.asset*
 .vsconfig
 
 #VRCPackage
-/Assets/SerializedUdonPrograms/*
+/[Aa]ssets/SerializedUdonPrograms/*
 UserSettings/*
+/ClientSimStorage/PlayerData/*
+/ClientSimStorage/PlayerObjects/*
