@@ -51,16 +51,22 @@ namespace Sylan.AudioManager
         //
         // Manage _AudioSettingDict By player
         //
-        private DataList GetPlayerAudioSettings(VRCPlayerApi player)
+        private bool TryGetPlayerAudioSettings(VRCPlayerApi player, out DataList list)
         {
-            if (!Utilities.IsValid(player)) return null;
+            if (!Utilities.IsValid(player))
+            {
+                list = null;
+                return false;
+            }
 
             if (!_AudioSettingDict.TryGetValue((DataToken)player.playerId, TokenType.DataList, out DataToken value))
             {
                 Debug.LogError("[AudioManager] Failed to get AudioSettings for " + player.PrintName());
-                return null;
+                list = null;
+                return false;
             }
-            return value.DataList;
+            list = value.DataList;
+            return true;
         }
         private void InitPlayerAudioSettingDict(VRCPlayerApi player)
         {
@@ -181,8 +187,7 @@ namespace Sylan.AudioManager
         {
             if (audioSetting == null) return;
 
-            DataList list = GetPlayerAudioSettings(player);
-            if (list == null) return;
+            if (!TryGetPlayerAudioSettings(player, out DataList list)) return;
 
             if (!list.TryGetValue(SETTING_ID_INDEX, TokenType.DataList, out DataToken token)) return;
             DataList settingIDList = token.DataList;
@@ -222,8 +227,7 @@ namespace Sylan.AudioManager
             if (!Utilities.IsValid(player)) return false;
             if (player == Networking.LocalPlayer) return false;
 
-            DataList list = GetPlayerAudioSettings(player);
-            if (list == null) return false;
+            if (!TryGetPlayerAudioSettings(player, out DataList list)) return false;
 
             if (!list.TryGetValue(SETTING_ID_INDEX, TokenType.DataList, out DataToken token)) return false;
             DataList settingIDList = token.DataList;
@@ -264,8 +268,7 @@ namespace Sylan.AudioManager
             if (!Utilities.IsValid(player)) return;
             if (player == Networking.LocalPlayer) return;
 
-            DataList list = GetPlayerAudioSettings(player);
-            if (list == null) return;
+            if (!TryGetPlayerAudioSettings(player, out DataList list)) return;
 
             //VRCJson.TrySerializeToJson(list, JsonExportType.Minify, out DataToken result1);
             //Debug.Log(result1.ToString());
