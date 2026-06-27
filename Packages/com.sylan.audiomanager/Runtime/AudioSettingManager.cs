@@ -213,25 +213,20 @@ namespace Sylan.AudioManager
 
             return true;
         }
-        public void AddAudioSetting(VRCPlayerApi player, string settingID, int priority, DataList audioSetting)
+        public bool AddAudioSetting(VRCPlayerApi player, string settingID, int priority, DataList audioSetting)
         {
-            if (!Utilities.IsValid(player)) return;
-            if (player == Networking.LocalPlayer) return;
+            if (!Utilities.IsValid(player)) return false;
+            if (player == Networking.LocalPlayer) return false;
 
-            if (!ValidateAudioSetting(audioSetting)) return;
-            _AddAudioSetting(player, settingID, priority, audioSetting);
-        }
-        private void _AddAudioSetting(VRCPlayerApi player, string settingID, int priority, DataList audioSetting)
-        {
-            if (audioSetting == null) return;
+            if (!ValidateAudioSetting(audioSetting)) return false;
 
-            if (!TryGetOrInitPlayerAudioSettings(player, out DataList list)) return;
+            if (!TryGetOrInitPlayerAudioSettings(player, out DataList list)) return false;
 
             DataList settingIDList = list[SETTING_ID_INDEX].DataList;
             DataList priorityList = list[SETTING_PRIORITY_INDEX].DataList;
             DataList settingList = list[SETTING_INDEX].DataList;
 
-            if (settingIDList.Contains((DataToken)settingID)) return;
+            if (settingIDList.Contains((DataToken)settingID)) return false;
 
             int index = priorityList.Count; // Insert at "count" adds to the end of the list.
 
@@ -247,6 +242,7 @@ namespace Sylan.AudioManager
             settingIDList.Insert(index, (DataToken)settingID);
             priorityList.Insert(index, (DataToken)priority);
             settingList.Insert(index, (DataToken)audioSetting);
+            return true;
         }
         public bool RemoveAudioSetting(VRCPlayerApi player, string settingID)
         {

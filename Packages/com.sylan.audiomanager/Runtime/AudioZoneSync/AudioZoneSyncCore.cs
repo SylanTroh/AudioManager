@@ -127,8 +127,8 @@ namespace Sylan.AudioManager
 
         public void ApplySettingAndAudioZoneSetting()
         {
-            AudioZoneManager.UpdateSettingZoneAudioSetting(this, syncedAudioSettingIndex, doApply: false);
-            AudioZoneManager.UpdateAudioZoneSetting(this, doApply: true);
+            AudioZoneManager.UpdateSettingZoneAudioSetting(this, syncedAudioSettingIndex);
+            AudioZoneManager.UpdateAudioZoneSetting(this);
             didGetAppliedOnce = true;
         }
 
@@ -136,7 +136,7 @@ namespace Sylan.AudioManager
         {
             PrepareForSerialization();
             RequestSerialization();
-            AudioZoneManager.UpdateAudioZoneSetting(this, doApply: true);
+            AudioZoneManager.UpdateAudioZoneSetting(this);
         }
     }
 }
