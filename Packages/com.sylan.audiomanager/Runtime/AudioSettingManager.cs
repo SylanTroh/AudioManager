@@ -94,7 +94,7 @@ namespace Sylan.AudioManager
 
             if (allPlayerSettings.TryGetValue((DataToken)player.playerId, out DataToken value))
             {
-                Debug.Log("[AudioManager] AudioSettingDict already initialized for " + player.PrintName());
+                Debug.Log("[AudioManager] PlayerAudioSettings already initialized for " + player.PrintName());
                 return value.DataList;
             }
 

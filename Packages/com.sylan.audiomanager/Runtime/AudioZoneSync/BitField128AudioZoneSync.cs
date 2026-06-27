@@ -8,11 +8,11 @@ namespace Sylan.AudioManager
     {
         public override string SyncScriptName => nameof(BitField128AudioZoneSync);
 
-        [UdonSynced] private ulong syncedAudioZonesField1 = 0uL;
+        [UdonSynced] private ulong syncedAudioZonesField1 = 0uL; // Must have the proper "nothing" default value.
         /// <summary>
         /// <para>Packed into <see cref="BitFieldAudioZoneSync.highestSyncedAudioZonesField"/> for actual syncing.</para>
         /// </summary>
-        private ulong syncedAudioZonesField2;
+        private ulong syncedAudioZonesField2 = 0uL; // Must have the proper "nothing" default value.
 
         private ulong oldFinalAudioZonesField1;
         private ulong oldFinalAudioZonesField2;

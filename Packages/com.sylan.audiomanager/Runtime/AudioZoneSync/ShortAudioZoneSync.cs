@@ -14,12 +14,12 @@ namespace Sylan.AudioManager
         /// <para>When <see cref="AudioZoneSyncCore.syncedAudioSettingIndex"/> is not <c>-1</c>, it will be
         /// contained in this array at the end, with <see cref="AudioZoneManager.totalAudioZonesCount"/> added to it.</para>
         /// </summary>
-        [UdonSynced] private ushort[] syncedIds = Array.Empty<ushort>();
+        [UdonSynced] private ushort[] syncedIds = Array.Empty<ushort>(); // Must have the proper "nothing" default value.
         /// <summary>
         /// <para>Must not be <see langword="null"/>, could be used before running
         /// <see cref="OnDeserialization"/> nor <see cref="InternalOnPreSerialization(int[], int)"/>.</para>
         /// </summary>
-        private ushort[] syncedAudioZones = Array.Empty<ushort>();
+        private ushort[] syncedAudioZones = Array.Empty<ushort>(); // Must have the proper "nothing" default value.
 
         public override void OnDeserialization()
         {

@@ -16,7 +16,7 @@ namespace Sylan.AudioManager
         /// <para><c>-1</c> indicates not being in any setting zone.</para>
         /// <para>Not marked with <see cref="UdonSyncedAttribute"/>, deriving classes must sync this value.</para>
         /// </summary>
-        protected int syncedAudioSettingIndex;
+        protected int syncedAudioSettingIndex = -1; // Must have the proper "nothing" default value.
 
         private AudioSettingCollider activeSettingZone;
         private AudioSettingCollider oldActiveSettingZone;
@@ -24,6 +24,8 @@ namespace Sylan.AudioManager
         public abstract bool SharesAudioZoneWith(AudioZoneSyncCore other);
 
         public abstract string SyncScriptName { get; }
+
+        private bool didGetAppliedOnce = false;
 
         private void Start()
         {
@@ -39,6 +41,17 @@ namespace Sylan.AudioManager
 
             AudioZoneManager.Register(this);
             OwningPlayer = Networking.GetOwner(gameObject);
+
+            // Small delay in case we get serialized data, at which point the double apply would be redundant.
+            SendCustomEventDelayedSeconds(nameof(StartDelayed), 0.2f);
+        }
+
+        public void StartDelayed()
+        {
+            if (didGetAppliedOnce) return;
+            // Relies on all synced setting and zone variables's default values, this is the reason for why
+            // those have the comment "Must have the proper "nothing" default value.".
+            ApplySettingAndAudioZoneSetting();
         }
 
         private void OnDestroy()
@@ -116,6 +129,7 @@ namespace Sylan.AudioManager
         {
             AudioZoneManager.UpdateSettingZoneAudioSetting(this, syncedAudioSettingIndex, doApply: false);
             AudioZoneManager.UpdateAudioZoneSetting(this, doApply: true);
+            didGetAppliedOnce = true;
         }
 
         public void OnZoneChanged()

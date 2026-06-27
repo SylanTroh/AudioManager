@@ -25,7 +25,7 @@
   - [x] Set the layer of all zone colliders as well as `audioZoneColliderLayerMask` accordingly
 - [ ] Ensure `IsTrigger` for Collider of `AudioSettingCollider`
 - [ ] Ensure `IsTrigger` for Collider of `AudioZoneCollider`
-- [ ] Fix players joining in late not having their voice settings updated
+- [x] Fix players joining in late not having their voice settings updated
 - [x] Fix players already existing in the world not having their voice settings updated when joining
 - [x] Fix duplicated info log message about which sync script is in use
 

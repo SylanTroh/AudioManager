@@ -11,7 +11,7 @@ namespace Sylan.AudioManager
         /// <summary>
         /// <para>Packed into <see cref="BitFieldAudioZoneSync.highestSyncedAudioZonesField"/> for actual syncing.</para>
         /// </summary>
-        private ulong syncedAudioZonesField;
+        private ulong syncedAudioZonesField = 0uL; // Must have the proper "nothing" default value.
 
         private ulong oldFinalAudioZonesField;
         private ulong finalAudioZonesField;
