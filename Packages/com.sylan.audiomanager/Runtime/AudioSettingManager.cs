@@ -270,14 +270,7 @@ namespace Sylan.AudioManager
         //
         //Update Audio Settings
         //
-        public void UpdateAudioSettings(VRCPlayerApi triggeringPlayer)
-        {
-            if (!Utilities.IsValid(triggeringPlayer)) return;
-            if (triggeringPlayer == Networking.LocalPlayer) return;
-
-            //If someone else caused the update, update triggering player
-            ApplyAudioSetting(triggeringPlayer);
-        }
+        public void UpdateAudioSettings(VRCPlayerApi triggeringPlayer) => ApplyAudioSetting(triggeringPlayer); // Backwards compatibility.
         public void ApplyAudioSetting(VRCPlayerApi player)
         {
             if (!Utilities.IsValid(player)) return;

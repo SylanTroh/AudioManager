@@ -39,7 +39,7 @@ public class AudioSettingButton : UdonSharpBehaviour
 
         triggeringPlayer.AddAudioSetting(_AudioSettingManager, settingID, priority, audioSetting);
 
-        _AudioSettingManager.UpdateAudioSettings(triggeringPlayer);
+        _AudioSettingManager.ApplyAudioSetting(triggeringPlayer);
     }
     public void RemoveAudioSetting()
     {
@@ -48,6 +48,6 @@ public class AudioSettingButton : UdonSharpBehaviour
 
         triggeringPlayer.RemoveAudioSetting(_AudioSettingManager, settingID);
 
-        _AudioSettingManager.UpdateAudioSettings(triggeringPlayer);
+        _AudioSettingManager.ApplyAudioSetting(triggeringPlayer);
     }
 }
