@@ -11,11 +11,11 @@ namespace Sylan.AudioManager
         /// </summary>
         [UdonSynced] protected ulong highestSyncedAudioZonesField = 0uL; // Must have the proper "nothing" default value.
 
-        protected abstract void InternalOnPreSerialization(ulong shiftedAudioSettingIndex);
+        protected abstract void PrepareForSerialization(ulong shiftedAudioSettingIndex);
 
-        protected override void InternalOnPreSerialization(int audioSettingIndex)
+        protected override void PrepareForSerialization(int audioSettingIndex)
         {
-            InternalOnPreSerialization(((ulong)(audioSettingIndex + 1)) << AudioZoneManager.audioSettingsIndexBitShift);
+            PrepareForSerialization(((ulong)(audioSettingIndex + 1)) << AudioZoneManager.audioSettingsIndexBitShift);
         }
 
         public override void OnDeserialization()

@@ -17,7 +17,7 @@ namespace Sylan.AudioManager
         [UdonSynced] private ushort[] syncedIds = Array.Empty<ushort>(); // Must have the proper "nothing" default value.
         /// <summary>
         /// <para>Must not be <see langword="null"/>, could be used before running
-        /// <see cref="OnDeserialization"/> nor <see cref="InternalOnPreSerialization(int[], int)"/>.</para>
+        /// <see cref="OnDeserialization"/> nor <see cref="PrepareForSerialization(int[], int)"/>.</para>
         /// </summary>
         private ushort[] syncedAudioZones = Array.Empty<ushort>(); // Must have the proper "nothing" default value.
 
@@ -48,7 +48,7 @@ namespace Sylan.AudioManager
 #endif
         }
 
-        protected override void InternalOnPreSerialization(int[] audioZonesIndexes, int audioSettingsIndex)
+        protected override void PrepareForSerialization(int[] audioZonesIndexes, int audioSettingsIndex)
         {
             int count = audioZonesIndexes.Length;
             syncedAudioZones = new ushort[count];

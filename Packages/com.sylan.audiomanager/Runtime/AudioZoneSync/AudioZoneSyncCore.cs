@@ -109,15 +109,15 @@ namespace Sylan.AudioManager
         /// <summary>
         /// </summary>
         /// <param name="audioSettingIndex"><c>-1</c> when not in any <see cref="AudioSettingCollider"/>.</param>
-        protected abstract void InternalOnPreSerialization(int audioSettingIndex);
+        protected abstract void PrepareForSerialization(int audioSettingIndex);
 
-        public override void OnPreSerialization()
+        private void PrepareForSerialization()
         {
             // Saving which setting zone the local player is in this "synced" variable too purely for cleanliness.
             // The local player does not actually care about which setting zones they themselves are in,
             // so this is not actually used locally.
             syncedAudioSettingIndex = oldActiveSettingZone == null ? -1 : oldActiveSettingZone.SettingIndex;
-            InternalOnPreSerialization(syncedAudioSettingIndex);
+            PrepareForSerialization(syncedAudioSettingIndex);
         }
 
         public override void OnDeserialization()
@@ -134,6 +134,7 @@ namespace Sylan.AudioManager
 
         public void OnZoneChanged()
         {
+            PrepareForSerialization();
             RequestSerialization();
             AudioZoneManager.UpdateAudioZoneSetting(this, doApply: true);
         }

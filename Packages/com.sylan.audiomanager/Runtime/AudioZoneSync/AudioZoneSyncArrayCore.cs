@@ -35,11 +35,11 @@ namespace Sylan.AudioManager
             }
         }
 
-        protected abstract void InternalOnPreSerialization(int[] audioZonesIndexes, int audioSettingIndex);
+        protected abstract void PrepareForSerialization(int[] audioZonesIndexes, int audioSettingIndex);
 
-        protected override void InternalOnPreSerialization(int audioSettingIndex)
+        protected override void PrepareForSerialization(int audioSettingIndex)
         {
-            InternalOnPreSerialization(GetAllKeysArraySorted(oldFinalAudioZoneIds), audioSettingIndex);
+            PrepareForSerialization(GetAllKeysArraySorted(oldFinalAudioZoneIds), audioSettingIndex);
         }
 
         public override bool HasZoneChanged()

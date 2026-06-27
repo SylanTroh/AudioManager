@@ -75,7 +75,7 @@ namespace Sylan.AudioManager
             return true;
         }
 
-        protected override void InternalOnPreSerialization(ulong shiftedAudioSettingIndex)
+        protected override void PrepareForSerialization(ulong shiftedAudioSettingIndex)
         {
             syncedAudioZonesField1 = oldFinalAudioZonesField1;
             syncedAudioZonesField2 = oldFinalAudioZonesField2;
