@@ -45,8 +45,19 @@ namespace Sylan.AudioManager
         [HideInInspector, SerializeField] private VoiceApplicator _VoiceApplicator;
         public const string VoiceApplicatorPropertyName = nameof(_VoiceApplicator);
 
-        //Key:playerID -> DataList [ settingID[], settingPriority[], audioSettings[] ]
-        private DataDictionary _AudioSettingDict = new DataDictionary();
+        /// <summary>
+        /// <para>Key: playerID -> DataList [ settingID[], settingPriority[], audioSettings[] ]</para>
+        /// </summary>
+        private DataDictionary allPlayerSettings = new DataDictionary();
+        /// <summary>
+        /// <para><see cref="int"/> playerId -> <see cref="VRCPlayerApi"/> player</para>
+        /// <para>Contains all players for which we have already received the
+        /// <see cref="OnPlayerLeft(VRCPlayerApi)"/> event.</para>
+        /// <para>As soon as the <see cref="VRCPlayerApi"/> turns invalid it will get removed from this
+        /// dictionary. Therefore this dictionary will be empty 99% of the time.</para>
+        /// </summary>
+        private DataDictionary recentlyLeftPlayers = new DataDictionary();
+        private bool trackingRecentlyLeftPlayers = false;
 
         //
         // Manage _AudioSettingDict By player
@@ -56,65 +67,103 @@ namespace Sylan.AudioManager
         /// <param name="player">Must be valid.</param>
         /// <param name="list"></param>
         /// <returns></returns>
-        private bool TryGetPlayerAudioSettings(VRCPlayerApi player, out DataList list)
+        private bool TryGetOrInitPlayerAudioSettings(VRCPlayerApi player, out DataList list)
         {
-            if (_AudioSettingDict.TryGetValue((DataToken)player.playerId, TokenType.DataList, out DataToken value))
+            if (allPlayerSettings.TryGetValue((DataToken)player.playerId, out DataToken value))
             {
                 list = value.DataList;
                 return true;
             }
-            Debug.LogError("[AudioManager] Failed to get AudioSettings for " + player.PrintName());
+            if (!recentlyLeftPlayers.ContainsKey((DataToken)player.playerId))
+            {
+                // Having the getter function also call init removes any dependency on order of operations
+                // around scripts receiving the OnPlayerJoined event.
+                // Other scripts can interact with the AudioManager for players for whom the manager has not
+                // received the OnPlayerJoined event yet.
+                list = InitPlayerAudioSettings(player);
+                return true;
+            }
+            // Player already left, the player reference is about to turn invalid,
+            // no logic shall interact with that player anymore, just ignore attempts doing so.
             list = null;
             return false;
         }
-        private void InitPlayerAudioSettingDict(VRCPlayerApi player)
-        {
-            if (!Utilities.IsValid(player)) return;
-
-            if (_AudioSettingDict.ContainsKey((DataToken)player.playerId))
-            {
-                Debug.Log("[AudioManager] AudioSettingDict already initialized for " + player.PrintName());
-                return;
-            }
-
-            DataList DefaultAudioSettings = new DataList();
-            DefaultAudioSettings.Add((DataToken)voiceGain);
-            DefaultAudioSettings.Add((DataToken)voiceRangeNear);
-            DefaultAudioSettings.Add((DataToken)voiceRangeFar);
-            DefaultAudioSettings.Add((DataToken)volumetricRadius);
-            DefaultAudioSettings.Add((DataToken)voiceLowpass);
-            DataList DefaultDictEntry = new DataList();
-            DefaultDictEntry.Add((DataToken)new DataList());
-            DefaultDictEntry.Add((DataToken)new DataList());
-            DefaultDictEntry.Add((DataToken)new DataList());
-            DefaultDictEntry[SETTING_ID_INDEX].DataList.Add((DataToken)DefaultAudioSettingID);
-            DefaultDictEntry[SETTING_PRIORITY_INDEX].DataList.Add((DataToken)DefaultAudioSettingPriority);
-            DefaultDictEntry[SETTING_INDEX].DataList.Add((DataToken)DefaultAudioSettings);
-
-            _AudioSettingDict.SetValue(key: (DataToken)player.playerId, value: (DataToken)DefaultDictEntry);
-            Debug.Log("[AudioManager] Initialize AudioSettingDict for " + player.PrintName());
-        }
-        private DataList RemovePlayerAudioSettingDict(VRCPlayerApi player)
+        private DataList InitPlayerAudioSettings(VRCPlayerApi player)
         {
             if (!Utilities.IsValid(player)) return null;
 
-            if (!_AudioSettingDict.Remove(key: (DataToken)player.playerId, out DataToken value))
+            if (allPlayerSettings.TryGetValue((DataToken)player.playerId, out DataToken value))
             {
-                Debug.LogError("[AudioManager] Failed to remove AudioSettingDict for " + player.PrintName());
-                return null;
+                Debug.Log("[AudioManager] AudioSettingDict already initialized for " + player.PrintName());
+                return value.DataList;
             }
-            Debug.Log("[AudioManager] Removed AudioSettingDict for " + player.PrintName());
-            return value.DataList;
+
+            DataList defaultAudioSettings = new DataList();
+            defaultAudioSettings.Add((DataToken)voiceGain);
+            defaultAudioSettings.Add((DataToken)voiceRangeNear);
+            defaultAudioSettings.Add((DataToken)voiceRangeFar);
+            defaultAudioSettings.Add((DataToken)volumetricRadius);
+            defaultAudioSettings.Add((DataToken)voiceLowpass);
+            DataList defaultPlayerAudioSettings = new DataList();
+            defaultPlayerAudioSettings.Add((DataToken)new DataList());
+            defaultPlayerAudioSettings.Add((DataToken)new DataList());
+            defaultPlayerAudioSettings.Add((DataToken)new DataList());
+            defaultPlayerAudioSettings[SETTING_ID_INDEX].DataList.Add((DataToken)DefaultAudioSettingID);
+            defaultPlayerAudioSettings[SETTING_PRIORITY_INDEX].DataList.Add((DataToken)DefaultAudioSettingPriority);
+            defaultPlayerAudioSettings[SETTING_INDEX].DataList.Add((DataToken)defaultAudioSettings);
+
+            allPlayerSettings.SetValue(key: (DataToken)player.playerId, value: (DataToken)defaultPlayerAudioSettings);
+            Debug.Log("[AudioManager] Initialize PlayerAudioSettings for " + player.PrintName());
+            return defaultPlayerAudioSettings;
+        }
+        private void RemovePlayerAudioSettings(VRCPlayerApi player)
+        {
+            if (!Utilities.IsValid(player)) return;
+
+            if (!allPlayerSettings.Remove((DataToken)player.playerId))
+            {
+                // This is just an info, the goal of RemovePlayerAudioSettings is removing the settings,
+                // if they already didn't exist then its goal has already been achieved.
+                Debug.Log("[AudioManager] No PlayerAudioSettings present to remove for " + player.PrintName());
+                return;
+            }
+            Debug.Log("[AudioManager] Removed PlayerAudioSettings for " + player.PrintName());
         }
         public override void OnPlayerJoined(VRCPlayerApi joiningPlayer)
         {
             // No need to check if it is the local player which joined and loop through all players
             // as the joined event gets raised for everybody in the instance.
-            InitPlayerAudioSettingDict(joiningPlayer);
+            InitPlayerAudioSettings(joiningPlayer);
         }
         public override void OnPlayerLeft(VRCPlayerApi player)
         {
-            RemovePlayerAudioSettingDict(player);
+            RemovePlayerAudioSettings(player);
+            recentlyLeftPlayers.Add((DataToken)player.playerId, new DataToken(player));
+            StartLeftPlayerTrackingLoop();
+        }
+        private void StartLeftPlayerTrackingLoop()
+        {
+            if (trackingRecentlyLeftPlayers) return;
+            trackingRecentlyLeftPlayers = true;
+            SendCustomEventDelayedFrames(nameof(InternalLeftPlayerTrackingLoop), 1);
+        }
+        public void InternalLeftPlayerTrackingLoop()
+        {
+            DataList playerIds = recentlyLeftPlayers.GetKeys();
+            DataList players = recentlyLeftPlayers.GetValues();
+            int count = playerIds.Count;
+            for (int i = 0; i < count; i++)
+            {
+                VRCPlayerApi player = (VRCPlayerApi)players[i].Reference;
+                if (Utilities.IsValid(player)) continue; // Still valid, keep.
+                recentlyLeftPlayers.Remove(playerIds[i]);
+            }
+            if (recentlyLeftPlayers.Count == 0)
+            {
+                trackingRecentlyLeftPlayers = false;
+                return;
+            }
+            SendCustomEventDelayedFrames(nameof(InternalLeftPlayerTrackingLoop), 1);
         }
         //
         //Manage _AudioSettingDict[player] by settingID
@@ -175,7 +224,7 @@ namespace Sylan.AudioManager
         {
             if (audioSetting == null) return;
 
-            if (!TryGetPlayerAudioSettings(player, out DataList list)) return;
+            if (!TryGetOrInitPlayerAudioSettings(player, out DataList list)) return;
 
             DataList settingIDList = list[SETTING_ID_INDEX].DataList;
             DataList priorityList = list[SETTING_PRIORITY_INDEX].DataList;
@@ -203,7 +252,7 @@ namespace Sylan.AudioManager
             if (!Utilities.IsValid(player)) return false;
             if (player == Networking.LocalPlayer) return false;
 
-            if (!TryGetPlayerAudioSettings(player, out DataList list)) return false;
+            if (!TryGetOrInitPlayerAudioSettings(player, out DataList list)) return false;
 
             DataList settingIDList = list[SETTING_ID_INDEX].DataList;
             int index = settingIDList.IndexOf((DataToken)settingID);
@@ -215,9 +264,8 @@ namespace Sylan.AudioManager
         }
         public void ClearAudioSettings(VRCPlayerApi player)
         {
-            if (!Utilities.IsValid(player)) return;
-            _AudioSettingDict.Remove((DataToken)player.playerId);
-            InitPlayerAudioSettingDict(player);
+            RemovePlayerAudioSettings(player);
+            InitPlayerAudioSettings(player);
         }
         //
         //Update Audio Settings
@@ -235,7 +283,7 @@ namespace Sylan.AudioManager
             if (!Utilities.IsValid(player)) return;
             if (player == Networking.LocalPlayer) return;
 
-            if (!TryGetPlayerAudioSettings(player, out DataList list)) return;
+            if (!TryGetOrInitPlayerAudioSettings(player, out DataList list)) return;
 
             //VRCJson.TrySerializeToJson(list, JsonExportType.Minify, out DataToken result1);
             //Debug.Log(result1.ToString());
