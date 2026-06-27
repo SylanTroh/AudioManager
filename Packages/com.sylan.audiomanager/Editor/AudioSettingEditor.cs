@@ -1,6 +1,7 @@
 ﻿#if !COMPILER_UDONSHARP && UNITY_EDITOR
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Sylan.AudioManager.EditorUtilities;
 using UnityEditor;
 using UnityEngine;
@@ -261,6 +262,8 @@ namespace Sylan.AudioManager
                 settingZone.gameObject.layer = collisionLayer;
                 settingZone.SettingIndex = GetOrAdd(settingIdDict, allAudioSettings, new AudioSettingData(settingZone));
             }
+
+            AudioZoneInitialize.MakeAllAttachedCollidersTriggers(settingZones);
 
             zoneIdCount = allAudioSettings.Count;
 

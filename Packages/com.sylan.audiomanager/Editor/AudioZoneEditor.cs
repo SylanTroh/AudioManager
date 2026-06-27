@@ -1,5 +1,6 @@
 ﻿#if !COMPILER_UDONSHARP && UNITY_EDITOR
 using System.Collections.Generic;
+using System.Linq;
 using Sylan.AudioManager.EditorUtilities;
 using UnityEditor;
 using UnityEditor.Build;
@@ -257,6 +258,14 @@ namespace Sylan.AudioManager
                 && AudioZoneManagerKillSwitchInitialize.RunOnBuild();
         }
 
+        public static void MakeAllAttachedCollidersTriggers<T>(T[] components)
+            where T : Component
+        {
+            SerializedObject collidersSo = new(components.SelectMany(z => z.GetComponents<Collider>()).ToArray());
+            collidersSo.FindProperty("m_IsTrigger").boolValue = true;
+            collidersSo.ApplyModifiedProperties();
+        }
+
         private static bool RunOnBuild()
         {
             if (!SerializedPropertyUtils.GetObjects<AudioZoneCollider>(out AudioZoneCollider[] audioZones)) return false;
@@ -272,6 +281,8 @@ namespace Sylan.AudioManager
                 audioZone.gameObject.layer = collisionLayer;
                 PopulateGeneratedIds(zoneIdDict, audioZone);
             }
+
+            MakeAllAttachedCollidersTriggers(audioZones);
 
             zoneIdCount = zoneIdDict.Count;
 

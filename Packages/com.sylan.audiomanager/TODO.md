@@ -25,8 +25,8 @@
   - [x] If it does not exist, show a drop down on the `AudioZoneManager` with a sane default (Probably `Ignore Raycast` or `Environment`)
   - [x] Also if it does not exist, show a button in the `AudioZoneManager` inspector to create that layer
   - [x] Set the layer of all zone colliders as well as `audioZoneColliderLayerMask` accordingly
-- [ ] Ensure `IsTrigger` for Collider of `AudioSettingCollider`
-- [ ] Ensure `IsTrigger` for Collider of `AudioZoneCollider`
+- [x] Ensure `IsTrigger` for Collider of `AudioSettingCollider`
+- [x] Ensure `IsTrigger` for Collider of `AudioZoneCollider`
 - [x] Fix players joining in late not having their voice settings updated
 - [x] Fix players already existing in the world not having their voice settings updated when joining
 - [x] Fix duplicated info log message about which sync script is in use
