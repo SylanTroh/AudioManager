@@ -108,21 +108,10 @@ namespace Sylan.AudioManager
         }
         public override void OnPlayerJoined(VRCPlayerApi joiningPlayer)
         {
-            if (joiningPlayer == Networking.LocalPlayer)
-            {
-                VRCPlayerApi[] players = new VRCPlayerApi[VRCPlayerApi.GetPlayerCount()];
-                VRCPlayerApi.GetPlayers(players);
-                foreach (var player in players)
-                {
-                    InitPlayerAudioSettingDict(player);
-                }
-            }
-            else
-            {
-                InitPlayerAudioSettingDict(joiningPlayer);
-            }
+            // No need to check if it is the local player which joined and loop through all players
+            // as the joined event gets raised for everybody in the instance.
+            InitPlayerAudioSettingDict(joiningPlayer);
         }
-
         public override void OnPlayerLeft(VRCPlayerApi player)
         {
             RemovePlayerAudioSettingDict(player);
