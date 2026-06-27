@@ -177,38 +177,26 @@ namespace Sylan.AudioManager
 
             if (!TryGetPlayerAudioSettings(player, out DataList list)) return;
 
-            if (!list.TryGetValue(SETTING_ID_INDEX, TokenType.DataList, out DataToken token)) return;
-            DataList settingIDList = token.DataList;
-            if (!list.TryGetValue(SETTING_PRIORITY_INDEX, TokenType.DataList, out token)) return;
-            DataList priorityList = token.DataList;
-            if (!list.TryGetValue(SETTING_INDEX, TokenType.DataList, out token)) return;
-            DataList SettingList = token.DataList;
+            DataList settingIDList = list[SETTING_ID_INDEX].DataList;
+            DataList priorityList = list[SETTING_PRIORITY_INDEX].DataList;
+            DataList settingList = list[SETTING_INDEX].DataList;
 
             if (settingIDList.Contains((DataToken)settingID)) return;
 
-            int index = -1;
+            int index = priorityList.Count; // Insert at "count" adds to the end of the list.
 
             for (int i = 0; i < priorityList.Count; i++)
             {
-                if (!priorityList.TryGetValue(i, TokenType.Int, out DataToken p)) continue;
-                if (priority < p.Int)
+                if (priority < priorityList[i].Int)
                 {
                     index = i;
                     break;
                 }
             }
-            if (index == -1)
-            {
-                list[SETTING_ID_INDEX].DataList.Add((DataToken)settingID);
-                list[SETTING_PRIORITY_INDEX].DataList.Add((DataToken)priority);
-                list[SETTING_INDEX].DataList.Add((DataToken)audioSetting);
-            }
-            else
-            {
-                list[SETTING_ID_INDEX].DataList.Insert(index, (DataToken)settingID);
-                list[SETTING_PRIORITY_INDEX].DataList.Insert(index, (DataToken)priority);
-                list[SETTING_INDEX].DataList.Insert(index, (DataToken)audioSetting);
-            }
+
+            settingIDList.Insert(index, (DataToken)settingID);
+            priorityList.Insert(index, (DataToken)priority);
+            settingList.Insert(index, (DataToken)audioSetting);
         }
         public bool RemoveAudioSetting(VRCPlayerApi player, string settingID)
         {
@@ -217,22 +205,13 @@ namespace Sylan.AudioManager
 
             if (!TryGetPlayerAudioSettings(player, out DataList list)) return false;
 
-            if (!list.TryGetValue(SETTING_ID_INDEX, TokenType.DataList, out DataToken token)) return false;
-            DataList settingIDList = token.DataList;
-            if (!list.TryGetValue(SETTING_PRIORITY_INDEX, TokenType.DataList, out token)) return false;
-            DataList priorityList = token.DataList;
-            if (!list.TryGetValue(SETTING_INDEX, TokenType.DataList, out token)) return false;
-            DataList SettingList = token.DataList;
-
+            DataList settingIDList = list[SETTING_ID_INDEX].DataList;
             int index = settingIDList.IndexOf((DataToken)settingID);
             if (index == -1) return false;
-            else
-            {
-                list[SETTING_ID_INDEX].DataList.RemoveAt(index);
-                list[SETTING_PRIORITY_INDEX].DataList.RemoveAt(index);
-                list[SETTING_INDEX].DataList.RemoveAt(index);
-                return true;
-            }
+            settingIDList.RemoveAt(index);
+            list[SETTING_PRIORITY_INDEX].DataList.RemoveAt(index);
+            list[SETTING_INDEX].DataList.RemoveAt(index);
+            return true;
         }
         public void ClearAudioSettings(VRCPlayerApi player)
         {
@@ -261,30 +240,21 @@ namespace Sylan.AudioManager
             //VRCJson.TrySerializeToJson(list, JsonExportType.Minify, out DataToken result1);
             //Debug.Log(result1.ToString());
 
-            if (!list.TryGetValue(SETTING_ID_INDEX, TokenType.DataList, out DataToken token)) return;
-            DataList settingIDList = token.DataList;
-            if (!list.TryGetValue(SETTING_PRIORITY_INDEX, TokenType.DataList, out token)) return;
-            DataList priorityList = token.DataList;
-            if (!list.TryGetValue(SETTING_INDEX, TokenType.DataList, out token)) return;
-            DataList SettingList = token.DataList;
-
             //Get Highest Priority Setting
-            if (!list[SETTING_INDEX].DataList.TryGetValue(0, TokenType.DataList, out token)) return;
+            if (!list[SETTING_INDEX].DataList.TryGetValue(0, TokenType.DataList, out DataToken settingToken)) return;
 
-            DataList audioSetting = token.DataList;
+            DataList audioSetting = settingToken.DataList;
             if (!ValidateAudioSetting(audioSetting)) return;
 
             _VoiceApplicator.ApplyVoiceSetting(player, audioSetting);
 
-            string debugString = "[AudioManager] Setting " + player.PrintName() + " Audio:";
-            debugString += " SettingID:" + list[SETTING_ID_INDEX].DataList[0].String;
-            debugString += ", VoiceGain:" + audioSetting[VOICE_GAIN_INDEX].Float.ToString();
-            debugString += ", VoiceNear:" + audioSetting[RANGE_NEAR_INDEX].Float.ToString();
-            debugString += ", VoiceFar:" + audioSetting[RANGE_FAR_INDEX].Float.ToString();
-            debugString += ", VolumetricRadius:" + audioSetting[VOLUMETRIC_RADIUS_INDEX].Float.ToString();
-            debugString += ", Lowpass:" + audioSetting[VOICE_LOWPASS_INDEX].Boolean.ToString();
-
-            Debug.Log(debugString);
+            Debug.Log("[AudioManager] Setting " + player.PrintName() + " Audio:"
+                + " SettingID:" + list[SETTING_ID_INDEX].DataList[0].String
+                + ", VoiceGain:" + audioSetting[VOICE_GAIN_INDEX].Float.ToString()
+                + ", VoiceNear:" + audioSetting[RANGE_NEAR_INDEX].Float.ToString()
+                + ", VoiceFar:" + audioSetting[RANGE_FAR_INDEX].Float.ToString()
+                + ", VolumetricRadius:" + audioSetting[VOLUMETRIC_RADIUS_INDEX].Float.ToString()
+                + ", Lowpass:" + audioSetting[VOICE_LOWPASS_INDEX].Boolean.ToString());
         }
     }
     public static class AudioSettingManagerExtensions
