@@ -114,6 +114,7 @@ namespace Sylan.AudioManager
 
             allPlayerSettings.SetValue(key: (DataToken)player.playerId, value: (DataToken)defaultPlayerAudioSettings);
             Debug.Log("[AudioManager] Initialize PlayerAudioSettings for " + player.PrintName());
+            ApplyAudioSetting(player);
             return defaultPlayerAudioSettings;
         }
         private void RemovePlayerAudioSettings(VRCPlayerApi player)
