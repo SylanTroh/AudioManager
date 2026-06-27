@@ -27,8 +27,8 @@ namespace Sylan.AudioManager
         public const int SETTING_PRIORITY_INDEX = 1;
         public const int SETTING_INDEX = 2;
 
-        string DefaultAudioSettingID = string.Empty;
-        int DefaultAudioSettingPriority = int.MaxValue;
+        private const string DefaultAudioSettingID = "";
+        private const int DefaultAudioSettingPriority = int.MaxValue;
 
         [Header("Set default AudioSetting")]
         [SerializeField] private float voiceGain = DEFAULT_VOICE_GAIN;
