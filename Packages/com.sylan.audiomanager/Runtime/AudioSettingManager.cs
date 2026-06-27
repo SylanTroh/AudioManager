@@ -68,9 +68,9 @@ namespace Sylan.AudioManager
             if (!Utilities.IsValid(player)) return;
             if (!player.IsValid()) return;
 
-            if (_AudioSettingDict.TryGetValue((DataToken)player.playerId, TokenType.DataDictionary, out DataToken value))
+            if (_AudioSettingDict.ContainsKey((DataToken)player.playerId))
             {
-                Debug.Log("[AudioManager] AudioSettigs already initialized for " + player.PrintName());
+                Debug.Log("[AudioManager] AudioSettingDict already initialized for " + player.PrintName());
                 return;
             }
 
@@ -81,15 +81,15 @@ namespace Sylan.AudioManager
             DefaultAudioSettings.Add((DataToken)volumetricRadius);
             DefaultAudioSettings.Add((DataToken)voiceLowpass);
             DataList DefaultDictEntry = new DataList();
-            DefaultDictEntry.Add((DataToken) new DataList());
-            DefaultDictEntry.Add((DataToken) new DataList());
-            DefaultDictEntry.Add((DataToken) new DataList());
+            DefaultDictEntry.Add((DataToken)new DataList());
+            DefaultDictEntry.Add((DataToken)new DataList());
+            DefaultDictEntry.Add((DataToken)new DataList());
             DefaultDictEntry[SETTING_ID_INDEX].DataList.Add((DataToken)DefaultAudioSettingID);
             DefaultDictEntry[SETTING_PRIORITY_INDEX].DataList.Add((DataToken)DefaultAudioSettingPriority);
             DefaultDictEntry[SETTING_INDEX].DataList.Add((DataToken)DefaultAudioSettings);
 
             _AudioSettingDict.SetValue(key: (DataToken)player.playerId, value: (DataToken)DefaultDictEntry);
-            Debug.Log("[AudioManager] Initialize AudioSettings for " + player.PrintName());
+            Debug.Log("[AudioManager] Initialize AudioSettingDict for " + player.PrintName());
         }
         private DataList RemovePlayerAudioSettingDict(VRCPlayerApi player)
         {
@@ -135,13 +135,13 @@ namespace Sylan.AudioManager
                 Debug.LogError("[AudioManager] Invalid Audio Setting - null");
                 return false;
             }
-            
+
             if (audioSetting.Count != 5 && audioSetting.Count != 7)
             {
                 Debug.LogError("[AudioManager] Invalid Audio Setting - expected 5 or 7 elements, got " + audioSetting.Count);
                 return false;
             }
-            
+
             // Validate required voice parameters
             bool isValid =
                 (audioSetting.TryGetValue(VOICE_GAIN_INDEX, TokenType.Float, out DataToken discard)) &&
@@ -155,21 +155,21 @@ namespace Sylan.AudioManager
                 Debug.LogError("[AudioManager] Invalid Audio Setting - missing or wrong type for voice parameters");
                 return false;
             }
-            
+
             // Validate fade parameters if present
             if (audioSetting.Count == 7)
             {
                 isValid = isValid &&
                     (audioSetting.TryGetValue(FADE_ENABLED_INDEX, TokenType.Boolean, out discard)) &&
                     (audioSetting.TryGetValue(FADE_DURATION_INDEX, TokenType.Float, out discard));
-                    
+
                 if (!isValid)
                 {
                     Debug.LogError("[AudioManager] Invalid Audio Setting - wrong type for fade parameters");
                     return false;
                 }
             }
-            
+
             return true;
         }
         public void AddAudioSetting(VRCPlayerApi player, string settingID, int priority, DataList audioSetting)
@@ -249,6 +249,8 @@ namespace Sylan.AudioManager
         }
         public void ClearAudioSettings(VRCPlayerApi player)
         {
+            if (!Utilities.IsValid(player)) return;
+            _AudioSettingDict.Remove((DataToken)player.playerId);
             InitPlayerAudioSettingDict(player);
         }
         //
