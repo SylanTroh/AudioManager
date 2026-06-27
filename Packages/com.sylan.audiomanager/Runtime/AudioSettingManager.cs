@@ -51,22 +51,21 @@ namespace Sylan.AudioManager
         //
         // Manage _AudioSettingDict By player
         //
+        /// <summary>
+        /// </summary>
+        /// <param name="player">Must be valid.</param>
+        /// <param name="list"></param>
+        /// <returns></returns>
         private bool TryGetPlayerAudioSettings(VRCPlayerApi player, out DataList list)
         {
-            if (!Utilities.IsValid(player))
+            if (_AudioSettingDict.TryGetValue((DataToken)player.playerId, TokenType.DataList, out DataToken value))
             {
-                list = null;
-                return false;
+                list = value.DataList;
+                return true;
             }
-
-            if (!_AudioSettingDict.TryGetValue((DataToken)player.playerId, TokenType.DataList, out DataToken value))
-            {
-                Debug.LogError("[AudioManager] Failed to get AudioSettings for " + player.PrintName());
-                list = null;
-                return false;
-            }
-            list = value.DataList;
-            return true;
+            Debug.LogError("[AudioManager] Failed to get AudioSettings for " + player.PrintName());
+            list = null;
+            return false;
         }
         private void InitPlayerAudioSettingDict(VRCPlayerApi player)
         {
