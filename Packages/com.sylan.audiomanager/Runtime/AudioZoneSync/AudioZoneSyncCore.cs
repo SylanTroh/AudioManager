@@ -12,12 +12,11 @@ namespace Sylan.AudioManager
         protected AudioZoneManager AudioZoneManager;
         protected AudioZonePlayerObject AudioZonePlayerObject;
 
-        // TODO: remove SerializeField, just used for testing
         /// <summary>
         /// <para><c>-1</c> indicates not being in any setting zone.</para>
         /// <para>Not marked with <see cref="UdonSyncedAttribute"/>, deriving classes must sync this value.</para>
         /// </summary>
-        [SerializeField] protected int syncedAudioSettingIndex;
+        protected int syncedAudioSettingIndex;
 
         private AudioSettingCollider activeSettingZone;
         private AudioSettingCollider oldActiveSettingZone;
@@ -121,7 +120,6 @@ namespace Sylan.AudioManager
 
         public void OnZoneChanged()
         {
-            OnPreSerialization(); // TODO remove, just here for testing
             RequestSerialization();
             AudioZoneManager.UpdateAudioZoneSetting(this, doApply: true);
         }

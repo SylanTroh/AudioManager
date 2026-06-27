@@ -1,6 +1,5 @@
 ﻿using System;
 using UdonSharp;
-using UnityEngine;
 
 namespace Sylan.AudioManager
 {
@@ -16,12 +15,11 @@ namespace Sylan.AudioManager
         /// contained in this array at the end, with <see cref="AudioZoneManager.totalAudioZonesCount"/> added to it.</para>
         /// </summary>
         [UdonSynced] private int[] syncedIds = Array.Empty<int>();
-        // TODO: remove SerializeField, just used for testing
         /// <summary>
         /// <para>Must not be <see langword="null"/>, could be used before running
         /// <see cref="OnDeserialization"/> nor <see cref="InternalOnPreSerialization(int[], int)"/>.</para>
         /// </summary>
-        [SerializeField] private int[] syncedAudioZones = Array.Empty<int>();
+        private int[] syncedAudioZones = Array.Empty<int>();
 
         public override void OnDeserialization()
         {

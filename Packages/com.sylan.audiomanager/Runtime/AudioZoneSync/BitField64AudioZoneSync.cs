@@ -1,5 +1,4 @@
 ﻿using UdonSharp;
-using UnityEngine;
 using VRC.SDK3.Data;
 
 namespace Sylan.AudioManager
@@ -9,11 +8,10 @@ namespace Sylan.AudioManager
     {
         public override string SyncScriptName => nameof(BitField64AudioZoneSync);
 
-        // TODO: remove SerializeField, just used for testing
         /// <summary>
         /// <para>Packed into <see cref="BitFieldAudioZoneSync.highestSyncedAudioZonesField"/> for actual syncing.</para>
         /// </summary>
-        [SerializeField] private ulong syncedAudioZonesField;
+        private ulong syncedAudioZonesField;
 
         private ulong oldFinalAudioZonesField;
         private ulong finalAudioZonesField;
