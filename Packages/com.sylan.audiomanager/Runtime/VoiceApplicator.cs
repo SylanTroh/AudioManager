@@ -46,7 +46,6 @@ namespace Sylan.AudioManager
         public void ApplyVoiceSetting(VRCPlayerApi player, DataList audioSetting)
         {
             if (!Utilities.IsValid(player)) return;
-            if (!player.IsValid()) return;
             if (player == Networking.LocalPlayer) return;
             
             if (audioSetting == null || audioSetting.Count < 5)
@@ -125,7 +124,6 @@ namespace Sylan.AudioManager
         private void ApplyImmediate(VRCPlayerApi player, DataList voiceParams)
         {
             if (!Utilities.IsValid(player)) return;
-            if (!player.IsValid()) return;
             if (voiceParams == null || voiceParams.Count < 5) return;
             
             float gain = voiceParams[AudioSettingManager.VOICE_GAIN_INDEX].Float;
@@ -215,7 +213,7 @@ namespace Sylan.AudioManager
                 int playerId = keys[i].Int;
                 
                 VRCPlayerApi player = VRCPlayerApi.GetPlayerById(playerId);
-                if (!Utilities.IsValid(player) || !player.IsValid())
+                if (!Utilities.IsValid(player))
                 {
                     playersToRemove.Add((DataToken)playerId);
                     continue;

@@ -54,7 +54,6 @@ namespace Sylan.AudioManager
         private DataList GetPlayerAudioSettings(VRCPlayerApi player)
         {
             if (!Utilities.IsValid(player)) return null;
-            if (!player.IsValid()) return null;
 
             if (!_AudioSettingDict.TryGetValue((DataToken)player.playerId, TokenType.DataList, out DataToken value))
             {
@@ -66,7 +65,6 @@ namespace Sylan.AudioManager
         private void InitPlayerAudioSettingDict(VRCPlayerApi player)
         {
             if (!Utilities.IsValid(player)) return;
-            if (!player.IsValid()) return;
 
             if (_AudioSettingDict.ContainsKey((DataToken)player.playerId))
             {
@@ -94,7 +92,6 @@ namespace Sylan.AudioManager
         private DataList RemovePlayerAudioSettingDict(VRCPlayerApi player)
         {
             if (!Utilities.IsValid(player)) return null;
-            if (!player.IsValid()) return null;
 
             if (!_AudioSettingDict.Remove(key: (DataToken)player.playerId, out DataToken value))
             {
@@ -175,7 +172,6 @@ namespace Sylan.AudioManager
         public void AddAudioSetting(VRCPlayerApi player, string settingID, int priority, DataList audioSetting)
         {
             if (!Utilities.IsValid(player)) return;
-            if (!player.IsValid()) return;
             if (player == Networking.LocalPlayer) return;
 
             if (!ValidateAudioSetting(audioSetting)) return;
@@ -186,7 +182,7 @@ namespace Sylan.AudioManager
             if (audioSetting == null) return;
 
             DataList list = GetPlayerAudioSettings(player);
-            if (!Utilities.IsValid(list)) return;
+            if (list == null) return;
 
             if (!list.TryGetValue(SETTING_ID_INDEX, TokenType.DataList, out DataToken token)) return;
             DataList settingIDList = token.DataList;
@@ -224,11 +220,10 @@ namespace Sylan.AudioManager
         public bool RemoveAudioSetting(VRCPlayerApi player, string settingID)
         {
             if (!Utilities.IsValid(player)) return false;
-            if (!player.IsValid()) return false;
             if (player == Networking.LocalPlayer) return false;
 
             DataList list = GetPlayerAudioSettings(player);
-            if (!Utilities.IsValid(list)) return false;
+            if (list == null) return false;
 
             if (!list.TryGetValue(SETTING_ID_INDEX, TokenType.DataList, out DataToken token)) return false;
             DataList settingIDList = token.DataList;
@@ -259,7 +254,6 @@ namespace Sylan.AudioManager
         public void UpdateAudioSettings(VRCPlayerApi triggeringPlayer)
         {
             if (!Utilities.IsValid(triggeringPlayer)) return;
-            if (!triggeringPlayer.IsValid()) return;
             if (triggeringPlayer == Networking.LocalPlayer) return;
 
             //If someone else caused the update, update triggering player
@@ -268,11 +262,10 @@ namespace Sylan.AudioManager
         public void ApplyAudioSetting(VRCPlayerApi player)
         {
             if (!Utilities.IsValid(player)) return;
-            if (!player.IsValid()) return;
             if (player == Networking.LocalPlayer) return;
 
             DataList list = GetPlayerAudioSettings(player);
-            if (!Utilities.IsValid(list)) return;
+            if (list == null) return;
 
             //VRCJson.TrySerializeToJson(list, JsonExportType.Minify, out DataToken result1);
             //Debug.Log(result1.ToString());
