@@ -59,14 +59,12 @@ namespace Sylan.AudioManager
 
                 if (GUILayout.Button("Add BoxCollider"))
                 {
-                    zone.gameObject.AddComponent<BoxCollider>();
-                    boxCollider = zone.gameObject.GetComponent<BoxCollider>();
+                    boxCollider = Undo.AddComponent<BoxCollider>(zone.gameObject);
                     ResetBoxCollider(boxCollider);
                 }
                 if (GUILayout.Button("Add SphereCollider"))
                 {
-                    zone.gameObject.gameObject.AddComponent<SphereCollider>();
-                    sphereCollider = zone.gameObject.GetComponent<SphereCollider>();
+                    sphereCollider = Undo.AddComponent<SphereCollider>(zone.gameObject);
                     ResetSphereCollider(sphereCollider);
                 }
                 return;
@@ -102,33 +100,45 @@ namespace Sylan.AudioManager
         {
             Vector3 newSize = collider.size - Vector3.one * amount;
             newSize = Vector3.Max(newSize, Vector3.zero); // Ensure the size doesn't go below zero
-            collider.size = newSize;
+            SerializedObject so = new(collider);
+            so.FindProperty("m_Size").vector3Value = newSize;
+            so.ApplyModifiedProperties();
         }
 
         private void ResetBoxCollider(BoxCollider collider)
         {
-            var meshFilter = collider.transform.parent.gameObject.GetComponent<MeshFilter>();
-            Bounds bounds;
-            if (meshFilter == null) bounds = new Bounds(Vector3.zero, Vector3.one);
-            else bounds = meshFilter.sharedMesh.bounds;
-            collider.center = bounds.center;
-            collider.size = bounds.size;
-            collider.isTrigger = true;
-            zone.transform.localPosition = Vector3.zero;
-            zone.transform.localRotation = Quaternion.identity;
+            Bounds bounds = GetBoundsFromAttachedMesh(collider.transform.parent);
+            SerializedObject so = new(collider);
+            so.FindProperty("m_Center").vector3Value = bounds.center;
+            so.FindProperty("m_Size").vector3Value = bounds.size;
+            so.FindProperty("m_IsTrigger").boolValue = true;
+            so.ApplyModifiedProperties();
+            ResetTransformPositionAndRotation();
         }
 
         private void ResetSphereCollider(SphereCollider collider)
         {
-            var meshFilter = collider.transform.parent.gameObject.GetComponent<MeshFilter>();
-            Bounds bounds;
-            if (meshFilter == null) bounds = new Bounds(Vector3.zero, Vector3.one);
-            else bounds = meshFilter.sharedMesh.bounds;
-            collider.center = bounds.center;
-            collider.radius = bounds.extents.magnitude;
-            collider.isTrigger = true;
-            zone.transform.localPosition = Vector3.zero;
-            zone.transform.localRotation = Quaternion.identity;
+            Bounds bounds = GetBoundsFromAttachedMesh(collider.transform.parent);
+            SerializedObject so = new(collider);
+            so.FindProperty("m_Center").vector3Value = bounds.center;
+            so.FindProperty("m_Radius").floatValue = bounds.extents.magnitude;
+            so.FindProperty("m_IsTrigger").boolValue = true;
+            so.ApplyModifiedProperties();
+            ResetTransformPositionAndRotation();
+        }
+
+        private void ResetTransformPositionAndRotation()
+        {
+            SerializedObject so = new(zone.transform);
+            so.FindProperty("m_LocalPosition").vector3Value = Vector3.zero;
+            so.FindProperty("m_LocalRotation").quaternionValue = Quaternion.identity;
+            so.ApplyModifiedProperties();
+        }
+
+        private Bounds GetBoundsFromAttachedMesh(Transform transform)
+        {
+            MeshFilter meshFilter = transform.gameObject.GetComponent<MeshFilter>();
+            return meshFilter?.sharedMesh.bounds ?? new Bounds(Vector3.zero, Vector3.one);
         }
 
         private void OnSceneGUI()
@@ -152,20 +162,21 @@ namespace Sylan.AudioManager
 
                 if (EditorGUI.EndChangeCheck())
                 {
-                    Undo.RecordObject(boxCollider, "Resize Cube");
+                    SerializedObject so = new(boxCollider);
 
                     Vector3 newSize = Vector3.zero;
                     newSize.x = Mathf.Abs(handles[1].x - handles[0].x);
                     newSize.y = Mathf.Abs(handles[3].y - handles[2].y);
                     newSize.z = Mathf.Abs(handles[5].z - handles[4].z);
-
-                    boxCollider.size = newSize;
+                    so.FindProperty("m_Size").vector3Value = newSize;
 
                     Vector3 newCenter = Vector3.zero;
                     newCenter.x = (handles[1].x + handles[0].x) / 2;
                     newCenter.y = (handles[3].y + handles[2].y) / 2;
                     newCenter.z = (handles[5].z + handles[4].z) / 2;
-                    boxCollider.center = newCenter;
+                    so.FindProperty("m_Center").vector3Value = newCenter;
+
+                    so.ApplyModifiedProperties();
                 }
                 return;
             }
@@ -182,15 +193,17 @@ namespace Sylan.AudioManager
 
                 if (EditorGUI.EndChangeCheck())
                 {
-                    Undo.RecordObject(sphereCollider, "Modify Sphere");
+                    SerializedObject so = new(sphereCollider);
 
                     Vector3 newCenter = sphereCollider.transform.InverseTransformPoint(centerHandle);
-                    var delta = newCenter - sphereCollider.center;
-                    sphereCollider.center = newCenter;
+                    Vector3 delta = newCenter - sphereCollider.center;
+                    so.FindProperty("m_Center").vector3Value = newCenter;
 
                     radiusHandle += delta;
                     float newRadius = Vector3.Distance(centerHandle, radiusHandle);
-                    sphereCollider.radius = newRadius;
+                    so.FindProperty("m_Radius").floatValue = newRadius;
+
+                    so.ApplyModifiedProperties();
                 }
             }
         }
