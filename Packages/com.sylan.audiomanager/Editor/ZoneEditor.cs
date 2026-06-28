@@ -1,19 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Sylan.AudioManager.EditorUtilities;
-using UnityEditor;
-using UnityEditor.Build;
-using UnityEditor.Build.Reporting;
+﻿using UnityEditor;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using VRC.SDKBase.Editor.BuildPipeline;
 
 namespace Sylan.AudioManager
 {
-    [CustomEditor(typeof(AudioZoneCollider))]
-    public class AudioZoneEditor : Editor
+    public abstract class ZoneEditor : Editor
     {
-        private AudioZoneCollider audioZone;
+        private Component zone;
         BoxCollider boxCollider;
         CapsuleCollider capsuleCollider;
         SphereCollider sphereCollider;
@@ -23,22 +15,17 @@ namespace Sylan.AudioManager
         private bool showFoldout = true;
         private bool hasValidMeshCollider = false;
 
-        SerializedProperty zoneID;
-
         private void OnEnable()
         {
-            audioZone = target as AudioZoneCollider;
-            boxCollider = audioZone.GetComponent<BoxCollider>();
-            capsuleCollider = audioZone.GetComponent<CapsuleCollider>();
-            sphereCollider = audioZone.GetComponent<SphereCollider>();
-            meshCollider = audioZone.GetComponent<MeshCollider>();
-            zoneID = serializedObject.FindProperty("zoneID");
+            zone = target as Component;
+            boxCollider = zone.GetComponent<BoxCollider>();
+            capsuleCollider = zone.GetComponent<CapsuleCollider>();
+            sphereCollider = zone.GetComponent<SphereCollider>();
+            meshCollider = zone.GetComponent<MeshCollider>();
         }
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
-
-            serializedObject.Update();
 
             EditorGUILayout.Space();
             showFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(showFoldout, "Audiozone Editor Settings", EditorStyles.foldoutHeader);
@@ -56,14 +43,14 @@ namespace Sylan.AudioManager
 
                 if (GUILayout.Button("Add BoxCollider"))
                 {
-                    audioZone.gameObject.AddComponent<BoxCollider>();
-                    boxCollider = audioZone.gameObject.GetComponent<BoxCollider>();
+                    zone.gameObject.AddComponent<BoxCollider>();
+                    boxCollider = zone.gameObject.GetComponent<BoxCollider>();
                     ResetBoxCollider(boxCollider);
                 }
                 if (GUILayout.Button("Add SphereCollider"))
                 {
-                    audioZone.gameObject.gameObject.AddComponent<SphereCollider>();
-                    sphereCollider = audioZone.gameObject.GetComponent<SphereCollider>();
+                    zone.gameObject.gameObject.AddComponent<SphereCollider>();
+                    sphereCollider = zone.gameObject.GetComponent<SphereCollider>();
                     ResetSphereCollider(sphereCollider);
                 }
                 EditorGUILayout.EndFoldoutHeaderGroup();
@@ -112,8 +99,8 @@ namespace Sylan.AudioManager
             collider.center = bounds.center;
             collider.size = bounds.size;
             collider.isTrigger = true;
-            audioZone.transform.localPosition = Vector3.zero;
-            audioZone.transform.localRotation = Quaternion.identity;
+            zone.transform.localPosition = Vector3.zero;
+            zone.transform.localRotation = Quaternion.identity;
         }
         private void ResetSphereCollider(SphereCollider collider)
         {
@@ -123,8 +110,8 @@ namespace Sylan.AudioManager
             else bounds = meshFilter.sharedMesh.bounds; collider.center = bounds.center;
             collider.radius = bounds.extents.magnitude;
             collider.isTrigger = true;
-            audioZone.transform.localPosition = Vector3.zero;
-            audioZone.transform.localRotation = Quaternion.identity;
+            zone.transform.localPosition = Vector3.zero;
+            zone.transform.localRotation = Quaternion.identity;
         }
         private void OnSceneGUI()
         {
@@ -213,9 +200,9 @@ namespace Sylan.AudioManager
             return sphereCollider.transform.TransformPoint(sphereCollider.center + Vector3.up * sphereCollider.radius);
         }
         [DrawGizmo(GizmoType.NonSelected | GizmoType.Selected | GizmoType.Pickable)]
-        private static void DrawGizmos(AudioZoneCollider audioZone, GizmoType gizmoType)
+        private static void DrawGizmos(Component audioZone, GizmoType gizmoType)
         {
-            var colliderTransform = audioZone.transform.Find("AudioZoneCollider");
+            var colliderTransform = audioZone.transform.Find("Component");
             if (colliderTransform == null) return;
             var colliderObject = colliderTransform.gameObject;
 
@@ -241,153 +228,6 @@ namespace Sylan.AudioManager
                 Gizmos.color = new Color(0, 1, 0, 1.0f);
                 Gizmos.matrix = Matrix4x4.TRS(meshCollider.transform.position, meshCollider.transform.rotation, meshCollider.transform.lossyScale);
                 Gizmos.DrawWireMesh(meshCollider.sharedMesh);
-            }
-        }
-    }
-    [InitializeOnLoad]
-    public class AudioZoneInitialize : IVRCSDKBuildRequestedCallback
-    {
-        public static int zoneIdCount;
-
-        private static bool RunAllOnBuild()
-        {
-            return RunOnBuild()
-                && AudioSettingInitialize.RunOnBuild()
-                && AudioZoneManagerInitialize.RunOnBuild()
-                && AudioZoneManagerKillSwitchInitialize.RunOnBuild();
-        }
-
-        public static void MakeAllAttachedCollidersTriggers<T>(T[] components)
-            where T : Component
-        {
-            SerializedObject collidersSo = new(components.SelectMany(z => z.GetComponents<Collider>()).ToArray());
-            collidersSo.FindProperty("m_IsTrigger").boolValue = true;
-            collidersSo.ApplyModifiedProperties();
-        }
-
-        private static bool RunOnBuild()
-        {
-            if (!SerializedPropertyUtils.GetObjects<AudioZoneCollider>(out AudioZoneCollider[] audioZones)) return false;
-            if (audioZones.Length == 0) return true;
-            if (!SerializedPropertyUtils.GetObject<AudioZoneManager>(out var audioZoneManager)) return false;
-
-            var zoneIdDict = new Dictionary<string, int> { { string.Empty, AudioZoneManager.EmptyZoneIdIndex } };
-
-            AudioZoneLayerInit.TryFindAudioZoneLayer(out var collisionLayer, audioZoneManager);
-
-            foreach (var audioZone in audioZones)
-            {
-                audioZone.gameObject.layer = collisionLayer;
-                PopulateGeneratedIds(zoneIdDict, audioZone);
-            }
-
-            MakeAllAttachedCollidersTriggers(audioZones);
-
-            zoneIdCount = zoneIdDict.Count;
-
-            if (audioZoneManager != null)
-            {
-                audioZoneManager.totalAudioZonesCount = zoneIdCount;
-                var shift = zoneIdCount % 64;
-                audioZoneManager.audioSettingsIndexBitShift = shift;
-                audioZoneManager.audioSettingsIndexBitMask = ulong.MaxValue << shift;
-
-                audioZoneManager.ZoneIdMapping = new string[zoneIdDict.Count];
-                foreach (var keyValuePair in zoneIdDict)
-                {
-                    audioZoneManager.ZoneIdMapping[keyValuePair.Value] = keyValuePair.Key;
-                }
-            }
-
-            return true;
-        }
-
-        private static void PopulateGeneratedIds(Dictionary<string, int> zoneIdDict, AudioZoneCollider audioZone)
-        {
-            // TODO: Use SerializedObject
-
-            ulong field1 = 0uL;
-            ulong field2 = 0uL;
-            ulong field3 = 0uL;
-
-            audioZone.zoneIdIndex = GetOrAdd(zoneIdDict, audioZone.zoneID);
-            AddIdAsFlag(ref field1, ref field2, ref field3, audioZone.zoneIdIndex);
-
-            audioZone.transitionZoneIdIndexes = new int[audioZone.transitionZoneIDs.Length];
-            for (var i = 0; i < audioZone.transitionZoneIDs.Length; i++)
-            {
-                int zoneIdIndex = GetOrAdd(zoneIdDict, audioZone.transitionZoneIDs[i]);
-                audioZone.transitionZoneIdIndexes[i] = zoneIdIndex;
-                AddIdAsFlag(ref field1, ref field2, ref field3, zoneIdIndex);
-            }
-
-            audioZone.combinedZoneIdsField1 = field1;
-            audioZone.combinedZoneIdsField2 = field2;
-            audioZone.combinedZoneIdsField3 = field3;
-        }
-
-        private static void AddIdAsFlag(ref ulong field1, ref ulong field2, ref ulong field3, int zoneId)
-        {
-            AddIdAsFlag(ref field1, 0, zoneId);
-            AddIdAsFlag(ref field2, 64, zoneId);
-            AddIdAsFlag(ref field3, 128, zoneId);
-        }
-
-        private static void AddIdAsFlag(ref ulong field, int baseShift, int zoneId)
-        {
-            if (zoneId < baseShift || baseShift + 64 <= zoneId)
-                return;
-            field |= 1uL << (zoneId - baseShift);
-        }
-
-        private static int GetOrAdd(Dictionary<string, int> zoneIdDict, string zoneId)
-        {
-            if (zoneIdDict.TryGetValue(zoneId, out var value)) return value;
-
-            value = zoneIdDict.Count;
-            zoneIdDict.Add(zoneId, value);
-            return value;
-        }
-
-        //
-        //Run On Play
-        //
-        static AudioZoneInitialize()
-        //Rename Static Constructor to match Class name
-        {
-            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
-        }
-        private static void OnPlayModeStateChanged(PlayModeStateChange state)
-        {
-            if (state != PlayModeStateChange.ExitingEditMode) return;
-            if (!RunAllOnBuild())
-            {
-                EditorApplication.isPlaying = false;
-            }
-        }
-        //
-        // Run On Build
-        //
-        public int callbackOrder => 0;
-
-        public bool OnBuildRequested(VRCSDKRequestedBuildType requestedBuildType)
-        {
-            if (requestedBuildType != VRCSDKRequestedBuildType.Scene) return false;
-            return RunAllOnBuild();
-        }
-    }
-
-    public class AudioZoneColliderProcessor : IProcessSceneWithReport
-    {
-        public int callbackOrder => 0;
-
-        public void OnProcessScene(Scene scene, BuildReport report)
-        {
-            //This will only temporary remove the string ZoneIds before PlayMode & upload. We dont need them anymore and can save some memory
-            foreach (var audioZoneCollider in Object.FindObjectsByType<AudioZoneCollider>(FindObjectsInactive.Include, FindObjectsSortMode.None))
-            {
-                audioZoneCollider.zoneID = string.Empty;
-                audioZoneCollider.transitionZoneIDs = System.Array.Empty<string>();
             }
         }
     }
