@@ -35,13 +35,21 @@ namespace Sylan.AudioManager
             serializedObject.ApplyModifiedProperties();
 
             EditorGUILayout.Space();
-            showFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(showFoldout, "Audiozone Editor Settings", EditorStyles.foldoutHeader);
-            if (!showFoldout)
-            {
-                EditorGUILayout.EndFoldoutHeaderGroup();
-                return;
-            }
+            DrawAudioZoneEditorSettings();
+        }
 
+        private void DrawAudioZoneEditorSettings()
+        {
+            showFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(showFoldout, "Audiozone Editor Settings", EditorStyles.foldoutHeader);
+            if (showFoldout)
+            {
+                DrawAudioZoneEditorSettingsContent();
+            }
+            EditorGUILayout.EndFoldoutHeaderGroup();
+        }
+
+        private void DrawAudioZoneEditorSettingsContent()
+        {
             hasValidMeshCollider = meshCollider != null && meshCollider.isTrigger;
 
             if (boxCollider == null && sphereCollider == null && capsuleCollider == null && !hasValidMeshCollider)
@@ -60,9 +68,9 @@ namespace Sylan.AudioManager
                     sphereCollider = zone.gameObject.GetComponent<SphereCollider>();
                     ResetSphereCollider(sphereCollider);
                 }
-                EditorGUILayout.EndFoldoutHeaderGroup();
                 return;
             }
+
             if (boxCollider != null)
             {
                 EditorGUILayout.LabelField("Shrink Audiozone (This can help with players clipping)", EditorStyles.boldLabel);
@@ -76,21 +84,19 @@ namespace Sylan.AudioManager
                 {
                     ResetBoxCollider(boxCollider as BoxCollider);
                 }
-                EditorGUILayout.EndFoldoutHeaderGroup();
                 return;
             }
+
             if (sphereCollider != null)
             {
                 if (GUILayout.Button("Reset Audiozone Size"))
                 {
                     ResetSphereCollider(sphereCollider as SphereCollider);
                 }
-                EditorGUILayout.EndFoldoutHeaderGroup();
                 return;
             }
-
-            EditorGUILayout.EndFoldoutHeaderGroup();
         }
+
         private void ShrinkCollider(BoxCollider collider, float amount)
         {
             Vector3 newSize = collider.size - Vector3.one * amount;
