@@ -12,8 +12,9 @@ namespace Sylan.AudioManager
         SphereCollider sphereCollider;
         MeshCollider meshCollider;
         private const float handleSize = 0.1f;
-        private float shrinkAmount = 0.5f;
-        private bool showFoldout = true;
+        // These are static to be remembered throughout this unity session.
+        private static float shrinkAmount = 0.5f;
+        private static bool showFoldout = true;
         private bool hasValidMeshCollider = false;
 
         private void OnEnable()
