@@ -25,6 +25,7 @@ namespace Sylan.AudioManager
             sphereCollider = zone.GetComponent<SphereCollider>();
             meshCollider = zone.GetComponent<MeshCollider>();
         }
+
         public override void OnInspectorGUI()
         {
             if (UdonSharpGUI.DrawDefaultUdonSharpBehaviourHeader(targets))
@@ -78,11 +79,11 @@ namespace Sylan.AudioManager
 
                 if (GUILayout.Button("Shrink"))
                 {
-                    ShrinkCollider(boxCollider as BoxCollider, shrinkAmount);
+                    ShrinkCollider(boxCollider, shrinkAmount);
                 }
                 if (GUILayout.Button("Reset Audiozone Size"))
                 {
-                    ResetBoxCollider(boxCollider as BoxCollider);
+                    ResetBoxCollider(boxCollider);
                 }
                 return;
             }
@@ -91,7 +92,7 @@ namespace Sylan.AudioManager
             {
                 if (GUILayout.Button("Reset Audiozone Size"))
                 {
-                    ResetSphereCollider(sphereCollider as SphereCollider);
+                    ResetSphereCollider(sphereCollider);
                 }
                 return;
             }
@@ -103,6 +104,7 @@ namespace Sylan.AudioManager
             newSize = Vector3.Max(newSize, Vector3.zero); // Ensure the size doesn't go below zero
             collider.size = newSize;
         }
+
         private void ResetBoxCollider(BoxCollider collider)
         {
             var meshFilter = collider.transform.parent.gameObject.GetComponent<MeshFilter>();
@@ -115,17 +117,20 @@ namespace Sylan.AudioManager
             zone.transform.localPosition = Vector3.zero;
             zone.transform.localRotation = Quaternion.identity;
         }
+
         private void ResetSphereCollider(SphereCollider collider)
         {
             var meshFilter = collider.transform.parent.gameObject.GetComponent<MeshFilter>();
             Bounds bounds;
             if (meshFilter == null) bounds = new Bounds(Vector3.zero, Vector3.one);
-            else bounds = meshFilter.sharedMesh.bounds; collider.center = bounds.center;
+            else bounds = meshFilter.sharedMesh.bounds;
+            collider.center = bounds.center;
             collider.radius = bounds.extents.magnitude;
             collider.isTrigger = true;
             zone.transform.localPosition = Vector3.zero;
             zone.transform.localRotation = Quaternion.identity;
         }
+
         private void OnSceneGUI()
         {
             hasValidMeshCollider = meshCollider != null && meshCollider.isTrigger;
@@ -141,7 +146,7 @@ namespace Sylan.AudioManager
                 for (int i = 0; i < handles.Length; i++)
                 {
                     handles[i] = boxCollider.transform.TransformPoint(handles[i]);
-                    var fmh_140_69_638376709796116633 = Quaternion.identity; handles[i] = Handles.FreeMoveHandle(handles[i], handleSize, Vector3.one * 0.1f, Handles.SphereHandleCap);
+                    handles[i] = Handles.FreeMoveHandle(handles[i], handleSize, Vector3.one * 0.1f, Handles.SphereHandleCap);
                     handles[i] = boxCollider.transform.InverseTransformPoint(handles[i]);
                 }
 
@@ -164,6 +169,7 @@ namespace Sylan.AudioManager
                 }
                 return;
             }
+
             if (sphereCollider != null)
             {
                 EditorGUI.BeginChangeCheck();
@@ -171,8 +177,8 @@ namespace Sylan.AudioManager
                 Vector3 centerHandle = GetCenterHandlePosition();
                 Vector3 radiusHandle = GetRadiusHandlePosition();
 
-                var fmh_170_69_638376709796133627 = Quaternion.identity; centerHandle = Handles.FreeMoveHandle(centerHandle, handleSize, Vector3.one * 0.1f, Handles.SphereHandleCap);
-                var fmh_171_69_638376709796135328 = Quaternion.identity; radiusHandle = Handles.FreeMoveHandle(radiusHandle, handleSize, Vector3.one * 0.1f, Handles.SphereHandleCap);
+                centerHandle = Handles.FreeMoveHandle(centerHandle, handleSize, Vector3.one * 0.1f, Handles.SphereHandleCap);
+                radiusHandle = Handles.FreeMoveHandle(radiusHandle, handleSize, Vector3.one * 0.1f, Handles.SphereHandleCap);
 
                 if (EditorGUI.EndChangeCheck())
                 {
@@ -194,15 +200,16 @@ namespace Sylan.AudioManager
             Vector3[] positions = new Vector3[6];
 
             Vector3 halfSize = boxCollider.size / 2;
-            positions[0] = (boxCollider.center - Vector3.right * halfSize.x);
-            positions[1] = (boxCollider.center + Vector3.right * halfSize.x);
-            positions[2] = (boxCollider.center - Vector3.up * halfSize.y);
-            positions[3] = (boxCollider.center + Vector3.up * halfSize.y);
-            positions[4] = (boxCollider.center - Vector3.forward * halfSize.z);
-            positions[5] = (boxCollider.center + Vector3.forward * halfSize.z);
+            positions[0] = boxCollider.center - Vector3.right * halfSize.x;
+            positions[1] = boxCollider.center + Vector3.right * halfSize.x;
+            positions[2] = boxCollider.center - Vector3.up * halfSize.y;
+            positions[3] = boxCollider.center + Vector3.up * halfSize.y;
+            positions[4] = boxCollider.center - Vector3.forward * halfSize.z;
+            positions[5] = boxCollider.center + Vector3.forward * halfSize.z;
 
             return positions;
         }
+
         private Vector3 GetCenterHandlePosition()
         {
             return sphereCollider.transform.TransformPoint(sphereCollider.center);
@@ -212,6 +219,7 @@ namespace Sylan.AudioManager
         {
             return sphereCollider.transform.TransformPoint(sphereCollider.center + Vector3.up * sphereCollider.radius);
         }
+
         [DrawGizmo(GizmoType.NonSelected | GizmoType.Selected | GizmoType.Pickable)]
         private static void DrawGizmos(Component audioZone, GizmoType gizmoType)
         {
@@ -227,6 +235,7 @@ namespace Sylan.AudioManager
                 Gizmos.DrawWireCube(boxCollider.center, boxCollider.size);
                 return;
             }
+
             SphereCollider sphereCollider = colliderObject.GetComponent<SphereCollider>();
             if (sphereCollider != null)
             {
@@ -234,8 +243,9 @@ namespace Sylan.AudioManager
                 Gizmos.matrix = Matrix4x4.TRS(sphereCollider.transform.position, sphereCollider.transform.rotation, sphereCollider.transform.lossyScale);
                 Gizmos.DrawWireSphere(sphereCollider.center, sphereCollider.radius);
             }
+
             MeshCollider meshCollider = colliderObject.GetComponent<MeshCollider>();
-            bool hasValidMeshCollider = (meshCollider != null) && meshCollider.isTrigger;
+            bool hasValidMeshCollider = meshCollider != null && meshCollider.isTrigger;
             if (hasValidMeshCollider)
             {
                 Gizmos.color = new Color(0, 1, 0, 1.0f);
