@@ -1,5 +1,4 @@
-﻿#if !COMPILER_UDONSHARP && UNITY_EDITOR
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -139,4 +138,3 @@ namespace Sylan.AudioManager.EditorUtilities
         }
     }
 }
-#endif

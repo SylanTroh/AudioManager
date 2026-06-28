@@ -1,5 +1,4 @@
-﻿#if !COMPILER_UDONSHARP && UNITY_EDITOR
-using Sylan.AudioManager;
+﻿using Sylan.AudioManager;
 using UnityEditor;
 using UnityEngine;
 
@@ -67,7 +66,7 @@ public class AudioZoneLayerInit : EditorWindow
 
         Debug.LogWarning("[AudioManager] No empty layer found after index 21.");
     }
-    
+
     public static bool TryFindAudioZoneLayer(out int layerIndex, object source = null)
     {
         var manager = source switch
@@ -76,7 +75,7 @@ public class AudioZoneLayerInit : EditorWindow
             AudioZoneManager audioZoneManager => audioZoneManager,
             _ => null
         };
-        manager = manager != null? manager : FindFirstObjectByType<AudioZoneManager>();
+        manager = manager != null ? manager : FindFirstObjectByType<AudioZoneManager>();
 
         layerIndex = LayerMask.NameToLayer(layerName);
         var success = layerIndex != -1;
@@ -114,4 +113,3 @@ public class AudioZoneLayerInit : EditorWindow
         }
     }
 }
-#endif

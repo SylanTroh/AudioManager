@@ -1,5 +1,4 @@
-﻿#if !COMPILER_UDONSHARP && UNITY_EDITOR
-using Sylan.AudioManager.EditorUtilities;
+﻿using Sylan.AudioManager.EditorUtilities;
 using UdonSharp;
 using UdonSharpEditor;
 using UnityEditor;
@@ -138,7 +137,7 @@ namespace Sylan.AudioManager
 
             serializedObject.Update();
             DrawPropertiesExcluding(serializedObject, "m_Script");
-            
+
             if (!AudioZoneLayerInit.TryFindAudioZoneLayer(out var layerIndex, serializedObject))
             {
                 DrawDefaultLayerSettings();
@@ -160,25 +159,25 @@ namespace Sylan.AudioManager
 
         private void DrawDefaultLayerSettings()
         {
-            EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);  
+            EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
             EditorGUILayout.HelpBox(
                 "AudioZones Layer could not be found. Either select a Layer to use or Init AudioZones layer",
                 MessageType.Info
             );
-                
+
             EditorGUI.BeginChangeCheck();
-            
+
             var defaultLayerIndexProp = serializedObject.FindProperty(nameof(AudioZoneManager.DefaultLayerIndex));
             var newLayer = EditorGUILayout.LayerField(
                 "Default Layer",
                 defaultLayerIndexProp.intValue
             );
-            
+
             if (EditorGUI.EndChangeCheck())
             {
                 defaultLayerIndexProp.intValue = newLayer;
             }
-            
+
             EditorGUILayout.Space();
             if (GUILayout.Button(new GUIContent(
                     "Init AudioZones Layer",
@@ -186,9 +185,8 @@ namespace Sylan.AudioManager
             {
                 AudioZoneLayerInit.ShowWindow();
             }
-                
+
             EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
         }
     }
 }
-#endif

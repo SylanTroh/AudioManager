@@ -1,4 +1,3 @@
-#if !COMPILER_UDONSHARP && UNITY_EDITOR
 using Sylan.AudioManager.EditorUtilities;
 using UdonSharpEditor;
 using UnityEditor;
@@ -46,4 +45,3 @@ namespace Sylan.AudioManager
         }
     }
 }
-#endif
