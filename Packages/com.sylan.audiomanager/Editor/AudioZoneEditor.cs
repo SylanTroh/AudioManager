@@ -27,10 +27,19 @@ namespace Sylan.AudioManager
                 && AudioZoneManagerKillSwitchInitialize.RunOnBuild();
         }
 
+        /// <summary>
+        /// <para>Affects all but <see cref="MeshCollider"/>s, in case a zone component is on the same object
+        /// as a visible mesh.</para>
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="components"></param>
         public static void MakeAllAttachedCollidersTriggers<T>(T[] components)
             where T : Component
         {
-            SerializedObject collidersSo = new(components.SelectMany(z => z.GetComponents<Collider>()).ToArray());
+            SerializedObject collidersSo = new(components
+                .SelectMany(z => z.GetComponents<Collider>())
+                .Where(c => c is not MeshCollider)
+                .ToArray());
             collidersSo.FindProperty("m_IsTrigger").boolValue = true;
             collidersSo.ApplyModifiedProperties();
         }
