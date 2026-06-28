@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using UdonSharpEditor;
+using UnityEditor;
 using UnityEngine;
 
 namespace Sylan.AudioManager
@@ -25,7 +26,12 @@ namespace Sylan.AudioManager
         }
         public override void OnInspectorGUI()
         {
-            base.OnInspectorGUI();
+            if (UdonSharpGUI.DrawDefaultUdonSharpBehaviourHeader(targets))
+                return;
+
+            serializedObject.Update();
+            DrawPropertiesExcluding(serializedObject, "m_Script");
+            serializedObject.ApplyModifiedProperties();
 
             EditorGUILayout.Space();
             showFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(showFoldout, "Audiozone Editor Settings", EditorStyles.foldoutHeader);
