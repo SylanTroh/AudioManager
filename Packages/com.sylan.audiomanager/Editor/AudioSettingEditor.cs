@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Sylan.AudioManager.EditorUtilities;
 using UnityEditor;
 using UnityEngine;
@@ -25,18 +26,22 @@ namespace Sylan.AudioManager
             if (!SerializedPropertyUtils.GetObjects<AudioSettingCollider>(out AudioSettingCollider[] settingZones)) return false;
             if (settingZones.Length == 0) return true;
             if (!SerializedPropertyUtils.GetSerializedObject<AudioZoneManager>(out var managerSo)) return false;
-            AudioZoneLayerInit.TryFindAudioZoneLayer(out var collisionLayer, managerSo);
+            AudioZoneLayerInit.TryFindAudioZoneLayer(out int collisionLayer, managerSo);
 
             var settingIdDict = new Dictionary<AudioSettingData, int>();
             var allAudioSettings = new List<AudioSettingData>();
 
+            SerializedPropertyUtils.SetLayerAndApply(settingZones.Select(z => z.gameObject).ToArray(), collisionLayer);
+
             foreach (var settingZone in settingZones)
             {
-                settingZone.gameObject.layer = collisionLayer;
-                settingZone.SettingIndex = GetOrAdd(settingIdDict, allAudioSettings, new AudioSettingData(settingZone));
+                int settingIndex = GetOrAdd(settingIdDict, allAudioSettings, new AudioSettingData(settingZone));
+                SerializedObject so = new(settingZone);
+                so.FindProperty(nameof(AudioSettingCollider.settingIndex)).intValue = settingIndex;
+                so.ApplyModifiedProperties();
             }
 
-            AudioZoneInitialize.MakeAllAttachedCollidersTriggers(settingZones);
+            AudioZoneInitialize.MakeAllAttachedPrimitiveCollidersTriggers(settingZones);
 
             zoneIdCount = allAudioSettings.Count;
 

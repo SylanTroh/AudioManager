@@ -8,9 +8,9 @@ namespace Sylan.AudioManager
     {
         /// <summary>
         /// <para>Generated at build time. <see cref="AudioSettingCollider"/>s with perfectly matching
-        /// settings use the same <see cref="SettingIndex"/>.</para>
+        /// settings use the same <see cref="settingIndex"/>.</para>
         /// </summary>
-        [HideInInspector] public int SettingIndex;
+        [HideInInspector] public int settingIndex;
 
         [Header("Lower number means higher priority", order = 0)]
         [Space(-10, order = 1)]

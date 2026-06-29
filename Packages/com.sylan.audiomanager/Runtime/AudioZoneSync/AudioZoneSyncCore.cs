@@ -66,7 +66,7 @@ namespace Sylan.AudioManager
             for (var index = 0; index < audioZoneIndexes.Length; index++)
             {
                 var audioZoneIndex = audioZoneIndexes[index];
-                zoneNames[index] = $"\"{AudioZoneManager.ZoneIdMapping[audioZoneIndex]}\"";
+                zoneNames[index] = $"\"{AudioZoneManager.zoneIdMapping[audioZoneIndex]}\"";
             }
 
             Debug.Log($"[AudioManager] Player: {OwningPlayer.PrintName()}, Setting: {syncedAudioSettingIndex}, "
@@ -86,7 +86,7 @@ namespace Sylan.AudioManager
                 // Fallback to setting id purely for consistency, though that "consistency" may change between builds.
                 // SettingIndexes are not guaranteed to be assigned in any specific order.
                 || (audioSettingCollider.priority == activeSettingZone.priority
-                    && audioSettingCollider.SettingIndex < activeSettingZone.SettingIndex))
+                    && audioSettingCollider.settingIndex < activeSettingZone.settingIndex))
             {
                 activeSettingZone = audioSettingCollider;
             }
@@ -116,7 +116,7 @@ namespace Sylan.AudioManager
             // Saving which setting zone the local player is in this "synced" variable too purely for cleanliness.
             // The local player does not actually care about which setting zones they themselves are in,
             // so this is not actually used locally.
-            syncedAudioSettingIndex = oldActiveSettingZone == null ? -1 : oldActiveSettingZone.SettingIndex;
+            syncedAudioSettingIndex = oldActiveSettingZone == null ? -1 : oldActiveSettingZone.settingIndex;
             PrepareForSerialization(syncedAudioSettingIndex);
         }
 

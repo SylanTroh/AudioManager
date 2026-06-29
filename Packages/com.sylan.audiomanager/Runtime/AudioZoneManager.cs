@@ -22,8 +22,8 @@ namespace Sylan.AudioManager
         /// </summary>
         public const int EmptyZoneIdIndex = 0;
         public const ulong EmptyZoneIdBitFlag = 1uL << EmptyZoneIdIndex;
-        [HideInInspector] public string[] ZoneIdMapping = Array.Empty<string>();
-        [HideInInspector] public int DefaultLayerIndex = 0;
+        [HideInInspector] public string[] zoneIdMapping = Array.Empty<string>();
+        [HideInInspector] public int defaultLayerIndex = 0;
 
         // ================================================================
         // Audio Setting Zones

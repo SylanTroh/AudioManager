@@ -39,7 +39,7 @@ namespace Sylan.AudioManager
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="components"></param>
-        public static void MakeAllAttachedCollidersTriggers<T>(T[] components)
+        public static void MakeAllAttachedPrimitiveCollidersTriggers<T>(T[] components)
             where T : Component
         {
             SerializedObject collidersSo = new(components
@@ -53,35 +53,42 @@ namespace Sylan.AudioManager
         private static bool RunOnBuild()
         {
             if (!SerializedPropertyUtils.GetObjects<AudioZoneCollider>(out AudioZoneCollider[] audioZones)) return false;
-            if (audioZones.Length == 0) return true;
+            if (audioZones.Length == 0) return true; // TODO: Reset zoneIdCount.
             if (!SerializedPropertyUtils.GetObject<AudioZoneManager>(out var audioZoneManager)) return false;
 
-            var zoneIdDict = new Dictionary<string, int> { { string.Empty, AudioZoneManager.EmptyZoneIdIndex } };
+            AudioZoneLayerInit.TryFindAudioZoneLayer(out int collisionLayer, audioZoneManager);
+            SerializedPropertyUtils.SetLayerAndApply(audioZones.Select(z => z.gameObject).ToArray(), collisionLayer);
 
-            AudioZoneLayerInit.TryFindAudioZoneLayer(out var collisionLayer, audioZoneManager);
+            MakeAllAttachedPrimitiveCollidersTriggers(audioZones);
 
+            var zoneIdDict = new Dictionary<string, int>() { { string.Empty, AudioZoneManager.EmptyZoneIdIndex } };
             foreach (var audioZone in audioZones)
             {
-                audioZone.gameObject.layer = collisionLayer;
                 PopulateGeneratedIds(zoneIdDict, audioZone);
             }
-
-            MakeAllAttachedCollidersTriggers(audioZones);
 
             zoneIdCount = zoneIdDict.Count;
 
             if (audioZoneManager != null)
             {
-                audioZoneManager.totalAudioZonesCount = zoneIdCount;
-                var shift = zoneIdCount % 64;
-                audioZoneManager.audioSettingsIndexBitShift = shift;
-                audioZoneManager.audioSettingsIndexBitMask = ulong.MaxValue << shift;
+                SerializedObject so = new(audioZoneManager);
 
-                audioZoneManager.ZoneIdMapping = new string[zoneIdDict.Count];
-                foreach (var keyValuePair in zoneIdDict)
+                so.FindProperty(nameof(AudioZoneManager.totalAudioZonesCount)).intValue = zoneIdCount;
+                int shift = zoneIdCount % 64;
+                so.FindProperty(nameof(AudioZoneManager.audioSettingsIndexBitShift)).intValue = shift;
+                so.FindProperty(nameof(AudioZoneManager.audioSettingsIndexBitMask)).ulongValue = ulong.MaxValue << shift;
+
+                string[] zoneIdMapping = new string[zoneIdDict.Count];
+                foreach (var kvp in zoneIdDict)
                 {
-                    audioZoneManager.ZoneIdMapping[keyValuePair.Value] = keyValuePair.Key;
+                    zoneIdMapping[kvp.Value] = kvp.Key;
                 }
+                SerializedPropertyUtils.SetArrayProperty(
+                    so.FindProperty(nameof(audioZoneManager.zoneIdMapping)),
+                    zoneIdMapping,
+                    (p, v) => p.stringValue = v);
+
+                so.ApplyModifiedProperties();
             }
 
             return true;
@@ -89,26 +96,32 @@ namespace Sylan.AudioManager
 
         private static void PopulateGeneratedIds(Dictionary<string, int> zoneIdDict, AudioZoneCollider audioZone)
         {
-            // TODO: Use SerializedObject
-
+            SerializedObject so = new(audioZone);
             ulong field1 = 0uL;
             ulong field2 = 0uL;
             ulong field3 = 0uL;
 
-            audioZone.zoneIdIndex = GetOrAdd(zoneIdDict, audioZone.zoneID);
-            AddIdAsFlag(ref field1, ref field2, ref field3, audioZone.zoneIdIndex);
+            int zoneIdIndex = GetOrAdd(zoneIdDict, audioZone.zoneID);
+            so.FindProperty(nameof(AudioZoneCollider.zoneIdIndex)).intValue = zoneIdIndex;
+            AddIdAsFlag(ref field1, ref field2, ref field3, zoneIdIndex);
 
-            audioZone.transitionZoneIdIndexes = new int[audioZone.transitionZoneIDs.Length];
+            int[] transitionZoneIdIndexes = new int[audioZone.transitionZoneIDs.Length];
             for (var i = 0; i < audioZone.transitionZoneIDs.Length; i++)
             {
-                int zoneIdIndex = GetOrAdd(zoneIdDict, audioZone.transitionZoneIDs[i]);
-                audioZone.transitionZoneIdIndexes[i] = zoneIdIndex;
+                zoneIdIndex = GetOrAdd(zoneIdDict, audioZone.transitionZoneIDs[i]);
+                transitionZoneIdIndexes[i] = zoneIdIndex;
                 AddIdAsFlag(ref field1, ref field2, ref field3, zoneIdIndex);
             }
+            SerializedPropertyUtils.SetArrayProperty(
+                so.FindProperty(nameof(AudioZoneCollider.transitionZoneIdIndexes)),
+                transitionZoneIdIndexes,
+                (p, v) => p.intValue = v);
 
-            audioZone.combinedZoneIdsField1 = field1;
-            audioZone.combinedZoneIdsField2 = field2;
-            audioZone.combinedZoneIdsField3 = field3;
+            so.FindProperty(nameof(AudioZoneCollider.combinedZoneIdsField1)).ulongValue = field1;
+            so.FindProperty(nameof(AudioZoneCollider.combinedZoneIdsField2)).ulongValue = field2;
+            so.FindProperty(nameof(AudioZoneCollider.combinedZoneIdsField3)).ulongValue = field3;
+
+            so.ApplyModifiedProperties();
         }
 
         private static void AddIdAsFlag(ref ulong field1, ref ulong field2, ref ulong field3, int zoneId)

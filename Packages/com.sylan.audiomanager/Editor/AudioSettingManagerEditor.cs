@@ -17,10 +17,9 @@ namespace Sylan.AudioManager
             if (manager != null)
             {
                 // Add VoiceApplicator to the same GameObject if it doesn't already exist
-                VoiceApplicator voiceApplicator = manager.GetComponent<VoiceApplicator>();
-                if (voiceApplicator == null)
+                if (manager.GetComponent<VoiceApplicator>() == null)
                 {
-                    voiceApplicator = manager.gameObject.AddComponent<VoiceApplicator>();
+                    manager.gameObject.AddComponent<VoiceApplicator>();
                     UnityEngine.Debug.Log("[AudioManager] Automatically added VoiceApplicator to " + manager.gameObject.name);
                 }
             }

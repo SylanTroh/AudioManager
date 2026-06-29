@@ -136,5 +136,13 @@ namespace Sylan.AudioManager.EditorUtilities
             }
             return true;
         }
+
+        public static void SetLayerAndApply(GameObject go, int layer) => SetLayerAndApply(new SerializedObject(go), layer);
+        public static void SetLayerAndApply(GameObject[] gos, int layer) => SetLayerAndApply(new SerializedObject(gos), layer);
+        private static void SetLayerAndApply(SerializedObject gameObjectSo, int layer)
+        {
+            gameObjectSo.FindProperty("m_Layer").intValue = layer;
+            gameObjectSo.ApplyModifiedProperties();
+        }
     }
 }

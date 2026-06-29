@@ -81,7 +81,7 @@ public class AudioZoneLayerInit : EditorWindow
         var success = layerIndex != -1;
         if (!success)
         {
-            layerIndex = manager != null ? manager.DefaultLayerIndex : -1;
+            layerIndex = manager != null ? manager.defaultLayerIndex : -1;
         }
         return success;
     }

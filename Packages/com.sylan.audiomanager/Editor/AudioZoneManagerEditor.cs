@@ -167,7 +167,7 @@ namespace Sylan.AudioManager
 
             EditorGUI.BeginChangeCheck();
 
-            var defaultLayerIndexProp = serializedObject.FindProperty(nameof(AudioZoneManager.DefaultLayerIndex));
+            var defaultLayerIndexProp = serializedObject.FindProperty(nameof(AudioZoneManager.defaultLayerIndex));
             var newLayer = EditorGUILayout.LayerField(
                 "Default Layer",
                 defaultLayerIndexProp.intValue
