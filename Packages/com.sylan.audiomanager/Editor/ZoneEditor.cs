@@ -144,64 +144,72 @@ namespace Sylan.AudioManager
         {
             if (boxCollider != null)
             {
-                EditorGUI.BeginChangeCheck();
-
-                Vector3[] handles = GetHandlePositions();
-
-                for (int i = 0; i < handles.Length; i++)
-                {
-                    handles[i] = boxCollider.transform.TransformPoint(handles[i]);
-                    handles[i] = Handles.FreeMoveHandle(handles[i], handleSize, Vector3.one * 0.1f, Handles.SphereHandleCap);
-                    handles[i] = boxCollider.transform.InverseTransformPoint(handles[i]);
-                }
-
-                if (EditorGUI.EndChangeCheck())
-                {
-                    SerializedObject so = new(boxCollider);
-
-                    Vector3 newSize = Vector3.zero;
-                    newSize.x = Mathf.Abs(handles[1].x - handles[0].x);
-                    newSize.y = Mathf.Abs(handles[3].y - handles[2].y);
-                    newSize.z = Mathf.Abs(handles[5].z - handles[4].z);
-                    so.FindProperty("m_Size").vector3Value = newSize;
-
-                    Vector3 newCenter = Vector3.zero;
-                    newCenter.x = (handles[1].x + handles[0].x) / 2;
-                    newCenter.y = (handles[3].y + handles[2].y) / 2;
-                    newCenter.z = (handles[5].z + handles[4].z) / 2;
-                    so.FindProperty("m_Center").vector3Value = newCenter;
-
-                    so.ApplyModifiedProperties();
-                }
+                DrawBoxColliderHandles();
                 return;
             }
 
             if (sphereCollider != null)
             {
-                EditorGUI.BeginChangeCheck();
-
-                Vector3 centerHandle = GetCenterHandlePosition();
-                Vector3 radiusHandle = GetRadiusHandlePosition();
-
-                centerHandle = Handles.FreeMoveHandle(centerHandle, handleSize, Vector3.one * 0.1f, Handles.SphereHandleCap);
-                radiusHandle = Handles.FreeMoveHandle(radiusHandle, handleSize, Vector3.one * 0.1f, Handles.SphereHandleCap);
-
-                if (EditorGUI.EndChangeCheck())
-                {
-                    SerializedObject so = new(sphereCollider);
-
-                    Vector3 newCenter = sphereCollider.transform.InverseTransformPoint(centerHandle);
-                    Vector3 delta = newCenter - sphereCollider.center;
-                    so.FindProperty("m_Center").vector3Value = newCenter;
-
-                    radiusHandle += delta;
-                    float newRadius = Vector3.Distance(centerHandle, radiusHandle);
-                    so.FindProperty("m_Radius").floatValue = newRadius;
-
-                    so.ApplyModifiedProperties();
-                }
+                DrawSphereColliderHandles();
                 return;
             }
+        }
+
+        private void DrawBoxColliderHandles()
+        {
+            EditorGUI.BeginChangeCheck();
+
+            Vector3[] handles = GetHandlePositions();
+
+            for (int i = 0; i < handles.Length; i++)
+            {
+                handles[i] = boxCollider.transform.TransformPoint(handles[i]);
+                handles[i] = Handles.FreeMoveHandle(handles[i], handleSize, Vector3.one * 0.1f, Handles.SphereHandleCap);
+                handles[i] = boxCollider.transform.InverseTransformPoint(handles[i]);
+            }
+
+            if (!EditorGUI.EndChangeCheck()) return;
+
+            SerializedObject so = new(boxCollider);
+
+            Vector3 newSize = Vector3.zero;
+            newSize.x = Mathf.Abs(handles[1].x - handles[0].x);
+            newSize.y = Mathf.Abs(handles[3].y - handles[2].y);
+            newSize.z = Mathf.Abs(handles[5].z - handles[4].z);
+            so.FindProperty("m_Size").vector3Value = newSize;
+
+            Vector3 newCenter = Vector3.zero;
+            newCenter.x = (handles[1].x + handles[0].x) / 2;
+            newCenter.y = (handles[3].y + handles[2].y) / 2;
+            newCenter.z = (handles[5].z + handles[4].z) / 2;
+            so.FindProperty("m_Center").vector3Value = newCenter;
+
+            so.ApplyModifiedProperties();
+        }
+
+        private void DrawSphereColliderHandles()
+        {
+            EditorGUI.BeginChangeCheck();
+
+            Vector3 centerHandle = GetCenterHandlePosition();
+            Vector3 radiusHandle = GetRadiusHandlePosition();
+
+            centerHandle = Handles.FreeMoveHandle(centerHandle, handleSize, Vector3.one * 0.1f, Handles.SphereHandleCap);
+            radiusHandle = Handles.FreeMoveHandle(radiusHandle, handleSize, Vector3.one * 0.1f, Handles.SphereHandleCap);
+
+            if (!EditorGUI.EndChangeCheck()) return;
+
+            SerializedObject so = new(sphereCollider);
+
+            Vector3 newCenter = sphereCollider.transform.InverseTransformPoint(centerHandle);
+            Vector3 delta = newCenter - sphereCollider.center;
+            so.FindProperty("m_Center").vector3Value = newCenter;
+
+            radiusHandle += delta;
+            float newRadius = Vector3.Distance(centerHandle, radiusHandle);
+            so.FindProperty("m_Radius").floatValue = newRadius;
+
+            so.ApplyModifiedProperties();
         }
 
         private Vector3[] GetHandlePositions()
