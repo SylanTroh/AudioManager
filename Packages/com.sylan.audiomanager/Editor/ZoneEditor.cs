@@ -142,7 +142,8 @@ namespace Sylan.AudioManager
             return meshFilter?.sharedMesh.bounds ?? new Bounds(Vector3.zero, Vector3.one);
         }
 
-        private void OnSceneGUI()
+        // Must not be private in order for it to be run by unity for deriving classes.
+        protected void OnSceneGUI()
         {
             hasValidMeshCollider = meshCollider != null && meshCollider.isTrigger;
 
