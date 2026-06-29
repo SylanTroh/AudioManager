@@ -12,7 +12,13 @@ namespace Sylan.AudioManager
 {
     [CustomEditor(typeof(AudioZoneCollider))]
     public class AudioZoneEditor : ZoneEditor
-    { }
+    {
+        [DrawGizmo(GizmoType.InSelectionHierarchy | GizmoType.Pickable)]
+        private static void DrawGizmos(AudioZoneCollider audioZone, GizmoType gizmoType)
+        {
+            DrawColliderGizmos(audioZone, Color.cyan);
+        }
+    }
 
     [InitializeOnLoad]
     public class AudioZoneInitialize : IVRCSDKBuildRequestedCallback

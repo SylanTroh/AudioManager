@@ -2,12 +2,19 @@
 using System.Collections.Generic;
 using Sylan.AudioManager.EditorUtilities;
 using UnityEditor;
+using UnityEngine;
 
 namespace Sylan.AudioManager
 {
     [CustomEditor(typeof(AudioSettingCollider))]
     public class AudioSettingEditor : ZoneEditor
-    { }
+    {
+        [DrawGizmo(GizmoType.InSelectionHierarchy | GizmoType.Pickable)]
+        private static void DrawGizmos(AudioSettingCollider audioZone, GizmoType gizmoType)
+        {
+            DrawColliderGizmos(audioZone, Color.yellow);
+        }
+    }
 
     public static class AudioSettingInitialize
     {

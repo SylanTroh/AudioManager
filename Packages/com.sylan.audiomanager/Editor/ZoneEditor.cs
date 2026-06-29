@@ -15,7 +15,6 @@ namespace Sylan.AudioManager
         // These are static to be remembered throughout this unity session.
         private static float shrinkGrowthAmount = 0.5f;
         private static bool showFoldout = true;
-        private bool hasValidMeshCollider = false;
 
         private void OnEnable()
         {
@@ -51,9 +50,7 @@ namespace Sylan.AudioManager
 
         private void DrawAudioZoneEditorSettingsContent()
         {
-            hasValidMeshCollider = meshCollider != null && meshCollider.isTrigger;
-
-            if (boxCollider == null && sphereCollider == null && capsuleCollider == null && !hasValidMeshCollider)
+            if (boxCollider == null && sphereCollider == null && capsuleCollider == null && !IsValidMeshCollider(meshCollider))
             {
                 EditorGUILayout.HelpBox("Add a Collider component to enable resizing handles in the scene view.", MessageType.Info);
 
@@ -145,10 +142,6 @@ namespace Sylan.AudioManager
         // Must not be private in order for it to be run by unity for deriving classes.
         protected void OnSceneGUI()
         {
-            hasValidMeshCollider = meshCollider != null && meshCollider.isTrigger;
-
-            if (boxCollider == null && sphereCollider == null && !hasValidMeshCollider) return;
-
             if (boxCollider != null)
             {
                 EditorGUI.BeginChangeCheck();
@@ -207,6 +200,7 @@ namespace Sylan.AudioManager
 
                     so.ApplyModifiedProperties();
                 }
+                return;
             }
         }
 
@@ -235,37 +229,49 @@ namespace Sylan.AudioManager
             return sphereCollider.transform.TransformPoint(sphereCollider.center + Vector3.up * sphereCollider.radius);
         }
 
-        [DrawGizmo(GizmoType.NonSelected | GizmoType.Selected | GizmoType.Pickable)]
-        private static void DrawGizmos(Component audioZone, GizmoType gizmoType)
+        private static bool IsValidMeshCollider(MeshCollider meshCollider)
         {
-            var colliderTransform = audioZone.transform.Find("Component");
-            if (colliderTransform == null) return;
-            var colliderObject = colliderTransform.gameObject;
+            return meshCollider != null && meshCollider.isTrigger;
+        }
 
-            BoxCollider boxCollider = colliderObject.GetComponent<BoxCollider>();
-            if (boxCollider != null)
-            {
-                Gizmos.color = new Color(0, 1, 0, 1.0f);
-                Gizmos.matrix = Matrix4x4.TRS(boxCollider.transform.position, boxCollider.transform.rotation, boxCollider.transform.lossyScale);
-                Gizmos.DrawWireCube(boxCollider.center, boxCollider.size);
-                return;
-            }
+        protected static void DrawColliderGizmos(Component audioZone, Color color)
+        {
+            Gizmos.color = color;
+            Gizmos.matrix = audioZone.transform.localToWorldMatrix;
 
-            SphereCollider sphereCollider = colliderObject.GetComponent<SphereCollider>();
-            if (sphereCollider != null)
+            foreach (Collider collider in audioZone.GetComponents<Collider>())
             {
-                Gizmos.color = new Color(0, 1, 0, 1.0f);
-                Gizmos.matrix = Matrix4x4.TRS(sphereCollider.transform.position, sphereCollider.transform.rotation, sphereCollider.transform.lossyScale);
-                Gizmos.DrawWireSphere(sphereCollider.center, sphereCollider.radius);
-            }
-
-            MeshCollider meshCollider = colliderObject.GetComponent<MeshCollider>();
-            bool hasValidMeshCollider = meshCollider != null && meshCollider.isTrigger;
-            if (hasValidMeshCollider)
-            {
-                Gizmos.color = new Color(0, 1, 0, 1.0f);
-                Gizmos.matrix = Matrix4x4.TRS(meshCollider.transform.position, meshCollider.transform.rotation, meshCollider.transform.lossyScale);
-                Gizmos.DrawWireMesh(meshCollider.sharedMesh);
+                switch (collider)
+                {
+                    case BoxCollider boxCollider:
+                        Gizmos.DrawWireCube(boxCollider.center, boxCollider.size);
+                        break;
+                    case SphereCollider sphereCollider:
+                        Gizmos.DrawWireSphere(sphereCollider.center, sphereCollider.radius);
+                        break;
+                    case MeshCollider meshCollider:
+                        if (IsValidMeshCollider(meshCollider))
+                        {
+                            Gizmos.DrawWireMesh(meshCollider.sharedMesh);
+                        }
+                        break;
+                        // This makes all other handles not show hovers and interactivity, which is bothersome.
+                        // In other words, this is the wrong/hacky way to do it.
+                        // case CapsuleCollider capsuleCollider:
+                        //     var capsule = new CapsuleBoundsHandle()
+                        //     {
+                        //         center = capsuleCollider.center,
+                        //         height = capsuleCollider.height,
+                        //         radius = capsuleCollider.radius,
+                        //         heightAxis = (CapsuleBoundsHandle.HeightAxis)capsuleCollider.direction,
+                        //         handleColor = new Color(0f, 0f, 0f, 0f),
+                        //         wireframeColor = color,
+                        //     };
+                        //     Handles.zTest = UnityEngine.Rendering.CompareFunction.Less;
+                        //     Handles.matrix = audioZone.transform.localToWorldMatrix;
+                        //     capsule.DrawHandle();
+                        //     break;
+                }
             }
         }
     }
