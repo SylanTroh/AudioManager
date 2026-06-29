@@ -26,12 +26,14 @@ namespace Sylan.AudioManager
             if (!SerializedPropertyUtils.GetObjects<AudioSettingCollider>(out AudioSettingCollider[] settingZones)) return false;
             if (settingZones.Length == 0) return true;
             if (!SerializedPropertyUtils.GetSerializedObject<AudioZoneManager>(out var managerSo)) return false;
-            AudioZoneLayerInit.TryFindAudioZoneLayer(out int collisionLayer, managerSo);
+
+            if (AudioZoneLayerInit.TryGetAudioZoneLayer(out int audioZoneLayer, (AudioZoneManager)managerSo?.targetObject))
+            {
+                SerializedPropertyUtils.SetLayerAndApply(settingZones.Select(z => z.gameObject).ToArray(), audioZoneLayer);
+            }
 
             var settingIdDict = new Dictionary<AudioSettingData, int>();
             var allAudioSettings = new List<AudioSettingData>();
-
-            SerializedPropertyUtils.SetLayerAndApply(settingZones.Select(z => z.gameObject).ToArray(), collisionLayer);
 
             foreach (var settingZone in settingZones)
             {

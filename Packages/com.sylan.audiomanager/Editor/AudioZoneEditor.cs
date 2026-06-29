@@ -56,8 +56,10 @@ namespace Sylan.AudioManager
             if (audioZones.Length == 0) return true; // TODO: Reset zoneIdCount.
             if (!SerializedPropertyUtils.GetObject<AudioZoneManager>(out var audioZoneManager)) return false;
 
-            AudioZoneLayerInit.TryFindAudioZoneLayer(out int collisionLayer, audioZoneManager);
-            SerializedPropertyUtils.SetLayerAndApply(audioZones.Select(z => z.gameObject).ToArray(), collisionLayer);
+            if (AudioZoneLayerInit.TryGetAudioZoneLayer(out int audioZoneLayer, audioZoneManager))
+            {
+                SerializedPropertyUtils.SetLayerAndApply(audioZones.Select(z => z.gameObject).ToArray(), audioZoneLayer);
+            }
 
             MakeAllAttachedPrimitiveCollidersTriggers(audioZones);
 

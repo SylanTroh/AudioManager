@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AudioZoneLayerInit : EditorWindow
 {
-    public const string layerName = "AudioZones";
+    public const string LayerName = "AudioZones";
     private int layerIndex = -1;
 
     [MenuItem("Tools/Sylan/Initialize AudioZone Layer")]
@@ -15,11 +15,11 @@ public class AudioZoneLayerInit : EditorWindow
 
     private void OnGUI()
     {
-        if (TryFindAudioZoneLayer(out var existingLayerIndex))
+        if (AudioZoneLayerExists())
         {
             using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
             {
-                GUILayout.Label("Found AudioZones layer at index " + existingLayerIndex + ".", EditorStyles.wordWrappedLabel);
+                GUILayout.Label("Found AudioZones layer at index " + GetAudioZoneLayerByName() + ".", EditorStyles.wordWrappedLabel);
             }
             return;
         }
@@ -67,23 +67,37 @@ public class AudioZoneLayerInit : EditorWindow
         Debug.LogWarning("[AudioManager] No empty layer found after index 21.");
     }
 
-    public static bool TryFindAudioZoneLayer(out int layerIndex, object source = null)
-    {
-        var manager = source switch
-        {
-            SerializedObject serializedObject => serializedObject.targetObject as AudioZoneManager,
-            AudioZoneManager audioZoneManager => audioZoneManager,
-            _ => null
-        };
-        manager = manager != null ? manager : FindFirstObjectByType<AudioZoneManager>();
+    private static int GetAudioZoneLayerByName() => LayerMask.NameToLayer(LayerName);
 
-        layerIndex = LayerMask.NameToLayer(layerName);
-        var success = layerIndex != -1;
-        if (!success)
+    public static bool AudioZoneLayerExists() => GetAudioZoneLayerByName() != -1;
+
+    public static bool TryGetAudioZoneLayer(out int audioZoneLayer, AudioZoneManager manager = null)
+    {
+        if (AudioZoneLayerExists())
         {
-            layerIndex = manager != null ? manager.defaultLayerIndex : -1;
+            audioZoneLayer = GetAudioZoneLayerByName();
+            return true;
         }
-        return success;
+
+        manager ??= FindFirstObjectByType<AudioZoneManager>();
+        if (manager != null)
+        {
+            audioZoneLayer = manager.defaultLayerIndex;
+            return true;
+        }
+
+        audioZoneLayer = -1;
+        return false;
+    }
+
+    public static int GetAudioZoneLayer(AudioZoneManager manager = null)
+    {
+        if (TryGetAudioZoneLayer(out int audioZoneLayer, manager))
+        {
+            return audioZoneLayer;
+        }
+        throw new System.Exception("Impossible, manager is expected to be guaranteed to exist, "
+            + "getting audio zone layer should always succeed.");
     }
 
     private void Initialize()
@@ -96,7 +110,7 @@ public class AudioZoneLayerInit : EditorWindow
 
             layers.GetArrayElementAtIndex(layerIndex).stringValue = "Layer " + layerIndex;
             SerializedProperty layer = layers.GetArrayElementAtIndex(layerIndex);
-            layer.stringValue = layerName; // Set the name of the new layer
+            layer.stringValue = LayerName; // Set the name of the new layer
 
             tagManager.ApplyModifiedProperties();
 
