@@ -13,7 +13,7 @@ namespace Sylan.AudioManager
         MeshCollider meshCollider;
         private const float handleSize = 0.1f;
         // These are static to be remembered throughout this unity session.
-        private static float shrinkAmount = 0.5f;
+        private static float shrinkGrowthAmount = 0.5f;
         private static bool showFoldout = true;
         private bool hasValidMeshCollider = false;
 
@@ -72,13 +72,14 @@ namespace Sylan.AudioManager
 
             if (boxCollider != null)
             {
-                EditorGUILayout.LabelField("Shrink Audiozone (This can help with players clipping)", EditorStyles.boldLabel);
-                shrinkAmount = EditorGUILayout.FloatField("Shrink Amount", shrinkAmount);
+                EditorGUILayout.LabelField("Shrinking Audiozones can help with clipping", EditorStyles.boldLabel);
+                shrinkGrowthAmount = Mathf.Max(0f, EditorGUILayout.FloatField("Shrink/Growth Amount", shrinkGrowthAmount));
 
-                if (GUILayout.Button("Shrink"))
-                {
-                    ShrinkCollider(boxCollider, shrinkAmount);
-                }
+                GUILayout.BeginHorizontal();
+                if (GUILayout.Button("Shrink")) GrowCollider(boxCollider, -shrinkGrowthAmount);
+                if (GUILayout.Button("Grow")) GrowCollider(boxCollider, shrinkGrowthAmount);
+                GUILayout.EndHorizontal();
+
                 if (GUILayout.Button("Reset Audiozone Size"))
                 {
                     ResetBoxCollider(boxCollider);
@@ -96,9 +97,9 @@ namespace Sylan.AudioManager
             }
         }
 
-        private void ShrinkCollider(BoxCollider collider, float amount)
+        private void GrowCollider(BoxCollider collider, float delta)
         {
-            Vector3 newSize = collider.size - Vector3.one * amount;
+            Vector3 newSize = collider.size + Vector3.one * delta;
             newSize = Vector3.Max(newSize, Vector3.zero); // Ensure the size doesn't go below zero
             SerializedObject so = new(collider);
             so.FindProperty("m_Size").vector3Value = newSize;
