@@ -129,6 +129,13 @@ namespace Sylan.AudioManager
     [CustomEditor(typeof(AudioZoneManager))]
     public class AudioZoneManagerEditor : Editor
     {
+        private SerializedProperty fallbackLayerIndexProp;
+
+        private void OnEnable()
+        {
+            fallbackLayerIndexProp = serializedObject.FindProperty(nameof(AudioZoneManager.fallbackLayerIndex));
+        }
+
         public override void OnInspectorGUI()
         {
             if (UdonSharpGUI.DrawDefaultUdonSharpBehaviourHeader(targets))
@@ -136,7 +143,7 @@ namespace Sylan.AudioManager
             EditorGUILayout.Space();
 
             serializedObject.Update();
-            DrawPropertiesExcluding(serializedObject, "m_Script");
+            DrawPropertiesExcluding(serializedObject, "m_Script", nameof(AudioZoneManager.fallbackLayerIndex));
 
             if (!AudioZoneLayerInit.AudioZoneLayerExists())
             {
@@ -159,34 +166,26 @@ namespace Sylan.AudioManager
 
         private void DrawDefaultLayerSettings()
         {
-            EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
-            EditorGUILayout.HelpBox(
-                "AudioZones Layer could not be found. Either select a Layer to use or Init AudioZones layer",
-                MessageType.Info
-            );
-
-            EditorGUI.BeginChangeCheck();
-
-            var defaultLayerIndexProp = serializedObject.FindProperty(nameof(AudioZoneManager.defaultLayerIndex));
-            var newLayer = EditorGUILayout.LayerField(
-                "Default Layer",
-                defaultLayerIndexProp.intValue
-            );
-
-            if (EditorGUI.EndChangeCheck())
-            {
-                defaultLayerIndexProp.intValue = newLayer;
-            }
-
             EditorGUILayout.Space();
+            EditorGUILayout.HelpBox($"When no collision layer called '{AudioZoneLayerInit.LayerName}' "
+                + $"is defined Audio Zone Colliders and Audio Setting Colliders will use the layer defined below.",
+                MessageType.Info);
+
+            // When changing the recommended layers here, also update the Reset function for the AudioZoneManager.
+            SerializedPropertyUtils.DrawLayerField(fallbackLayerIndexProp, new GUIContent(
+                "Audio Zones Layer",
+                "It is best to use a layer which is hardly used by anything else. Out of VRChat's default layers "
+                    + "several are internal to VRChat and it's likely best not to use them. "
+                    + "The more fitting might be 'Ignore Raycast' or 'Environment', depending on which of "
+                    + "those layers is used less in the current scene."));
+
             if (GUILayout.Button(new GUIContent(
-                    "Init AudioZones Layer",
-                    "This is an optional but highly recommended step to improve performance by preventing unnecessary collisions.")))
+                "Initialize AudioZones Layer",
+                "When not all custom layers are used in a project, it is likely best to dedicate one of them to "
+                    + "audio zones to keep the system's physics checks as performance light as they could be.")))
             {
                 AudioZoneLayerInit.ShowWindow();
             }
-
-            EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
         }
     }
 }

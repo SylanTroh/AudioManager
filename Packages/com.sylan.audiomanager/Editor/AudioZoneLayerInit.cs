@@ -7,19 +7,28 @@ public class AudioZoneLayerInit : EditorWindow
     public const string LayerName = "AudioZones";
     private int layerIndex = -1;
 
-    [MenuItem("Tools/Sylan/Initialize AudioZone Layer")]
+    [MenuItem("Tools/Sylan/Initialize AudioZones Layer")]
     public static void ShowWindow()
     {
-        GetWindow(typeof(AudioZoneLayerInit));
+        AudioZoneLayerInit window = GetWindow<AudioZoneLayerInit>();
+        window.Focus();
     }
 
     private void OnGUI()
     {
+        using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
+        {
+            GUILayout.Label($"When a collision layer called '{LayerName}' is defined Audio Zone Colliders and "
+                + $"Audio Setting Colliders will use that layer.\n"
+                + $"Otherwise they will use the Audio Zone Layer defined on the Audio Zone Manager.",
+                EditorStyles.wordWrappedLabel);
+        }
+
         if (AudioZoneLayerExists())
         {
             using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
             {
-                GUILayout.Label("Found AudioZones layer at index " + GetAudioZoneLayerByName() + ".", EditorStyles.wordWrappedLabel);
+                GUILayout.Label($"Found '{LayerName}' layer at index {GetAudioZoneLayerByName()}.", EditorStyles.wordWrappedLabel);
             }
             return;
         }
@@ -82,7 +91,7 @@ public class AudioZoneLayerInit : EditorWindow
         manager ??= FindFirstObjectByType<AudioZoneManager>();
         if (manager != null)
         {
-            audioZoneLayer = manager.defaultLayerIndex;
+            audioZoneLayer = manager.fallbackLayerIndex;
             return true;
         }
 

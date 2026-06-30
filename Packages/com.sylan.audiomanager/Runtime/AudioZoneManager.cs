@@ -23,7 +23,19 @@ namespace Sylan.AudioManager
         public const int EmptyZoneIdIndex = 0;
         public const ulong EmptyZoneIdBitFlag = 1uL << EmptyZoneIdIndex;
         [HideInInspector] public string[] zoneIdMapping = Array.Empty<string>();
-        [HideInInspector] public int defaultLayerIndex = 0;
+        public int fallbackLayerIndex;
+#if UNITY_EDITOR && !COMPILER_UDONSHARP
+        private void Reset()
+        {
+            // When changing these layers here, also update the tooltip for the custom inspector.
+            fallbackLayerIndex = LayerMask.NameToLayer("Ignore Raycast");
+            if (fallbackLayerIndex != -1) return;
+            // If "Ignore Raycast" doesn't exist, "Environment" probably doesn't either.
+            fallbackLayerIndex = LayerMask.NameToLayer("Environment");
+            if (fallbackLayerIndex != -1) return;
+            fallbackLayerIndex = 0;
+        }
+#endif
 
         // ================================================================
         // Audio Setting Zones

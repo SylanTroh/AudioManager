@@ -338,7 +338,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 90552518}
-  SettingIndex: 0
+  settingIndex: 0
   priority: 750
   voiceGain: 13
   voiceNear: 0
@@ -886,7 +886,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 403809181}
-  SettingIndex: 1
+  settingIndex: 0
   priority: 500
   voiceGain: 12
   voiceNear: 0
@@ -3040,11 +3040,8 @@ MonoBehaviour:
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 1565303861}
   _AudioSettingManager: {fileID: 794337261}
-  ZoneIdMapping:
-  - 
-  - Room
-  - Room2
-  DefaultLayerIndex: 0
+  zoneIdMapping: []
+  fallbackLayerIndex: 2
   totalAudioZonesCount: 3
   audioSettingsIndexBitShift: 3
   audioSettingsIndexBitMask: 18446744073709551608
