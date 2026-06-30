@@ -1,161 +1,41 @@
-﻿using UdonSharpEditor;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace Sylan.AudioManager
 {
-    public abstract class ZoneEditor : Editor
+    public class BoxColliderHandles : ColliderHandles<BoxCollider>
     {
-        private Component zone;
-        BoxCollider boxCollider;
-        CapsuleCollider capsuleCollider;
-        SphereCollider sphereCollider;
-        MeshCollider meshCollider;
-        private const float handleSize = 0.1f;
-        // These are static to be remembered throughout this unity session.
-        private static float shrinkGrowthAmount = 0.5f;
-        private static bool showFoldout = true;
+        public BoxColliderHandles(BoxCollider collider)
+            : base(collider)
+        { }
 
-        private void OnEnable()
+        public override bool IsRelevantToAudioZones() => true;
+
+        public override bool CanResetLocation() => true;
+        public override void ResetLocation() => ResetTransformPositionAndRotation();
+
+        public override bool CanResetCollider() => true;
+        public override void ResetCollider()
         {
-            zone = target as Component;
-            boxCollider = zone.GetComponent<BoxCollider>();
-            capsuleCollider = zone.GetComponent<CapsuleCollider>();
-            sphereCollider = zone.GetComponent<SphereCollider>();
-            meshCollider = zone.GetComponent<MeshCollider>();
+            Bounds bounds = GetBoundsFromAttachedMesh(collider.transform.parent);
+            colliderSo.Update();
+            colliderSo.FindProperty("m_Center").vector3Value = bounds.center;
+            colliderSo.FindProperty("m_Size").vector3Value = bounds.size;
+            colliderSo.FindProperty("m_IsTrigger").boolValue = true;
+            colliderSo.ApplyModifiedProperties();
         }
 
-        public override void OnInspectorGUI()
-        {
-            if (UdonSharpGUI.DrawDefaultUdonSharpBehaviourHeader(targets))
-                return;
-
-            serializedObject.Update();
-            DrawPropertiesExcluding(serializedObject, "m_Script");
-            serializedObject.ApplyModifiedProperties();
-
-            EditorGUILayout.Space();
-            DrawAudioZoneEditorSettings();
-        }
-
-        private void DrawAudioZoneEditorSettings()
-        {
-            showFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(showFoldout, "Audiozone Editor Settings", EditorStyles.foldoutHeader);
-            if (showFoldout)
-            {
-                DrawAudioZoneEditorSettingsContent();
-            }
-            EditorGUILayout.EndFoldoutHeaderGroup();
-        }
-
-        private void DrawAudioZoneEditorSettingsContent()
-        {
-            if (boxCollider == null && sphereCollider == null && capsuleCollider == null && !IsValidMeshCollider(meshCollider))
-            {
-                EditorGUILayout.HelpBox("Add a Collider component to enable resizing handles in the scene view.", MessageType.Info);
-
-                if (GUILayout.Button("Add BoxCollider"))
-                {
-                    boxCollider = Undo.AddComponent<BoxCollider>(zone.gameObject);
-                    ResetBoxCollider(boxCollider);
-                }
-                if (GUILayout.Button("Add SphereCollider"))
-                {
-                    sphereCollider = Undo.AddComponent<SphereCollider>(zone.gameObject);
-                    ResetSphereCollider(sphereCollider);
-                }
-                return;
-            }
-
-            if (boxCollider != null)
-            {
-                EditorGUILayout.LabelField("Shrinking Audiozones can help with clipping", EditorStyles.boldLabel);
-                shrinkGrowthAmount = Mathf.Max(0f, EditorGUILayout.FloatField("Shrink/Growth Amount", shrinkGrowthAmount));
-
-                GUILayout.BeginHorizontal();
-                if (GUILayout.Button("Shrink")) GrowCollider(boxCollider, -shrinkGrowthAmount);
-                if (GUILayout.Button("Grow")) GrowCollider(boxCollider, shrinkGrowthAmount);
-                GUILayout.EndHorizontal();
-
-                if (GUILayout.Button("Reset Audiozone Size"))
-                {
-                    ResetBoxCollider(boxCollider);
-                }
-                return;
-            }
-
-            if (sphereCollider != null)
-            {
-                if (GUILayout.Button("Reset Audiozone Size"))
-                {
-                    ResetSphereCollider(sphereCollider);
-                }
-                return;
-            }
-        }
-
-        private void GrowCollider(BoxCollider collider, float delta)
+        public override bool CanGrowCollider() => true;
+        public override void GrowCollider(float delta)
         {
             Vector3 newSize = collider.size + Vector3.one * delta;
             newSize = Vector3.Max(newSize, Vector3.zero); // Ensure the size doesn't go below zero
-            SerializedObject so = new(collider);
-            so.FindProperty("m_Size").vector3Value = newSize;
-            so.ApplyModifiedProperties();
+            colliderSo.Update();
+            colliderSo.FindProperty("m_Size").vector3Value = newSize;
+            colliderSo.ApplyModifiedProperties();
         }
 
-        private void ResetBoxCollider(BoxCollider collider)
-        {
-            Bounds bounds = GetBoundsFromAttachedMesh(collider.transform.parent);
-            SerializedObject so = new(collider);
-            so.FindProperty("m_Center").vector3Value = bounds.center;
-            so.FindProperty("m_Size").vector3Value = bounds.size;
-            so.FindProperty("m_IsTrigger").boolValue = true;
-            so.ApplyModifiedProperties();
-            ResetTransformPositionAndRotation();
-        }
-
-        private void ResetSphereCollider(SphereCollider collider)
-        {
-            Bounds bounds = GetBoundsFromAttachedMesh(collider.transform.parent);
-            SerializedObject so = new(collider);
-            so.FindProperty("m_Center").vector3Value = bounds.center;
-            so.FindProperty("m_Radius").floatValue = bounds.extents.magnitude;
-            so.FindProperty("m_IsTrigger").boolValue = true;
-            so.ApplyModifiedProperties();
-            ResetTransformPositionAndRotation();
-        }
-
-        private void ResetTransformPositionAndRotation()
-        {
-            SerializedObject so = new(zone.transform);
-            so.FindProperty("m_LocalPosition").vector3Value = Vector3.zero;
-            so.FindProperty("m_LocalRotation").quaternionValue = Quaternion.identity;
-            so.ApplyModifiedProperties();
-        }
-
-        private Bounds GetBoundsFromAttachedMesh(Transform transform)
-        {
-            MeshFilter meshFilter = transform.gameObject.GetComponent<MeshFilter>();
-            return meshFilter?.sharedMesh.bounds ?? new Bounds(Vector3.zero, Vector3.one);
-        }
-
-        // Must not be private in order for it to be run by unity for deriving classes.
-        protected void OnSceneGUI()
-        {
-            if (boxCollider != null)
-            {
-                DrawBoxColliderHandles();
-                return;
-            }
-
-            if (sphereCollider != null)
-            {
-                DrawSphereColliderHandles();
-                return;
-            }
-        }
-
-        private void DrawBoxColliderHandles()
+        public override void DrawHandles()
         {
             EditorGUI.BeginChangeCheck();
 
@@ -163,124 +43,43 @@ namespace Sylan.AudioManager
 
             for (int i = 0; i < handles.Length; i++)
             {
-                handles[i] = boxCollider.transform.TransformPoint(handles[i]);
-                handles[i] = Handles.FreeMoveHandle(handles[i], handleSize, Vector3.one * 0.1f, Handles.SphereHandleCap);
-                handles[i] = boxCollider.transform.InverseTransformPoint(handles[i]);
+                handles[i] = collider.transform.TransformPoint(handles[i]);
+                handles[i] = Handles.FreeMoveHandle(handles[i], HandleSize, Vector3.one * 0.1f, Handles.SphereHandleCap);
+                handles[i] = collider.transform.InverseTransformPoint(handles[i]);
             }
 
             if (!EditorGUI.EndChangeCheck()) return;
 
-            SerializedObject so = new(boxCollider);
+            colliderSo.Update();
 
             Vector3 newSize = Vector3.zero;
             newSize.x = Mathf.Abs(handles[1].x - handles[0].x);
             newSize.y = Mathf.Abs(handles[3].y - handles[2].y);
             newSize.z = Mathf.Abs(handles[5].z - handles[4].z);
-            so.FindProperty("m_Size").vector3Value = newSize;
+            colliderSo.FindProperty("m_Size").vector3Value = newSize;
 
             Vector3 newCenter = Vector3.zero;
             newCenter.x = (handles[1].x + handles[0].x) / 2;
             newCenter.y = (handles[3].y + handles[2].y) / 2;
             newCenter.z = (handles[5].z + handles[4].z) / 2;
-            so.FindProperty("m_Center").vector3Value = newCenter;
+            colliderSo.FindProperty("m_Center").vector3Value = newCenter;
 
-            so.ApplyModifiedProperties();
-        }
-
-        private void DrawSphereColliderHandles()
-        {
-            EditorGUI.BeginChangeCheck();
-
-            Vector3 centerHandle = GetCenterHandlePosition();
-            Vector3 radiusHandle = GetRadiusHandlePosition();
-
-            centerHandle = Handles.FreeMoveHandle(centerHandle, handleSize, Vector3.one * 0.1f, Handles.SphereHandleCap);
-            radiusHandle = Handles.FreeMoveHandle(radiusHandle, handleSize, Vector3.one * 0.1f, Handles.SphereHandleCap);
-
-            if (!EditorGUI.EndChangeCheck()) return;
-
-            SerializedObject so = new(sphereCollider);
-
-            Vector3 newCenter = sphereCollider.transform.InverseTransformPoint(centerHandle);
-            Vector3 delta = newCenter - sphereCollider.center;
-            so.FindProperty("m_Center").vector3Value = newCenter;
-
-            radiusHandle += delta;
-            float newRadius = Vector3.Distance(centerHandle, radiusHandle);
-            so.FindProperty("m_Radius").floatValue = newRadius;
-
-            so.ApplyModifiedProperties();
+            colliderSo.ApplyModifiedProperties();
         }
 
         private Vector3[] GetHandlePositions()
         {
             Vector3[] positions = new Vector3[6];
 
-            Vector3 halfSize = boxCollider.size / 2;
-            positions[0] = boxCollider.center - Vector3.right * halfSize.x;
-            positions[1] = boxCollider.center + Vector3.right * halfSize.x;
-            positions[2] = boxCollider.center - Vector3.up * halfSize.y;
-            positions[3] = boxCollider.center + Vector3.up * halfSize.y;
-            positions[4] = boxCollider.center - Vector3.forward * halfSize.z;
-            positions[5] = boxCollider.center + Vector3.forward * halfSize.z;
+            Vector3 halfSize = collider.size / 2;
+            positions[0] = collider.center + Vector3.left * halfSize.x;
+            positions[1] = collider.center + Vector3.right * halfSize.x;
+            positions[2] = collider.center + Vector3.down * halfSize.y;
+            positions[3] = collider.center + Vector3.up * halfSize.y;
+            positions[4] = collider.center + Vector3.back * halfSize.z;
+            positions[5] = collider.center + Vector3.forward * halfSize.z;
 
             return positions;
-        }
-
-        private Vector3 GetCenterHandlePosition()
-        {
-            return sphereCollider.transform.TransformPoint(sphereCollider.center);
-        }
-
-        private Vector3 GetRadiusHandlePosition()
-        {
-            return sphereCollider.transform.TransformPoint(sphereCollider.center + Vector3.up * sphereCollider.radius);
-        }
-
-        private static bool IsValidMeshCollider(MeshCollider meshCollider)
-        {
-            return meshCollider != null && meshCollider.isTrigger;
-        }
-
-        protected static void DrawColliderGizmos(Component audioZone, Color color)
-        {
-            Gizmos.color = color;
-            Gizmos.matrix = audioZone.transform.localToWorldMatrix;
-
-            foreach (Collider collider in audioZone.GetComponents<Collider>())
-            {
-                switch (collider)
-                {
-                    case BoxCollider boxCollider:
-                        Gizmos.DrawWireCube(boxCollider.center, boxCollider.size);
-                        break;
-                    case SphereCollider sphereCollider:
-                        Gizmos.DrawWireSphere(sphereCollider.center, sphereCollider.radius);
-                        break;
-                    case MeshCollider meshCollider:
-                        if (IsValidMeshCollider(meshCollider))
-                        {
-                            Gizmos.DrawWireMesh(meshCollider.sharedMesh);
-                        }
-                        break;
-                        // This makes all other handles not show hovers and interactivity, which is bothersome.
-                        // In other words, this is the wrong/hacky way to do it.
-                        // case CapsuleCollider capsuleCollider:
-                        //     var capsule = new CapsuleBoundsHandle()
-                        //     {
-                        //         center = capsuleCollider.center,
-                        //         height = capsuleCollider.height,
-                        //         radius = capsuleCollider.radius,
-                        //         heightAxis = (CapsuleBoundsHandle.HeightAxis)capsuleCollider.direction,
-                        //         handleColor = new Color(0f, 0f, 0f, 0f),
-                        //         wireframeColor = color,
-                        //     };
-                        //     Handles.zTest = UnityEngine.Rendering.CompareFunction.Less;
-                        //     Handles.matrix = audioZone.transform.localToWorldMatrix;
-                        //     capsule.DrawHandle();
-                        //     break;
-                }
-            }
         }
     }
 }

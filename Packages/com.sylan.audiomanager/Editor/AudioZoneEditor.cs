@@ -10,6 +10,7 @@ using VRC.SDKBase.Editor.BuildPipeline;
 
 namespace Sylan.AudioManager
 {
+    [CanEditMultipleObjects]
     [CustomEditor(typeof(AudioZoneCollider))]
     public class AudioZoneEditor : ZoneEditor
     {

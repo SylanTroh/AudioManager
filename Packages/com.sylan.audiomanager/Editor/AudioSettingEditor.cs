@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace Sylan.AudioManager
 {
+    [CanEditMultipleObjects]
     [CustomEditor(typeof(AudioSettingCollider))]
     public class AudioSettingEditor : ZoneEditor
     {
