@@ -44,7 +44,7 @@ namespace Sylan.AudioManager
 
         protected Bounds GetBoundsFromAttachedMesh(Transform transform)
         {
-            MeshFilter meshFilter = transform.gameObject.GetComponent<MeshFilter>();
+            MeshFilter meshFilter = transform?.gameObject.GetComponent<MeshFilter>();
             return meshFilter?.sharedMesh.bounds ?? new Bounds(Vector3.zero, Vector3.one);
         }
 
