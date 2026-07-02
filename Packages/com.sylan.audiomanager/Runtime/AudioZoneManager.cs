@@ -13,9 +13,9 @@ namespace Sylan.AudioManager
         // References
         // ================================================================
 
-        public AudioSettingManager AudioSettingManager { get => _AudioSettingManager; private set { _AudioSettingManager = value; } }
-        [HideInInspector, SerializeField] private AudioSettingManager _AudioSettingManager;
-        public const string AudioSettingManagerPropertyName = nameof(_AudioSettingManager);
+        public AudioSettingManager AudioSettingManager => audioSettingManager;
+        [HideInInspector, SerializeField] private AudioSettingManager audioSettingManager;
+        public const string AudioSettingManagerPropertyName = nameof(audioSettingManager);
 
         /// <summary>
         /// <para>Must be 0 as it must sort first, which is what <see cref="IntegerAudioZoneSync"/> relies on.</para>
@@ -168,17 +168,17 @@ namespace Sylan.AudioManager
         {
             if (killed) return;
             if (LocalPlayerSync == null) return; // The order in which player objects get created is undefined behavior.
-            if (!Utilities.IsValid(playerObjectSync.OwningPlayer)) return; // Major trust issues.
+            if (!Utilities.IsValid(playerObjectSync.owningPlayer)) return; // Major trust issues.
             if (LocalPlayerSync == playerObjectSync) return;
 
             if (settingIndex == -1)
             {
 #if AUDIO_MANAGER_DEBUG
-                Debug.Log("[AudioManager] No Setting Zone for " + playerObjectSync.OwningPlayer.PrintName() + ".");
+                Debug.Log("[AudioManager] No Setting Zone for " + playerObjectSync.owningPlayer.PrintName() + ".");
 #endif
-                if (_AudioSettingManager.RemoveAudioSetting(playerObjectSync.OwningPlayer, SETTING_ZONE_SETTING_ID))
+                if (audioSettingManager.RemoveAudioSetting(playerObjectSync.owningPlayer, SETTING_ZONE_SETTING_ID))
                 {
-                    _AudioSettingManager.ApplyAudioSetting(playerObjectSync.OwningPlayer);
+                    audioSettingManager.ApplyAudioSetting(playerObjectSync.owningPlayer);
                 }
             }
             else
@@ -186,11 +186,11 @@ namespace Sylan.AudioManager
                 int priority = allAudioSettingsPriority[settingIndex];
                 DataList setting = allAudioSettings[settingIndex];
 #if AUDIO_MANAGER_DEBUG
-                Debug.Log("[AudioManager] Using Setting Zone " + settingIndex + " for " + playerObjectSync.OwningPlayer.PrintName() + ".");
+                Debug.Log("[AudioManager] Using Setting Zone " + settingIndex + " for " + playerObjectSync.owningPlayer.PrintName() + ".");
 #endif
-                _AudioSettingManager.RemoveAudioSetting(playerObjectSync.OwningPlayer, SETTING_ZONE_SETTING_ID);
-                _AudioSettingManager.AddAudioSetting(playerObjectSync.OwningPlayer, SETTING_ZONE_SETTING_ID, priority, setting);
-                _AudioSettingManager.ApplyAudioSetting(playerObjectSync.OwningPlayer);
+                audioSettingManager.RemoveAudioSetting(playerObjectSync.owningPlayer, SETTING_ZONE_SETTING_ID);
+                audioSettingManager.AddAudioSetting(playerObjectSync.owningPlayer, SETTING_ZONE_SETTING_ID, priority, setting);
+                audioSettingManager.ApplyAudioSetting(playerObjectSync.owningPlayer);
             }
         }
 
@@ -202,7 +202,7 @@ namespace Sylan.AudioManager
         {
             if (killed) return;
             if (LocalPlayerSync == null) return; // The order in which player objects get created is undefined behavior.
-            if (!Utilities.IsValid(playerObjectSync.OwningPlayer)) return; // Major trust issues.
+            if (!Utilities.IsValid(playerObjectSync.owningPlayer)) return; // Major trust issues.
             if (LocalPlayerSync != playerObjectSync)
             {
                 //If someone else caused the update, update triggering player
@@ -215,7 +215,7 @@ namespace Sylan.AudioManager
                 {
                     var remotePlayerSync = (AudioZoneSyncCore)RemotePlayerSyncs[i].Reference;
                     // Deletion order of remote VRCPlayerApis and their player objects is undefined behavior.
-                    if (!Utilities.IsValid(remotePlayerSync.OwningPlayer)) continue;
+                    if (!Utilities.IsValid(remotePlayerSync.owningPlayer)) continue;
                     ApplyAudioZoneSetting(remotePlayerSync);
                 }
             }
@@ -226,21 +226,21 @@ namespace Sylan.AudioManager
             if (LocalPlayerSync.SharesAudioZoneWith(remotePlayerObjectSync))
             {
 #if AUDIO_MANAGER_DEBUG
-                Debug.Log("[AudioManager] Shares AudioZone with " + remotePlayerObjectSync.OwningPlayer.PrintName() + ".");
+                Debug.Log("[AudioManager] Shares AudioZone with " + remotePlayerObjectSync.owningPlayer.PrintName() + ".");
 #endif
-                if (_AudioSettingManager.RemoveAudioSetting(remotePlayerObjectSync.OwningPlayer, AUDIO_ZONE_SETTING_ID))
+                if (audioSettingManager.RemoveAudioSetting(remotePlayerObjectSync.owningPlayer, AUDIO_ZONE_SETTING_ID))
                 {
-                    _AudioSettingManager.ApplyAudioSetting(remotePlayerObjectSync.OwningPlayer);
+                    audioSettingManager.ApplyAudioSetting(remotePlayerObjectSync.owningPlayer);
                 }
             }
             else
             {
 #if AUDIO_MANAGER_DEBUG
-                Debug.Log("[AudioManager] Does not share AudioZone with " + remotePlayerObjectSync.OwningPlayer.PrintName() + ".");
+                Debug.Log("[AudioManager] Does not share AudioZone with " + remotePlayerObjectSync.owningPlayer.PrintName() + ".");
 #endif
-                if (_AudioSettingManager.AddAudioSetting(remotePlayerObjectSync.OwningPlayer, AUDIO_ZONE_SETTING_ID, audioZonePriority, AudioZoneAudioSettings))
+                if (audioSettingManager.AddAudioSetting(remotePlayerObjectSync.owningPlayer, AUDIO_ZONE_SETTING_ID, audioZonePriority, AudioZoneAudioSettings))
                 {
-                    _AudioSettingManager.ApplyAudioSetting(remotePlayerObjectSync.OwningPlayer);
+                    audioSettingManager.ApplyAudioSetting(remotePlayerObjectSync.owningPlayer);
                 }
             }
         }
@@ -266,7 +266,7 @@ namespace Sylan.AudioManager
             for (int i = 0; i < RemotePlayerSyncs.Count; i++)
             {
                 var remotePlayerSync = (AudioZoneSyncCore)RemotePlayerSyncs[i].Reference;
-                if (!Utilities.IsValid(remotePlayerSync.OwningPlayer)) continue; // Major trust issues.
+                if (!Utilities.IsValid(remotePlayerSync.owningPlayer)) continue; // Major trust issues.
                 remotePlayerSync.ApplySettingAndAudioZoneSetting();
             }
         }

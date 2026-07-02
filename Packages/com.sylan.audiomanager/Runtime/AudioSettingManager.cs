@@ -37,13 +37,13 @@ namespace Sylan.AudioManager
         [SerializeField] private float volumetricRadius = DEFAULT_VOICE_VOLUMETRIC_RADIUS;
         [SerializeField] private bool voiceLowpass = DEFAULT_VOICE_LOWPASS;
 
-        public AudioZoneManager AudioZoneManager { get => _AudioZoneManager; private set { _AudioZoneManager = value; } }
-        [HideInInspector, SerializeField] private AudioZoneManager _AudioZoneManager;
-        public const string AudioZoneManagerPropertyName = nameof(_AudioZoneManager);
+        public AudioZoneManager AudioZoneManager => audioZoneManager;
+        [HideInInspector, SerializeField] private AudioZoneManager audioZoneManager;
+        public const string AudioZoneManagerPropertyName = nameof(audioZoneManager);
 
-        public VoiceApplicator VoiceApplicator { get => _VoiceApplicator; private set { _VoiceApplicator = value; } }
-        [HideInInspector, SerializeField] private VoiceApplicator _VoiceApplicator;
-        public const string VoiceApplicatorPropertyName = nameof(_VoiceApplicator);
+        public VoiceApplicator VoiceApplicator => voiceApplicator;
+        [HideInInspector, SerializeField] private VoiceApplicator voiceApplicator;
+        public const string VoiceApplicatorPropertyName = nameof(voiceApplicator);
 
         /// <summary>
         /// <para>Key: playerID -> DataList [ settingID[], settingPriority[], audioSettings[] ]</para>
@@ -284,7 +284,7 @@ namespace Sylan.AudioManager
             DataList audioSetting = settingToken.DataList;
             if (!ValidateAudioSetting(audioSetting)) return;
 
-            _VoiceApplicator.ApplyVoiceSetting(player, audioSetting);
+            voiceApplicator.ApplyVoiceSetting(player, audioSetting);
 
             Debug.Log("[AudioManager] Setting " + player.PrintName() + " Audio:"
                 + " SettingID:" + list[SETTING_ID_INDEX].DataList[0].String

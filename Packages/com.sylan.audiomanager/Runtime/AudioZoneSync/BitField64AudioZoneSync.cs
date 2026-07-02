@@ -62,7 +62,7 @@ namespace Sylan.AudioManager
 
         public override void OnDeserialization()
         {
-            syncedAudioZonesField = highestSyncedAudioZonesField & ~AudioZoneManager.audioSettingsIndexBitMask;
+            syncedAudioZonesField = highestSyncedAudioZonesField & ~audioZoneManager.audioSettingsIndexBitMask;
             base.OnDeserialization();
 #if AUDIO_MANAGER_DEBUG
             LogAudioZones();

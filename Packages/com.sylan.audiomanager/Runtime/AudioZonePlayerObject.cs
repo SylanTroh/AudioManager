@@ -11,8 +11,8 @@ namespace Sylan.AudioManager
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
     public class AudioZonePlayerObject : UdonSharpBehaviour
     {
-        [HideInInspector, SerializeField] public AudioZoneManager AudioZoneManager;
-        public const string AudioZoneManagerPropertyName = nameof(AudioZoneManager);
+        [HideInInspector, SerializeField] public AudioZoneManager audioZoneManager;
+        public const string AudioZoneManagerPropertyName = nameof(audioZoneManager);
 
         private AudioZoneSyncCore audioZonePlayerObjectSync;
 
@@ -28,9 +28,9 @@ namespace Sylan.AudioManager
 
         private void Start()
         {
-            if (AudioZoneManager == null)
+            if (audioZoneManager == null)
             {
-                Debug.Log($"[AudioManager] {nameof(AudioZonePlayerObject)} has no {nameof(AudioZoneManager)}.");
+                Debug.Log($"[AudioManager] {nameof(AudioZonePlayerObject)} has no {nameof(audioZoneManager)}.");
                 enabled = false;
                 gameObject.SetActive(false);
                 return;

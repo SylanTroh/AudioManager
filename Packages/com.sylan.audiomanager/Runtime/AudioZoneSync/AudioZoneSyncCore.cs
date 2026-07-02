@@ -7,10 +7,10 @@ namespace Sylan.AudioManager
     [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
     public abstract class AudioZoneSyncCore : UdonSharpBehaviour
     {
-        public VRCPlayerApi OwningPlayer;
+        public VRCPlayerApi owningPlayer;
 
-        protected AudioZoneManager AudioZoneManager;
-        protected AudioZonePlayerObject AudioZonePlayerObject;
+        protected AudioZoneManager audioZoneManager;
+        protected AudioZonePlayerObject audioZonePlayerObject;
 
         /// <summary>
         /// <para><c>-1</c> indicates not being in any setting zone.</para>
@@ -29,18 +29,18 @@ namespace Sylan.AudioManager
 
         private void Start()
         {
-            AudioZonePlayerObject = transform.parent.GetComponent<AudioZonePlayerObject>();
-            AudioZoneManager = AudioZonePlayerObject.AudioZoneManager;
-            if (AudioZoneManager == null)
+            audioZonePlayerObject = transform.parent.GetComponent<AudioZonePlayerObject>();
+            audioZoneManager = audioZonePlayerObject.audioZoneManager;
+            if (audioZoneManager == null)
             {
-                Debug.Log($"[AudioManager] {nameof(AudioZoneSyncCore)} has no {nameof(AudioZoneManager)}.");
+                Debug.Log($"[AudioManager] {nameof(AudioZoneSyncCore)} has no {nameof(audioZoneManager)}.");
                 enabled = false;
                 gameObject.SetActive(false);
                 return;
             }
 
-            AudioZoneManager.Register(this);
-            OwningPlayer = Networking.GetOwner(gameObject);
+            audioZoneManager.Register(this);
+            owningPlayer = Networking.GetOwner(gameObject);
 
             // Small delay in case we get serialized data, at which point the double apply would be redundant.
             SendCustomEventDelayedSeconds(nameof(StartDelayed), 0.2f);
@@ -56,7 +56,7 @@ namespace Sylan.AudioManager
 
         private void OnDestroy()
         {
-            AudioZoneManager.Deregister(this);
+            audioZoneManager.Deregister(this);
         }
 
 #if AUDIO_MANAGER_DEBUG
@@ -66,10 +66,10 @@ namespace Sylan.AudioManager
             for (var index = 0; index < audioZoneIndexes.Length; index++)
             {
                 var audioZoneIndex = audioZoneIndexes[index];
-                zoneNames[index] = $"\"{AudioZoneManager.zoneIdMapping[audioZoneIndex]}\"";
+                zoneNames[index] = $"\"{audioZoneManager.zoneIdMapping[audioZoneIndex]}\"";
             }
 
-            Debug.Log($"[AudioManager] Player: {OwningPlayer.PrintName()}, Setting: {syncedAudioSettingIndex}, "
+            Debug.Log($"[AudioManager] Player: {owningPlayer.PrintName()}, Setting: {syncedAudioSettingIndex}, "
                 + $"Zones ({zoneNames.Length}): {string.Join(", ", zoneNames)}");
         }
 #endif
@@ -127,8 +127,8 @@ namespace Sylan.AudioManager
 
         public void ApplySettingAndAudioZoneSetting()
         {
-            AudioZoneManager.UpdateSettingZoneAudioSetting(this, syncedAudioSettingIndex);
-            AudioZoneManager.UpdateAudioZoneSetting(this);
+            audioZoneManager.UpdateSettingZoneAudioSetting(this, syncedAudioSettingIndex);
+            audioZoneManager.UpdateAudioZoneSetting(this);
             didGetAppliedOnce = true;
         }
 
@@ -136,7 +136,7 @@ namespace Sylan.AudioManager
         {
             PrepareForSerialization();
             RequestSerialization();
-            AudioZoneManager.UpdateAudioZoneSetting(this);
+            audioZoneManager.UpdateAudioZoneSetting(this);
         }
     }
 }

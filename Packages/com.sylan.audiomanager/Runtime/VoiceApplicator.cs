@@ -28,10 +28,10 @@ namespace Sylan.AudioManager
         
         // Current voice setting per player
         // We need this because VRCPlayerApi doesn't provide get methods for voice settings.
-        private DataDictionary _playerAudioSetting = new DataDictionary();
+        private DataDictionary playerAudioSetting = new DataDictionary();
 
         // Active voice fades that need iterating through
-        private DataDictionary _activePlayerFade = new DataDictionary();
+        private DataDictionary activePlayerFade = new DataDictionary();
         
         // =============================================================================
         // Public Methods
@@ -98,16 +98,16 @@ namespace Sylan.AudioManager
             int playerId = player.playerId;
             
             // Remove current settings tracking
-            if (_playerAudioSetting.ContainsKey((DataToken)playerId))
+            if (playerAudioSetting.ContainsKey((DataToken)playerId))
             {
-                _playerAudioSetting.Remove((DataToken)playerId);
+                playerAudioSetting.Remove((DataToken)playerId);
                 Debug.Log("[AudioManager] VoiceApplicator: " +  player.PrintName() + " left, removing current audio settings" + player.PrintName());
             }
             
             // Remove active fade if present
-            if (_activePlayerFade.ContainsKey((DataToken)playerId))
+            if (activePlayerFade.ContainsKey((DataToken)playerId))
             {
-                _activePlayerFade.Remove((DataToken)playerId);
+                activePlayerFade.Remove((DataToken)playerId);
                 Debug.Log("[AudioManager] VoiceApplicator: " +  player.PrintName() + " left, cancelled fades for" );
             }
         }
@@ -176,7 +176,7 @@ namespace Sylan.AudioManager
             fadeData.Add((DataToken)toSettings[AudioSettingManager.VOLUMETRIC_RADIUS_INDEX].Float);
             fadeData.Add((DataToken)toSettings[AudioSettingManager.VOICE_LOWPASS_INDEX].Float);
             
-            _activePlayerFade.SetValue((DataToken)playerId, (DataToken)fadeData);
+            activePlayerFade.SetValue((DataToken)playerId, (DataToken)fadeData);
             
             Debug.Log("[AudioManager] VoiceApplicator: Started fade for " + player.PrintName() +
                       " (duration:" + duration + "s, from gain:" + fromSettings[AudioSettingManager.VOICE_GAIN_INDEX].Float +
@@ -193,21 +193,21 @@ namespace Sylan.AudioManager
             
             int playerId = player.playerId;
             
-            if (_activePlayerFade.ContainsKey((DataToken)playerId))
+            if (activePlayerFade.ContainsKey((DataToken)playerId))
             {
-                _activePlayerFade.Remove((DataToken)playerId);
+                activePlayerFade.Remove((DataToken)playerId);
                 Debug.Log("[AudioManager] VoiceApplicator: Cancelled fade for " + player.PrintName());
             }
         }
         
         private void Update()
         {
-            if (_activePlayerFade.Count == 0) return;
+            if (activePlayerFade.Count == 0) return;
             
             float currentTime = Time.realtimeSinceStartup;
             DataList playersToRemove = new DataList();
             
-            DataList keys = _activePlayerFade.GetKeys();
+            DataList keys = activePlayerFade.GetKeys();
             for (int i = 0; i < keys.Count; i++)
             {
                 int playerId = keys[i].Int;
@@ -219,7 +219,7 @@ namespace Sylan.AudioManager
                     continue;
                 }
                 
-                if (!_activePlayerFade.TryGetValue((DataToken)playerId, TokenType.DataList, out DataToken fadeDataToken))
+                if (!activePlayerFade.TryGetValue((DataToken)playerId, TokenType.DataList, out DataToken fadeDataToken))
                 {
                     continue;
                 }
@@ -279,7 +279,7 @@ namespace Sylan.AudioManager
                     finalSettings.Add((DataToken)fadeData[FADE_TO_VOLUMETRIC_INDEX].Float);
                     finalSettings.Add((DataToken)fadeData[FADE_TO_LOWPASS_INDEX].Float);
                     
-                    _playerAudioSetting.SetValue((DataToken)playerId, (DataToken)finalSettings);
+                    playerAudioSetting.SetValue((DataToken)playerId, (DataToken)finalSettings);
                     
                     Debug.Log("[AudioManager] VoiceApplicator: Completed fade for " + player.PrintName());
                 }
@@ -293,14 +293,14 @@ namespace Sylan.AudioManager
                     currentSettings.Add((DataToken)volumetric);
                     currentSettings.Add((DataToken)(lowpass ? 1.0f : 0.0f));
                     
-                    _playerAudioSetting.SetValue((DataToken)playerId, (DataToken)currentSettings);
+                    playerAudioSetting.SetValue((DataToken)playerId, (DataToken)currentSettings);
                 }
             }
             
             // Clean up completed fades
             for (int i = 0; i < playersToRemove.Count; i++)
             {
-                _activePlayerFade.Remove(playersToRemove[i]);
+                activePlayerFade.Remove(playersToRemove[i]);
             }
         }
         
@@ -341,7 +341,7 @@ namespace Sylan.AudioManager
             
             int playerId = player.playerId;
             
-            if (_playerAudioSetting.TryGetValue((DataToken)playerId, TokenType.DataList, out DataToken value))
+            if (playerAudioSetting.TryGetValue((DataToken)playerId, TokenType.DataList, out DataToken value))
             {
                 return value.DataList;
             }
@@ -360,7 +360,7 @@ namespace Sylan.AudioManager
             if (voiceParams == null || voiceParams.Count < 5) return;
             
             int playerId = player.playerId;
-            _playerAudioSetting.SetValue((DataToken)playerId, (DataToken)voiceParams);
+            playerAudioSetting.SetValue((DataToken)playerId, (DataToken)voiceParams);
         }
     }
     

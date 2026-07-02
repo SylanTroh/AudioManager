@@ -15,12 +15,12 @@ namespace Sylan.AudioManager
 
         protected override void PrepareForSerialization(int audioSettingIndex)
         {
-            PrepareForSerialization(((ulong)(audioSettingIndex + 1)) << AudioZoneManager.audioSettingsIndexBitShift);
+            PrepareForSerialization(((ulong)(audioSettingIndex + 1)) << audioZoneManager.audioSettingsIndexBitShift);
         }
 
         public override void OnDeserialization()
         {
-            syncedAudioSettingIndex = (int)(highestSyncedAudioZonesField >> AudioZoneManager.audioSettingsIndexBitShift) - 1;
+            syncedAudioSettingIndex = (int)(highestSyncedAudioZonesField >> audioZoneManager.audioSettingsIndexBitShift) - 1;
             base.OnDeserialization();
         }
     }

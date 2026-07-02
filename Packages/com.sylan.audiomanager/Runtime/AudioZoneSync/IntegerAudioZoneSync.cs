@@ -25,14 +25,14 @@ namespace Sylan.AudioManager
         {
             // Basically identical to ShortAudioZoneSync.
             int count = syncedIds.Length;
-            if (count == 0 || syncedIds[count - 1] < AudioZoneManager.totalAudioZonesCount)
+            if (count == 0 || syncedIds[count - 1] < audioZoneManager.totalAudioZonesCount)
             {
                 syncedAudioSettingIndex = -1;
                 syncedAudioZones = syncedIds;
             }
             else
             {
-                syncedAudioSettingIndex = syncedIds[count - 1] - AudioZoneManager.totalAudioZonesCount;
+                syncedAudioSettingIndex = syncedIds[count - 1] - audioZoneManager.totalAudioZonesCount;
                 syncedAudioZones = new int[count - 1];
                 Array.Copy(syncedIds, syncedAudioZones, count - 1);
             }
@@ -56,7 +56,7 @@ namespace Sylan.AudioManager
                 int newCount = syncedAudioZones.Length + 1;
                 syncedIds = new int[newCount];
                 Array.Copy(syncedAudioZones, syncedIds, newCount - 1);
-                syncedIds[newCount - 1] = audioSettingsIndex + AudioZoneManager.totalAudioZonesCount;
+                syncedIds[newCount - 1] = audioSettingsIndex + audioZoneManager.totalAudioZonesCount;
             }
 
 #if AUDIO_MANAGER_DEBUG

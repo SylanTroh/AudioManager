@@ -886,7 +886,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 403809181}
-  settingIndex: 0
+  settingIndex: 1
   priority: 500
   voiceGain: 12
   voiceNear: 0
@@ -1572,7 +1572,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 739952404}
-  AudioZoneManager: {fileID: 1565303862}
+  audioZoneManager: {fileID: 0}
   audioZoneColliderLayerMask:
     serializedVersion: 2
     m_Bits: 4194304
@@ -1660,8 +1660,8 @@ MonoBehaviour:
   voiceRangeFar: 15
   volumetricRadius: 0
   voiceLowpass: 1
-  _AudioZoneManager: {fileID: 1565303862}
-  _VoiceApplicator: {fileID: 794337263}
+  audioZoneManager: {fileID: 0}
+  voiceApplicator: {fileID: 0}
 --- !u!4 &794337262
 Transform:
   m_ObjectHideFlags: 0
@@ -2772,6 +2772,50 @@ MonoBehaviour:
     ID: 35
     SerializedTypeNames:
     - VRC.Udon.UdonBehaviour
+  - gameObject: {fileID: 0}
+    ID: 36
+    SerializedTypeNames:
+    - VRC.Udon.UdonBehaviour
+  - gameObject: {fileID: 0}
+    ID: 37
+    SerializedTypeNames:
+    - VRC.Udon.UdonBehaviour
+  - gameObject: {fileID: 0}
+    ID: 38
+    SerializedTypeNames:
+    - VRC.Udon.UdonBehaviour
+  - gameObject: {fileID: 0}
+    ID: 39
+    SerializedTypeNames:
+    - VRC.Udon.UdonBehaviour
+  - gameObject: {fileID: 0}
+    ID: 40
+    SerializedTypeNames:
+    - VRC.Udon.UdonBehaviour
+  - gameObject: {fileID: 0}
+    ID: 41
+    SerializedTypeNames:
+    - VRC.Udon.UdonBehaviour
+  - gameObject: {fileID: 0}
+    ID: 42
+    SerializedTypeNames:
+    - VRC.Udon.UdonBehaviour
+  - gameObject: {fileID: 0}
+    ID: 43
+    SerializedTypeNames:
+    - VRC.Udon.UdonBehaviour
+  - gameObject: {fileID: 0}
+    ID: 44
+    SerializedTypeNames:
+    - VRC.Udon.UdonBehaviour
+  - gameObject: {fileID: 0}
+    ID: 45
+    SerializedTypeNames:
+    - VRC.Udon.UdonBehaviour
+  - gameObject: {fileID: 0}
+    ID: 46
+    SerializedTypeNames:
+    - VRC.Udon.UdonBehaviour
   portraitCameraPositionOffset: {x: 0, y: 0, z: 0}
   portraitCameraRotationOffset: {x: 0, y: 1, z: 0, w: -0.00000004371139}
   PlayerPersistence:
@@ -3039,28 +3083,36 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 1565303861}
-  _AudioSettingManager: {fileID: 794337261}
-  zoneIdMapping: []
+  audioSettingManager: {fileID: 0}
+  zoneIdMapping:
+  - 
+  - Room
+  - Room2
   fallbackLayerIndex: 2
   totalAudioZonesCount: 3
   audioSettingsIndexBitShift: 3
   audioSettingsIndexBitMask: 18446744073709551608
-  allAudioSettingsPriority: ee020000f4010000
+  allAudioSettingsPriority: ee020000f401000000000000
   allAudioSettingsVoiceGain:
   - 13
   - 12
+  - 15
   allAudioSettingsVoiceNear:
+  - 0
   - 0
   - 0
   allAudioSettingsVoiceFar:
   - 10
   - 5
+  - 15
   allAudioSettingsVolumetricRadius:
   - 0
   - 0
-  allAudioSettingsLowpassFilter: 0101
-  allAudioSettingsEnableFade: 0101
+  - 0
+  allAudioSettingsLowpassFilter: 010101
+  allAudioSettingsEnableFade: 010100
   allAudioSettingsFadeDuration:
+  - 1
   - 1
   - 1
   voiceGain: 7
@@ -3319,7 +3371,7 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
-    - Name: OwningPlayer
+    - Name: owningPlayer
       Entry: 6
       Data: 
   _udonSharpBackingUdonBehaviour: {fileID: 2032092311}
