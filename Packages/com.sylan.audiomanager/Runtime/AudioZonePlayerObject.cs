@@ -17,10 +17,6 @@ namespace Sylan.AudioManager
         private AudioZoneSyncCore audioZonePlayerObjectSync;
 
         private const float IntervalInSeconds = .2f;
-        /// <summary>
-        /// <para>Cannot use <see cref="LayerMask.GetMask(string[])"/> with <c>"AudioZones"</c> at runtime
-        /// because that returns <c>0</c> in VRChat.</para>
-        /// </summary>
         [HideInInspector, SerializeField] private LayerMask audioZoneColliderLayerMask;
         public const string AudioZoneColliderLayerMaskPropertyName = nameof(audioZoneColliderLayerMask);
         private VRCPlayerApi localPlayer;
