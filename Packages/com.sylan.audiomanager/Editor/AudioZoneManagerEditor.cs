@@ -140,7 +140,6 @@ namespace Sylan.AudioManager
         {
             if (UdonSharpGUI.DrawDefaultUdonSharpBehaviourHeader(targets))
                 return;
-            EditorGUILayout.Space();
 
             serializedObject.Update();
             DrawPropertiesExcluding(serializedObject, "m_Script", nameof(AudioZoneManager.fallbackLayerIndex));
