@@ -16,15 +16,15 @@ namespace Sylan.AudioManager
 
         private AudioZoneSyncCore audioZonePlayerObjectSync;
 
-        private const float IntervalInSeconds = .2f;
+        private const float IntervalInSeconds = 0.2f;
         [HideInInspector, SerializeField] private LayerMask audioZoneColliderLayerMask;
         public const string AudioZoneColliderLayerMaskPropertyName = nameof(audioZoneColliderLayerMask);
         private VRCPlayerApi localPlayer;
-        private int hitCount = 0;
 
         private readonly DataDictionary audioSettingColliderCache = new DataDictionary();
         private readonly DataDictionary audioZoneColliderCache = new DataDictionary();
-        private readonly Collider[] hits = new Collider[25];
+        public const int MaxOverlappingZoneColliders = 25;
+        private readonly Collider[] hits = new Collider[MaxOverlappingZoneColliders];
 
         private void Start()
         {
@@ -50,56 +50,55 @@ namespace Sylan.AudioManager
             Debug.Log($"[AudioManager] Using the {audioZonePlayerObjectSync.SyncScriptName} script for syncing audio and setting zones.");
 
             localPlayer = Networking.LocalPlayer;
-            SendCustomEventDelayedSeconds(nameof(ValidateAudioZones), 1, EventTiming.LateUpdate);
+            SendCustomEventDelayedSeconds(nameof(CheckForAudioZonesLoop), 1, EventTiming.LateUpdate);
         }
 
-        public void ValidateAudioZones()
+        public void CheckForAudioZonesLoop()
         {
-            audioZonePlayerObjectSync.OnValidateAudioZonesStart();
-            if (TestForChangedAudioZone())
+            audioZonePlayerObjectSync.OnCheckForChangedAudioZones();
+            if (CheckForChangedAudioZones())
             {
-                audioZonePlayerObjectSync.OnZoneChanged();
+                audioZonePlayerObjectSync.OnZonesChanged();
             }
-
-            SendCustomEventDelayedSeconds(nameof(ValidateAudioZones), IntervalInSeconds, EventTiming.LateUpdate);
+            SendCustomEventDelayedSeconds(nameof(CheckForAudioZonesLoop), IntervalInSeconds, EventTiming.LateUpdate);
         }
 
-        private bool TestForChangedAudioZone()
+        private bool CheckForChangedAudioZones()
         {
             var trackingData = localPlayer.GetTrackingData(VRCPlayerApi.TrackingDataType.Head);
-            transform.SetPositionAndRotation(trackingData.position, trackingData.rotation);
 
-            var size = Physics.OverlapSphereNonAlloc(transform.position, .01f, hits, audioZoneColliderLayerMask, QueryTriggerInteraction.Collide);
-            for (hitCount = 0; hitCount < size; hitCount++)
+            int hitCount = Physics.OverlapSphereNonAlloc(trackingData.position, 0f, hits, audioZoneColliderLayerMask, QueryTriggerInteraction.Collide);
+            for (int i = 0; i < hitCount; i++)
             {
-                var hit = hits[hitCount];
-                var audioZoneCollider = ComputeIfAbsent<AudioZoneCollider>(hit, audioZoneColliderCache);
-                var audioSettingCollider = ComputeIfAbsent<AudioSettingCollider>(hit, audioSettingColliderCache);
+                GameObject hitGo = hits[i].gameObject;
 
+                var audioZoneCollider = GetZoneCached<AudioZoneCollider>(hitGo, audioZoneColliderCache);
                 if (audioZoneCollider != null)
                 {
                     audioZonePlayerObjectSync.NotifyHitAudioZoneCollider(audioZoneCollider);
                 }
 
+                var audioSettingCollider = GetZoneCached<AudioSettingCollider>(hitGo, audioSettingColliderCache);
                 if (audioSettingCollider != null)
                 {
                     audioZonePlayerObjectSync.NotifyAudioSettingCollider(audioSettingCollider);
                 }
             }
 
-            return audioZonePlayerObjectSync.HasZoneChanged();
+            return audioZonePlayerObjectSync.HaveZonesChanged();
         }
 
-        private static T ComputeIfAbsent<T>(Collider hit, DataDictionary dictionary) where T : UdonSharpBehaviour
+        private static T GetZoneCached<T>(GameObject go, DataDictionary cache)
+            where T : UdonSharpBehaviour
         {
-            if (dictionary.TryGetValue(hit.gameObject, out var token))
+            if (cache.TryGetValue(go, out DataToken token))
             {
                 return (T)token.Reference;
             }
 
-            var hitCollider = hit.GetComponent<T>();
-            dictionary.Add(hit.gameObject, hitCollider);
-            return hitCollider;
+            T zone = go.GetComponent<T>();
+            cache.Add(go, zone); // Do save null too to avoid future GetComponent calls.
+            return zone;
         }
     }
 }

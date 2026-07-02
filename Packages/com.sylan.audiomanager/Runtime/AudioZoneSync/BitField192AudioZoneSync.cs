@@ -29,9 +29,9 @@ namespace Sylan.AudioManager
         private ulong negativeZonesField2;
         private ulong negativeZonesField3;
 
-        public override void OnValidateAudioZonesStart()
+        public override void OnCheckForChangedAudioZones()
         {
-            base.OnValidateAudioZonesStart();
+            base.OnCheckForChangedAudioZones();
             audioZonesField1 = 0ul;
             audioZonesField2 = 0ul;
             audioZonesField3 = 0ul;
@@ -56,7 +56,7 @@ namespace Sylan.AudioManager
             }
         }
 
-        public override bool HasZoneChanged()
+        public override bool HaveZonesChanged()
         {
             finalAudioZonesField1 = audioZonesField1 & ~negativeZonesField1;
             finalAudioZonesField2 = audioZonesField2 & ~negativeZonesField2;
@@ -66,7 +66,7 @@ namespace Sylan.AudioManager
                            || oldFinalAudioZonesField2 != finalAudioZonesField2
                            || oldFinalAudioZonesField3 != finalAudioZonesField3;
 
-            if (!hasChanged) return base.HasZoneChanged();
+            if (!hasChanged) return base.HaveZonesChanged();
 
             oldFinalAudioZonesField1 = finalAudioZonesField1;
             oldFinalAudioZonesField2 = finalAudioZonesField2;

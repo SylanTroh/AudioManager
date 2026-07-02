@@ -17,9 +17,9 @@ namespace Sylan.AudioManager
 
         private bool hasZonesChanged;
 
-        public override void OnValidateAudioZonesStart()
+        public override void OnCheckForChangedAudioZones()
         {
-            base.OnValidateAudioZonesStart();
+            base.OnCheckForChangedAudioZones();
             hasZonesChanged = false;
         }
 
@@ -42,7 +42,7 @@ namespace Sylan.AudioManager
             PrepareForSerialization(GetAllKeysArraySorted(oldFinalAudioZoneIds), audioSettingIndex);
         }
 
-        public override bool HasZoneChanged()
+        public override bool HaveZonesChanged()
         {
             hasZonesChanged = hasZonesChanged || oldAudioZoneIds.Count != audioZoneIds.Count
                                               || oldNegativeZoneIds.Count != negativeZoneIds.Count;
@@ -68,7 +68,7 @@ namespace Sylan.AudioManager
             SwapDictionaries(ref audioZoneIds, ref oldAudioZoneIds);
             SwapDictionaries(ref negativeZoneIds, ref oldNegativeZoneIds);
 
-            return hasZonesChanged || base.HasZoneChanged();
+            return hasZonesChanged || base.HaveZonesChanged();
         }
 
         private void SwapDictionaries(ref DataDictionary newDict, ref DataDictionary oldDict)

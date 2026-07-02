@@ -74,7 +74,7 @@ namespace Sylan.AudioManager
         }
 #endif
 
-        public virtual void OnValidateAudioZonesStart()
+        public virtual void OnCheckForChangedAudioZones()
         {
             activeSettingZone = null;
         }
@@ -99,7 +99,7 @@ namespace Sylan.AudioManager
         /// <para>Deriving classes must implement audio zone change detection.</para>
         /// </summary>
         /// <returns></returns>
-        public virtual bool HasZoneChanged()
+        public virtual bool HaveZonesChanged()
         {
             bool hasSettingZoneChanged = activeSettingZone != oldActiveSettingZone;
             oldActiveSettingZone = activeSettingZone;
@@ -132,7 +132,7 @@ namespace Sylan.AudioManager
             didGetAppliedOnce = true;
         }
 
-        public void OnZoneChanged()
+        public void OnZonesChanged()
         {
             PrepareForSerialization();
             RequestSerialization();
