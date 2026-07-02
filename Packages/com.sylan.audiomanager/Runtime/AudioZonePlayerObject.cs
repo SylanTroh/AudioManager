@@ -25,6 +25,7 @@ namespace Sylan.AudioManager
         private readonly DataDictionary audioZoneColliderCache = new DataDictionary();
         public const int MaxOverlappingZoneColliders = 25;
         private readonly Collider[] hits = new Collider[MaxOverlappingZoneColliders];
+        private float headCheckRadius;
 
         private void Start()
         {
@@ -50,6 +51,7 @@ namespace Sylan.AudioManager
             Debug.Log($"[AudioManager] Using the {audioZonePlayerObjectSync.SyncScriptName} script for syncing audio and setting zones.");
 
             localPlayer = Networking.LocalPlayer;
+            headCheckRadius = audioZoneManager.HeadCheckRadius;
             SendCustomEventDelayedSeconds(nameof(CheckForAudioZonesLoop), 1, EventTiming.LateUpdate);
         }
 
@@ -67,7 +69,7 @@ namespace Sylan.AudioManager
         {
             var trackingData = localPlayer.GetTrackingData(VRCPlayerApi.TrackingDataType.Head);
 
-            int hitCount = Physics.OverlapSphereNonAlloc(trackingData.position, 0f, hits, audioZoneColliderLayerMask, QueryTriggerInteraction.Collide);
+            int hitCount = Physics.OverlapSphereNonAlloc(trackingData.position, headCheckRadius, hits, audioZoneColliderLayerMask, QueryTriggerInteraction.Collide);
             for (int i = 0; i < hitCount; i++)
             {
                 GameObject hitGo = hits[i].gameObject;

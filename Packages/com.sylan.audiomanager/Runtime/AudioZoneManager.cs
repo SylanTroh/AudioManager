@@ -38,6 +38,20 @@ namespace Sylan.AudioManager
 #endif
 
         // ================================================================
+        // General Settings
+        // ================================================================
+
+        [Header("General")]
+        [Tooltip("The size of the sphere used to check for which zones a player is in.\n"
+            + "The local player capsule has a radius of 0.2 for reference. "
+            + "As a further note, that capsule's size is constant, regardless of player/avatar size.\n"
+            + "0 is a good value, it allows setting up zones exactly matching the sizes of interiors, "
+            + "no larger, no smaller.")]
+        [Range(0f, 1f)]
+        [SerializeField] private float headCheckRadius = 0f;
+        public float HeadCheckRadius => headCheckRadius;
+
+        // ================================================================
         // Audio Setting Zones
         // ================================================================
 

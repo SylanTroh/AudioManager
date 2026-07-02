@@ -3089,6 +3089,7 @@ MonoBehaviour:
   - Room
   - Room2
   fallbackLayerIndex: 2
+  headCheckRadius: 0
   totalAudioZonesCount: 3
   audioSettingsIndexBitShift: 3
   audioSettingsIndexBitMask: 18446744073709551608
