@@ -142,6 +142,7 @@ namespace Sylan.AudioManager
                 return;
 
             serializedObject.Update();
+            AudioZoneManagerMigrator.SingletonInstance.DrawMigrationInfoInInspector(serializedObject, targets);
             DrawPropertiesExcluding(serializedObject, "m_Script", nameof(AudioZoneManager.fallbackLayerIndex));
 
             if (!AudioZoneLayerInit.AudioZoneLayerExists())

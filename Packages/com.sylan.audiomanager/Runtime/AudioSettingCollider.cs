@@ -7,6 +7,16 @@ namespace Sylan.AudioManager
     public class AudioSettingCollider : UdonSharpBehaviour
     {
         /// <summary>
+        /// <para>Used by editor scripting for migration purposes.</para>
+        /// <para>Components from before this field existed will have an initial value of <c>0u</c>.</para>
+        /// </summary>
+        [HideInInspector] public uint scriptVersion;
+#if UNITY_EDITOR && !COMPILER_UDONSHARP
+        public const uint CurrentScriptVersion = 1u;
+        private void Reset() => scriptVersion = CurrentScriptVersion; // Runs when the component gets created or reset.
+#endif
+
+        /// <summary>
         /// <para>Generated at build time. <see cref="AudioSettingCollider"/>s with perfectly matching
         /// settings use the same <see cref="settingIndex"/>.</para>
         /// </summary>

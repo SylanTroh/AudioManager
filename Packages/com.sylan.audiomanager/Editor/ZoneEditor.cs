@@ -46,12 +46,15 @@ namespace Sylan.AudioManager
                 return;
 
             serializedObject.Update();
+            GetMigrator().DrawMigrationInfoInInspector(serializedObject, targets);
             DrawPropertiesExcluding(serializedObject, "m_Script");
             serializedObject.ApplyModifiedProperties();
 
             EditorGUILayout.Space();
             DrawAudioZoneEditorSettings();
         }
+
+        protected abstract Migrator GetMigrator();
 
         private void DrawAudioZoneEditorSettings()
         {

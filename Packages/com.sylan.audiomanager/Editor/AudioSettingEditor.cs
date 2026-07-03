@@ -16,6 +16,8 @@ namespace Sylan.AudioManager
         {
             DrawColliderGizmos(audioZone, Color.yellow);
         }
+
+        protected override Migrator GetMigrator() => AudioSettingColliderMigrator.SingletonInstance;
     }
 
     public static class AudioSettingInitialize

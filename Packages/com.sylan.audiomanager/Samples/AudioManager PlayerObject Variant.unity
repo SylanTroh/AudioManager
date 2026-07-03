@@ -227,6 +227,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 6670465}
+  scriptVersion: 1
   zoneID: Room
   zoneIdIndex: 1
   transitionZoneIDs:
@@ -338,6 +339,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 90552518}
+  scriptVersion: 1
   settingIndex: 0
   priority: 750
   voiceGain: 13
@@ -700,6 +702,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 366743454}
+  scriptVersion: 1
   zoneID: Room2
   zoneIdIndex: 2
   transitionZoneIDs: []
@@ -810,6 +813,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 399894421}
+  scriptVersion: 1
   zoneID: Room
   zoneIdIndex: 1
   transitionZoneIDs: []
@@ -886,6 +890,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 403809181}
+  scriptVersion: 1
   settingIndex: 1
   priority: 500
   voiceGain: 12
@@ -1482,6 +1487,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 716597930}
+  scriptVersion: 1
   zoneID: Room
   zoneIdIndex: 1
   transitionZoneIDs: []
@@ -2021,6 +2027,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 982809932}
+  scriptVersion: 1
   zoneID: Room
   zoneIdIndex: 1
   transitionZoneIDs: []
@@ -2179,6 +2186,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 1084732891}
+  scriptVersion: 1
   zoneID: Room
   zoneIdIndex: 1
   transitionZoneIDs: []
@@ -2478,6 +2486,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 1250339799}
+  scriptVersion: 1
   zoneID: Room
   zoneIdIndex: 1
   transitionZoneIDs: []
@@ -2946,6 +2955,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 1524278092}
+  scriptVersion: 1
   zoneID: Room2
   zoneIdIndex: 2
   transitionZoneIDs:
@@ -3089,7 +3099,8 @@ MonoBehaviour:
   - Room
   - Room2
   fallbackLayerIndex: 2
-  headCheckRadius: 0
+  scriptVersion: 2
+  headCheckRadius: 0.25
   totalAudioZonesCount: 3
   audioSettingsIndexBitShift: 3
   audioSettingsIndexBitMask: 18446744073709551608
@@ -3478,6 +3489,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 2101463964}
+  scriptVersion: 1
   zoneID: Room2
   zoneIdIndex: 2
   transitionZoneIDs: []

@@ -7,10 +7,11 @@ public class AudioZoneLayerInit : EditorWindow
     public const string LayerName = "AudioZones";
     private int layerIndex = -1;
 
-    [MenuItem("Tools/Sylan/Initialize AudioZones Layer")]
+    [MenuItem("Tools/Sylan/Initialize Audio Zones Layer")]
     public static void ShowWindow()
     {
         AudioZoneLayerInit window = GetWindow<AudioZoneLayerInit>();
+        window.titleContent = new GUIContent("Audio Zones Layer");
         window.Focus();
     }
 

@@ -7,6 +7,16 @@ namespace Sylan.AudioManager
     [AddComponentMenu("Scrips/Audio Zone Collider")]
     public class AudioZoneCollider : UdonSharpBehaviour
     {
+        /// <summary>
+        /// <para>Used by editor scripting for migration purposes.</para>
+        /// <para>Components from before this field existed will have an initial value of <c>0u</c>.</para>
+        /// </summary>
+        [HideInInspector] public uint scriptVersion;
+#if UNITY_EDITOR && !COMPILER_UDONSHARP
+        public const uint CurrentScriptVersion = 1u;
+        private void Reset() => scriptVersion = CurrentScriptVersion; // Runs when the component gets created or reset.
+#endif
+
         [Header("Primary AudioZone ID")]
         /// <summary>
         /// Dont use this zoneId on runTime. It will be cleared.

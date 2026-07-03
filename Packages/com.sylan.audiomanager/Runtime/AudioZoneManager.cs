@@ -17,6 +17,10 @@ namespace Sylan.AudioManager
         [HideInInspector, SerializeField] private AudioSettingManager audioSettingManager;
         public const string AudioSettingManagerPropertyName = nameof(audioSettingManager);
 
+        // ================================================================
+        // General Settings
+        // ================================================================
+
         /// <summary>
         /// <para>Must be 0 as it must sort first, which is what <see cref="IntegerAudioZoneSync"/> relies on.</para>
         /// </summary>
@@ -24,9 +28,18 @@ namespace Sylan.AudioManager
         public const ulong EmptyZoneIdBitFlag = 1uL << EmptyZoneIdIndex;
         [HideInInspector] public string[] zoneIdMapping = Array.Empty<string>();
         public int fallbackLayerIndex;
+
+        /// <summary>
+        /// <para>Used by editor scripting for migration purposes.</para>
+        /// <para>Components from before this field existed will have an initial value of <c>0u</c>.</para>
+        /// </summary>
+        [HideInInspector] public uint scriptVersion;
 #if UNITY_EDITOR && !COMPILER_UDONSHARP
-        private void Reset()
+        public const uint CurrentScriptVersion = 2u;
+        private void Reset() // Runs when the component gets created or reset.
         {
+            scriptVersion = CurrentScriptVersion;
+
             // When changing these layers here, also update the tooltip for the custom inspector.
             fallbackLayerIndex = LayerMask.NameToLayer("Ignore Raycast");
             if (fallbackLayerIndex != -1) return;
@@ -37,19 +50,16 @@ namespace Sylan.AudioManager
         }
 #endif
 
-        // ================================================================
-        // General Settings
-        // ================================================================
-
         [Header("General")]
         [Tooltip("The size of the sphere used to check for which zones a player is in.\n"
             + "The local player capsule has a radius of 0.2 for reference. "
             + "As a further note, that capsule's size is constant, regardless of player/avatar size.\n"
-            + "0 is a good value, it allows setting up zones exactly matching the sizes of interiors, "
+            + "0 is a good value, it allows setting up zones exactly matching the sizes of interiors/areas, "
             + "no larger, no smaller.")]
         [Range(0f, 1f)]
         [SerializeField] private float headCheckRadius = 0f;
         public float HeadCheckRadius => headCheckRadius;
+        public const string HeadCheckRadiusPropertyName = nameof(headCheckRadius);
 
         // ================================================================
         // Audio Setting Zones

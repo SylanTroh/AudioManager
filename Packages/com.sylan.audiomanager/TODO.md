@@ -9,11 +9,11 @@
 - [x] Performance checking... somehow???
 - [x] Change the AudioZones layer in project settings to not collide with anything anymore
 - [ ] Handle network congestion, using `VRC.SDK3.Network.Stats.Suffering`
-- [ ] Do something about the fact that zones are now probed at specifically the head position and no longer the player capsule, migration wise. This is a rather annoying breaking change for people to update to as it stands currently
+- [x] Do something about the fact that zones are now probed at specifically the head position and no longer the player capsule, migration wise. This is a rather annoying breaking change for people to update to as it stands currently
   - [x] Add editor scripting to grow zones, the inverse of the shrink buttons currently there
   - [x] Add an option for the physics overlap sphere to be a bigger radius, that matching the player capsule collider, which has a radius of 0.2. The player capsule collider is constant, does not change with avatar eye height or sizing of any kind
-  - [ ] Add an editor window for migrations
-    - [ ] Detect package version changes
+  - [x] Add an editor window for migrations
+    - [x] Detect package version changes
 - [x] ~~Remove the editor scripting for shrinking zones to "prevent clipping" since that is no longer relevant~~ keep it along side a new grow button
 - [x] Remove dependency on com.jansharp.common and any test code using it before merging
 - [x] Log which sync script is used for bug report purposes
@@ -44,3 +44,4 @@
     - Removed Shrink Button for `AudioSettingCollider` and `AudioZoneCollider` which is no longer needed
     - Added Option to `AudioZoneManager` to set default Layer
     - Added Button to `AudioZoneManager` to initialize "AudioZones" Layer
+    - Added option for zones to get toggled at runtime
