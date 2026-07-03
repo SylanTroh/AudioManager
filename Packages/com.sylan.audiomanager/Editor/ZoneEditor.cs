@@ -17,6 +17,12 @@ namespace Sylan.AudioManager
         private void OnEnable()
         {
             GetCollidersAndCreateHandles();
+            SceneView.duringSceneGui += OnSceneGUIUdonSharpFree;
+        }
+
+        private void OnDisable()
+        {
+            SceneView.duringSceneGui -= OnSceneGUIUdonSharpFree;
         }
 
         private void GetCollidersAndCreateHandles()
@@ -116,14 +122,12 @@ namespace Sylan.AudioManager
         }
 
         /// <summary>
-        /// <para>Must not be private in order for it to be run by the
-        /// Udon Sharp Editor Override for deriving classes.</para>
-        /// <para>This ends up lagging more and more the more objects are multi-selected.
-        /// Not because of any of the logic in here, however.</para>
-        /// <para>The cause is in the UdonSharpBehaviourOverrideEditor, which does a call to
-        /// <see cref="SerializedObject.Update"/> before calling our function here.</para>
+        /// <para>Cannot use normal <c>OnSceneGUI</c> because that would end up lagging more and more the more
+        /// objects are multi-selected. Not because of any of the logic in here, however.</para>
+        /// <para>The cause would be in the <c>UdonSharpBehaviourOverrideEditor</c>, which does a call to
+        /// <see cref="SerializedObject.Update"/> before calling our function.</para>
         /// </summary>
-        protected void OnSceneGUI()
+        private void OnSceneGUIUdonSharpFree(SceneView view)
         {
             foreach (ColliderHandles handles in allColliderHandles)
             {
