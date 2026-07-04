@@ -16,8 +16,6 @@ namespace Sylan.AudioManager
             // Get the AudioZoneManager instance
             AudioZoneManager manager = (AudioZoneManager)managerSo.targetObject;
 
-            IgnoreAllLayerCollisionForAudioZoneLayer();
-
             if (!TryGetPlayerObject(out var playerObject))
             {
                 playerObject = CreatePlayerObject(manager);
@@ -36,13 +34,6 @@ namespace Sylan.AudioManager
             }
 
             return true;
-        }
-
-        private static void IgnoreAllLayerCollisionForAudioZoneLayer()
-        {
-            if (!AudioZoneLayerInit.AudioZoneLayerExists()) return;
-
-            AudioZoneLayerInit.IgnoreAllLayerCollision(AudioZoneLayerInit.GetAudioZoneLayer());
         }
 
         public static bool TryGetPlayerObject(out AudioZonePlayerObject playerObject)

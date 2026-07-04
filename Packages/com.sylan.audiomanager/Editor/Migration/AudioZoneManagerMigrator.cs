@@ -15,6 +15,7 @@ namespace Sylan.AudioManager
         // Automatically set headCheckRadius to a non 0 value for backwards compatibility.
         // This way users can dismiss the migration window entirely, mark all as resolved, and the scene
         // should continue to function comparatively to how it did before.
+        // If the AudioZones layer exists, automatically update the collision matrix for it, ignoring all collisions.
         //
         // Script version 1 -> 2:
         // User acknowledged the change for how zones are checked for and may or may not have adjusted the zone.
@@ -36,6 +37,11 @@ namespace Sylan.AudioManager
                 so.FindProperty(nameof(AudioZoneManager.scriptVersion)).uintValue = 1u;
                 so.FindProperty(AudioZoneManager.HeadCheckRadiusPropertyName).floatValue = BackwardsCompatibleHeadCheckRadius;
                 so.ApplyModifiedPropertiesWithoutUndo();
+
+                if (AudioZoneLayerInit.AudioZoneLayerExists())
+                {
+                    AudioZoneLayerInit.IgnoreAllLayerCollision(AudioZoneLayerInit.GetAudioZoneLayer());
+                }
             }
 
             return GetDefaultSceneLoadedResult(managers);
