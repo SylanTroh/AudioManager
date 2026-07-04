@@ -8,7 +8,7 @@
     - [x] to then apply them to AudioSettingsManager on change
 - [x] Performance checking... somehow???
 - [x] Change the AudioZones layer in project settings to not collide with anything anymore
-- [ ] Handle network congestion, using `VRC.SDK3.Network.Stats.Suffering`
+- [x] Handle network congestion, using `VRC.SDK3.Network.Stats.Suffering`
 - [x] Do something about the fact that zones are now probed at specifically the head position and no longer the player capsule, migration wise. This is a rather annoying breaking change for people to update to as it stands currently
   - [x] Add editor scripting to grow zones, the inverse of the shrink buttons currently there
   - [x] Add an option for the physics overlap sphere to be a bigger radius, that matching the player capsule collider, which has a radius of 0.2. The player capsule collider is constant, does not change with avatar eye height or sizing of any kind

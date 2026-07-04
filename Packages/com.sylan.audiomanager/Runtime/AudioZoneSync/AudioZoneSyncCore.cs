@@ -1,5 +1,6 @@
 using UdonSharp;
 using UnityEngine;
+using VRC.SDK3.Network;
 using VRC.SDKBase;
 
 namespace Sylan.AudioManager
@@ -26,6 +27,7 @@ namespace Sylan.AudioManager
         public abstract string SyncScriptName { get; }
 
         private bool didGetAppliedOnce = false;
+        private bool requestSerializationIsQueued = false;
 
         private void Start()
         {
@@ -135,8 +137,32 @@ namespace Sylan.AudioManager
         public void OnZonesChanged()
         {
             PrepareForSerialization();
-            RequestSerialization();
+            RequestSerializationRespectingCongestion();
             audioZoneManager.UpdateAudioZoneSetting(this);
+        }
+
+        private void RequestSerializationRespectingCongestion()
+        {
+            if (requestSerializationIsQueued) return;
+            // Networking.IsClogged only becomes true once Suffering is greater (or equals?) 100, which is silly.
+            float suffering = Stats.Suffering;
+            if (suffering == 0f)
+            {
+                RequestSerialization();
+                return;
+            }
+            requestSerializationIsQueued = true;
+            // Exponential backoff, but only up to 16 seconds. Which it reaches at Suffering 45.
+            // And a minimum of 1 second since once Suffering is non zero there's already problems.
+            suffering = 1f + suffering / 15f;
+            float delay = Mathf.Min(suffering * suffering, 16f);
+            SendCustomEventDelayedSeconds(nameof(RequestSerializationDelayed), delay);
+        }
+
+        public void RequestSerializationDelayed()
+        {
+            requestSerializationIsQueued = false;
+            RequestSerialization();
         }
     }
 }
