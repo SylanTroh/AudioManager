@@ -47,7 +47,7 @@
 - [x] update the sample scene
 - [x] maybe remove the player object variant scene, or rename it to be specifically for testing purposes
 - [x] Update Readme for Major version change
-  - [ ] Remove Video Guide or at least mention what parts are no longer up to date
+  - [x] Remove Video Guide or at least mention what parts are no longer up to date
   - [x] Update Known Issues
   - [x] Inform about potential migration actions (un-shrink zones?)
   - [x] Update `Update Log` for Version 2.0.0
