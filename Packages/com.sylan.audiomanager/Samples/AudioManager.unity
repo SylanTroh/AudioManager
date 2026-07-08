@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028337, g: 0.22571355, b: 0.3069222, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -227,11 +227,16 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 6670465}
+  scriptVersion: 1
   zoneID: Room
+  zoneIdIndex: 1
   transitionZoneIDs:
   - 
-  _AudioZoneManager: {fileID: 1565303862}
+  transitionZoneIdIndexes: 00000000
   isNegativeZone: 0
+  combinedZoneIdsField1: 3
+  combinedZoneIdsField2: 0
+  combinedZoneIdsField3: 0
 --- !u!1 &38758910
 GameObject:
   m_ObjectHideFlags: 0
@@ -831,8 +836,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 5.4333615, y: 4.148411, z: 19.584602}
-  m_Center: {x: 6.683237, y: 2.3814907, z: -10.336967}
+  m_Size: {x: 6.039264, y: 4.956696, z: 20.084602}
+  m_Center: {x: 6.6302853, y: 2.477348, z: -10.336967}
 --- !u!114 &399894421
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -880,10 +885,15 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 399894421}
+  scriptVersion: 1
   zoneID: Room
+  zoneIdIndex: 1
   transitionZoneIDs: []
-  _AudioZoneManager: {fileID: 1565303862}
+  transitionZoneIdIndexes: 
   isNegativeZone: 0
+  combinedZoneIdsField1: 2
+  combinedZoneIdsField2: 0
+  combinedZoneIdsField3: 0
 --- !u!1 &466861946
 GameObject:
   m_ObjectHideFlags: 0
@@ -1467,8 +1477,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 9.056707, y: 4.1373696, z: 13.695042}
-  m_Center: {x: 4.9752226, y: 2.314368, z: -7.2902985}
+  m_Size: {x: 9.556707, y: 4.956696, z: 14.476757}
+  m_Center: {x: 4.9752226, y: 2.477348, z: -7.431156}
 --- !u!114 &716597930
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -1516,10 +1526,15 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 716597930}
+  scriptVersion: 1
   zoneID: Room
+  zoneIdIndex: 1
   transitionZoneIDs: []
-  _AudioZoneManager: {fileID: 1565303862}
+  transitionZoneIdIndexes: 
   isNegativeZone: 0
+  combinedZoneIdsField1: 2
+  combinedZoneIdsField2: 0
+  combinedZoneIdsField3: 0
 --- !u!1 &733978217
 GameObject:
   m_ObjectHideFlags: 0
@@ -1731,11 +1746,16 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 781408879}
+  scriptVersion: 1
   zoneID: Room2
+  zoneIdIndex: 2
   transitionZoneIDs:
   - 
-  _AudioZoneManager: {fileID: 1565303862}
+  transitionZoneIdIndexes: 00000000
   isNegativeZone: 0
+  combinedZoneIdsField1: 5
+  combinedZoneIdsField2: 0
+  combinedZoneIdsField3: 0
 --- !u!1 &794337259
 GameObject:
   m_ObjectHideFlags: 0
@@ -1808,8 +1828,8 @@ MonoBehaviour:
   voiceRangeFar: 15
   volumetricRadius: 0
   voiceLowpass: 1
-  _AudioZoneManager: {fileID: 1565303862}
-  _VoiceApplicator: {fileID: 794337263}
+  audioZoneManager: {fileID: 1565303862}
+  voiceApplicator: {fileID: 794337263}
 --- !u!4 &794337262
 Transform:
   m_ObjectHideFlags: 0
@@ -2049,7 +2069,7 @@ GameObject:
   - component: {fileID: 941371500}
   - component: {fileID: 941371499}
   - component: {fileID: 941371502}
-  m_Layer: 0
+  m_Layer: 22
   m_Name: LoudZone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2103,7 +2123,8 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 941371499}
-  settingID: microphone
+  scriptVersion: 1
+  settingIndex: 0
   priority: 2000
   voiceGain: 8
   voiceNear: 0
@@ -2112,7 +2133,6 @@ MonoBehaviour:
   lowpassFilter: 1
   enableFade: 0
   fadeDuration: 1
-  _AudioSettingManager: {fileID: 794337261}
 --- !u!4 &941371501
 Transform:
   m_ObjectHideFlags: 0
@@ -2294,8 +2314,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 3.1939921, y: 4.956696, z: 5.540863}
-  m_Center: {x: 1.5959957, y: 2.477348, z: -17.858837}
+  m_Size: {x: 3.3539186, y: 4.956696, z: 5.7727757}
+  m_Center: {x: 1.6759589, y: 2.477348, z: -17.764717}
 --- !u!114 &1025939251
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -2343,10 +2363,15 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 1025939251}
+  scriptVersion: 1
   zoneID: Room2
+  zoneIdIndex: 2
   transitionZoneIDs: []
-  _AudioZoneManager: {fileID: 1565303862}
+  transitionZoneIdIndexes: 
   isNegativeZone: 1
+  combinedZoneIdsField1: 4
+  combinedZoneIdsField2: 0
+  combinedZoneIdsField3: 0
 --- !u!1 &1083962119
 GameObject:
   m_ObjectHideFlags: 0
@@ -2756,6 +2781,15 @@ MonoBehaviour:
     ID: 21
     SerializedTypeNames:
     - VRC.Udon.UdonBehaviour
+  - gameObject: {fileID: 1664867396}
+    ID: 22
+    SerializedTypeNames:
+    - VRC.SDK3.Components.VRCPlayerObject
+    - VRC.Udon.UdonBehaviour
+  - gameObject: {fileID: 1950043840}
+    ID: 23
+    SerializedTypeNames:
+    - VRC.Udon.UdonBehaviour
   portraitCameraPositionOffset: {x: 0, y: 0, z: 0}
   portraitCameraRotationOffset: {x: 0, y: 1, z: 0, w: -0.00000004371139}
   PlayerPersistence: []
@@ -2866,8 +2900,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 9.056707, y: 4.1373696, z: 19.948942}
-  m_Center: {x: 4.9752226, y: 2.314368, z: -10.417249}
+  m_Size: {x: 9.556707, y: 4.956696, z: 20.448942}
+  m_Center: {x: 4.9752226, y: 2.477348, z: -10.417249}
 --- !u!114 &1535283057
 MonoBehaviour:
   m_ObjectHideFlags: 2
@@ -2915,10 +2949,15 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 1535283057}
+  scriptVersion: 1
   zoneID: Room2
+  zoneIdIndex: 2
   transitionZoneIDs: []
-  _AudioZoneManager: {fileID: 1565303862}
+  transitionZoneIdIndexes: 
   isNegativeZone: 0
+  combinedZoneIdsField1: 4
+  combinedZoneIdsField2: 0
+  combinedZoneIdsField3: 0
 --- !u!1 &1565303860
 GameObject:
   m_ObjectHideFlags: 0
@@ -2984,14 +3023,35 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 1565303861}
-  _AudioSettingManager: {fileID: 794337261}
-  AudioZoneColliders:
-  - {fileID: 6670466}
-  - {fileID: 399894422}
-  - {fileID: 716597931}
-  - {fileID: 781408880}
-  - {fileID: 1025939252}
-  - {fileID: 1535283058}
+  audioSettingManager: {fileID: 794337261}
+  zoneIdMapping:
+  - 
+  - Room
+  - Room2
+  fallbackLayerIndex: 0
+  scriptVersion: 2
+  headCheckRadius: 0
+  totalAudioZonesCount: 3
+  audioSettingsIndexBitShift: 3
+  audioSettingsIndexBitMask: 18446744073709551608
+  allAudioSettingsPriority: d007000000000000
+  allAudioSettingsVoiceGain:
+  - 8
+  - 8
+  allAudioSettingsVoiceNear:
+  - 0
+  - 0
+  allAudioSettingsVoiceFar:
+  - 100000
+  - 100000
+  allAudioSettingsVolumetricRadius:
+  - 0
+  - 0
+  allAudioSettingsLowpassFilter: 0101
+  allAudioSettingsEnableFade: 0000
+  allAudioSettingsFadeDuration:
+  - 1
+  - 1
   voiceGain: 7
   voiceRangeNear: 0
   voiceRangeFar: 1.75
@@ -3012,9 +3072,108 @@ Transform:
   m_LocalPosition: {x: 9.390982, y: 3.3873289, z: -15.864983}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1664867397}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1664867396
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1664867397}
+  - component: {fileID: 1664867400}
+  - component: {fileID: 1664867399}
+  - component: {fileID: 1664867398}
+  m_Layer: 0
+  m_Name: AudioZonePlayerObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1664867397
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1664867396}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1950043841}
+  m_Father: {fileID: 1565303863}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1664867398
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1664867396}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45115577ef41a5b4ca741ed302693907, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactTextPlacement: {fileID: 0}
+  interactText: Use
+  interactTextGO: {fileID: 0}
+  proximity: 2
+  SynchronizePosition: 0
+  AllowCollisionOwnershipTransfer: 0
+  Reliable: 0
+  _syncMethod: 1
+  serializedProgramAsset: {fileID: 0}
+  programSource: {fileID: 11400000, guid: fb74dd9e5c61b4340a68916f292b125f, type: 2}
+  serializedPublicVariablesBytesString: Ai8AAAAAATIAAABWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgAuAFUAZABvAG4AVgBhAHIAaQBhAGIAbABlAFQAYQBiAGwAZQAsACAAVgBSAEMALgBVAGQAbwBuAC4AQwBvAG0AbQBvAG4AAAAAAAYBAAAAAAAAACcBBAAAAHQAeQBwAGUAAWgAAABTAHkAcwB0AGUAbQAuAEMAbwBsAGwAZQBjAHQAaQBvAG4AcwAuAEcAZQBuAGUAcgBpAGMALgBMAGkAcwB0AGAAMQBbAFsAVgBSAEMALgBVAGQAbwBuAC4AQwBvAG0AbQBvAG4ALgBJAG4AdABlAHIAZgBhAGMAZQBzAC4ASQBVAGQAbwBuAFYAYQByAGkAYQBiAGwAZQAsACAAVgBSAEMALgBVAGQAbwBuAC4AQwBvAG0AbQBvAG4AXQBdACwAIABtAHMAYwBvAHIAbABpAGIAAQEJAAAAVgBhAHIAaQBhAGIAbABlAHMALwEAAAABaAAAAFMAeQBzAHQAZQBtAC4AQwBvAGwAbABlAGMAdABpAG8AbgBzAC4ARwBlAG4AZQByAGkAYwAuAEwAaQBzAHQAYAAxAFsAWwBWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgAuAEkAbgB0AGUAcgBmAGEAYwBlAHMALgBJAFUAZABvAG4AVgBhAHIAaQBhAGIAbABlACwAIABWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgBdAF0ALAAgAG0AcwBjAG8AcgBsAGkAYgABAAAABgEAAAAAAAAAAi8CAAAAAUkAAABWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgAuAFUAZABvAG4AVgBhAHIAaQBhAGIAbABlAGAAMQBbAFsAUwB5AHMAdABlAG0ALgBJAG4AdAAzADIALAAgAG0AcwBjAG8AcgBsAGkAYgBdAF0ALAAgAFYAUgBDAC4AVQBkAG8AbgAuAEMAbwBtAG0AbwBuAAIAAAAGAgAAAAAAAAAnAQQAAAB0AHkAcABlAAEXAAAAUwB5AHMAdABlAG0ALgBTAHQAcgBpAG4AZwAsACAAbQBzAGMAbwByAGwAaQBiACcBCgAAAFMAeQBtAGIAbwBsAE4AYQBtAGUAAR8AAABfAF8AXwBVAGQAbwBuAFMAaABhAHIAcABCAGUAaABhAHYAaQBvAHUAcgBWAGUAcgBzAGkAbwBuAF8AXwBfACcBBAAAAHQAeQBwAGUAARYAAABTAHkAcwB0AGUAbQAuAEkAbgB0ADMAMgAsACAAbQBzAGMAbwByAGwAaQBiABcBBQAAAFYAYQBsAHUAZQACAAAABwUHBQcF
+  publicVariablesUnityEngineObjects: []
+  publicVariablesSerializationDataFormat: 0
+--- !u!114 &1664867399
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1664867396}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79c044ff63787984d993028ade42ea4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  _udonSharpBackingUdonBehaviour: {fileID: 1664867398}
+  audioZoneManager: {fileID: 1565303862}
+  audioZoneColliderLayerMask:
+    serializedVersion: 2
+    m_Bits: 4194304
+--- !u!114 &1664867400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1664867396}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1658641376, guid: 661092b4961be7145bfbe56e1e62337b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!43 &1744547592
 Mesh:
   m_ObjectHideFlags: 0
@@ -3180,6 +3339,89 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1 &1950043840
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1950043841}
+  - component: {fileID: 1950043843}
+  - component: {fileID: 1950043842}
+  m_Layer: 0
+  m_Name: AudioZoneSync
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1950043841
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1950043840}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1664867397}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1950043842
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1950043840}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45115577ef41a5b4ca741ed302693907, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactTextPlacement: {fileID: 0}
+  interactText: Use
+  interactTextGO: {fileID: 0}
+  proximity: 2
+  SynchronizePosition: 0
+  AllowCollisionOwnershipTransfer: 0
+  Reliable: 0
+  _syncMethod: 3
+  serializedProgramAsset: {fileID: 0}
+  programSource: {fileID: 11400000, guid: 8c4a99d0ec300f2388a707078d3cb88f, type: 2}
+  serializedPublicVariablesBytesString: Ai8AAAAAATIAAABWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgAuAFUAZABvAG4AVgBhAHIAaQBhAGIAbABlAFQAYQBiAGwAZQAsACAAVgBSAEMALgBVAGQAbwBuAC4AQwBvAG0AbQBvAG4AAAAAAAYBAAAAAAAAACcBBAAAAHQAeQBwAGUAAWgAAABTAHkAcwB0AGUAbQAuAEMAbwBsAGwAZQBjAHQAaQBvAG4AcwAuAEcAZQBuAGUAcgBpAGMALgBMAGkAcwB0AGAAMQBbAFsAVgBSAEMALgBVAGQAbwBuAC4AQwBvAG0AbQBvAG4ALgBJAG4AdABlAHIAZgBhAGMAZQBzAC4ASQBVAGQAbwBuAFYAYQByAGkAYQBiAGwAZQAsACAAVgBSAEMALgBVAGQAbwBuAC4AQwBvAG0AbQBvAG4AXQBdACwAIABtAHMAYwBvAHIAbABpAGIAAQEJAAAAVgBhAHIAaQBhAGIAbABlAHMALwEAAAABaAAAAFMAeQBzAHQAZQBtAC4AQwBvAGwAbABlAGMAdABpAG8AbgBzAC4ARwBlAG4AZQByAGkAYwAuAEwAaQBzAHQAYAAxAFsAWwBWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgAuAEkAbgB0AGUAcgBmAGEAYwBlAHMALgBJAFUAZABvAG4AVgBhAHIAaQBhAGIAbABlACwAIABWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgBdAF0ALAAgAG0AcwBjAG8AcgBsAGkAYgABAAAABgEAAAAAAAAAAi8CAAAAAUkAAABWAFIAQwAuAFUAZABvAG4ALgBDAG8AbQBtAG8AbgAuAFUAZABvAG4AVgBhAHIAaQBhAGIAbABlAGAAMQBbAFsAUwB5AHMAdABlAG0ALgBJAG4AdAAzADIALAAgAG0AcwBjAG8AcgBsAGkAYgBdAF0ALAAgAFYAUgBDAC4AVQBkAG8AbgAuAEMAbwBtAG0AbwBuAAIAAAAGAgAAAAAAAAAnAQQAAAB0AHkAcABlAAEXAAAAUwB5AHMAdABlAG0ALgBTAHQAcgBpAG4AZwAsACAAbQBzAGMAbwByAGwAaQBiACcBCgAAAFMAeQBtAGIAbwBsAE4AYQBtAGUAAR8AAABfAF8AXwBVAGQAbwBuAFMAaABhAHIAcABCAGUAaABhAHYAaQBvAHUAcgBWAGUAcgBzAGkAbwBuAF8AXwBfACcBBAAAAHQAeQBwAGUAARYAAABTAHkAcwB0AGUAbQAuAEkAbgB0ADMAMgAsACAAbQBzAGMAbwByAGwAaQBiABcBBQAAAFYAYQBsAHUAZQACAAAABwUHBQcF
+  publicVariablesUnityEngineObjects: []
+  publicVariablesSerializationDataFormat: 0
+--- !u!114 &1950043843
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1950043840}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0910a5cc19b6573179f17496dc4f9cc8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: owningPlayer
+      Entry: 6
+      Data: 
+  _udonSharpBackingUdonBehaviour: {fileID: 1950043842}
 --- !u!1 &1960741441
 GameObject:
   m_ObjectHideFlags: 0
@@ -3345,7 +3587,7 @@ GameObject:
   - component: {fileID: 2106600234}
   - component: {fileID: 2106600233}
   - component: {fileID: 2106600232}
-  m_Layer: 0
+  m_Layer: 22
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3435,7 +3677,8 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   _udonSharpBackingUdonBehaviour: {fileID: 2106600233}
-  settingID: loudspeaker
+  scriptVersion: 1
+  settingIndex: 1
   priority: 0
   voiceGain: 8
   voiceNear: 0
@@ -3444,7 +3687,6 @@ MonoBehaviour:
   lowpassFilter: 1
   enableFade: 0
   fadeDuration: 1
-  _AudioSettingManager: {fileID: 794337261}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
