@@ -54,6 +54,11 @@ namespace Sylan.AudioManager
             uint lowestScriptVersion = managers.Min(m => m.scriptVersion);
             if (lowestScriptVersion <= 1u)
             {
+                infoBox.Add(new Label($"- The Audio Zone system now supports players being in stations\n"
+                    + "- Zone game objects or their colliders can now be toggled at runtime\n"
+                    + "- Detection of which zones a player is in is now much more reliable and consistent")
+                { style = { whiteSpace = WhiteSpace.Normal, marginBottom = 4f, unityFontStyleAndWeight = FontStyle.Bold } });
+
                 infoBox.Add(new Label($"The way audio zones get detected has been changed fundamentally. "
                     + $"To determine which zones a player is in, rather than using the player's capsule collider "
                     + $"the system now uses the player's head position.")
