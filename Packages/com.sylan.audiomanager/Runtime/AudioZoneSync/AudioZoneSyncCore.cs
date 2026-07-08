@@ -35,7 +35,7 @@ namespace Sylan.AudioManager
             audioZoneManager = audioZonePlayerObject.audioZoneManager;
             if (audioZoneManager == null)
             {
-                Debug.Log($"[AudioManager] {nameof(AudioZoneSyncCore)} has no {nameof(audioZoneManager)}.");
+                Debug.LogError($"[AudioManager] {nameof(AudioZoneSyncCore)} has no {nameof(audioZoneManager)}.");
                 enabled = false;
                 gameObject.SetActive(false);
                 return;
