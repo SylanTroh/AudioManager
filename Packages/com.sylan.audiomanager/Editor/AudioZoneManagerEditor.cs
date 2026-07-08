@@ -13,7 +13,7 @@ namespace Sylan.AudioManager
             if (!SerializedPropertyUtils.TryFindSerializedObject(out AudioZoneManager manager, out SerializedObject managerSo)) return false;
             if (manager == null) return true;
 
-            if (!TryGetPlayerObject(out var playerObject))
+            if (!TryGetPlayerObject(out AudioZonePlayerObject playerObject))
             {
                 playerObject = CreatePlayerObject(manager);
             }

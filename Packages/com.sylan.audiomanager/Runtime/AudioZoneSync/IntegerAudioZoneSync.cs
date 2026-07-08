@@ -66,15 +66,15 @@ namespace Sylan.AudioManager
 
         public override bool SharesAudioZoneWith(AudioZoneSyncCore other)
         {
-            var remoteZoneIds = ((IntegerAudioZoneSync)other).syncedAudioZones;
+            int[] remoteZoneIds = ((IntegerAudioZoneSync)other).syncedAudioZones;
 
-            var localInNullOrEmpty = syncedAudioZones.Length == 0 || syncedAudioZones[0] == AudioZoneManager.EmptyZoneIdIndex;
-            var remoteInNullOrEmpty = remoteZoneIds.Length == 0 || remoteZoneIds[0] == AudioZoneManager.EmptyZoneIdIndex;
+            bool localInNullOrEmpty = syncedAudioZones.Length == 0 || syncedAudioZones[0] == AudioZoneManager.EmptyZoneIdIndex;
+            bool remoteInNullOrEmpty = remoteZoneIds.Length == 0 || remoteZoneIds[0] == AudioZoneManager.EmptyZoneIdIndex;
 
             if (localInNullOrEmpty && remoteInNullOrEmpty) return true;
             if (localInNullOrEmpty != remoteInNullOrEmpty) return false;
 
-            foreach (var remoteZoneId in remoteZoneIds)
+            foreach (int remoteZoneId in remoteZoneIds)
             {
                 if (Array.BinarySearch(syncedAudioZones, remoteZoneId) >= 0)
                 {

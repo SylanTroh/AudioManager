@@ -64,10 +64,10 @@ namespace Sylan.AudioManager
 #if SYLAN_AUDIOMANAGER_DEBUG
         protected void LogAudioZones(int[] audioZoneIndexes)
         {
-            var zoneNames = new string[audioZoneIndexes.Length];
-            for (var index = 0; index < audioZoneIndexes.Length; index++)
+            string[] zoneNames = new string[audioZoneIndexes.Length];
+            for (int index = 0; index < audioZoneIndexes.Length; index++)
             {
-                var audioZoneIndex = audioZoneIndexes[index];
+                int audioZoneIndex = audioZoneIndexes[index];
                 zoneNames[index] = $"\"{audioZoneManager.zoneIdMapping[audioZoneIndex]}\"";
             }
 

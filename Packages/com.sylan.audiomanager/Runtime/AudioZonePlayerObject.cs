@@ -75,13 +75,13 @@ namespace Sylan.AudioManager
                 GameObject hitGo = hits[i].gameObject;
                 if (hitGo == null) continue; // Some VRChat internal object, would be impossible to be null in normal Unity.
 
-                var audioZoneCollider = GetZoneCached<AudioZoneCollider>(hitGo, audioZoneColliderCache);
+                AudioZoneCollider audioZoneCollider = GetZoneCached<AudioZoneCollider>(hitGo, audioZoneColliderCache);
                 if (audioZoneCollider != null)
                 {
                     audioZonePlayerObjectSync.NotifyHitAudioZoneCollider(audioZoneCollider);
                 }
 
-                var audioSettingCollider = GetZoneCached<AudioSettingCollider>(hitGo, audioSettingColliderCache);
+                AudioSettingCollider audioSettingCollider = GetZoneCached<AudioSettingCollider>(hitGo, audioSettingColliderCache);
                 if (audioSettingCollider != null)
                 {
                     audioZonePlayerObjectSync.NotifyAudioSettingCollider(audioSettingCollider);

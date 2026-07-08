@@ -72,7 +72,7 @@ namespace Sylan.AudioManager
 #if SYLAN_AUDIOMANAGER_DEBUG
         private void LogAudioZones()
         {
-            var audioZoneIndexes = new DataList();
+            DataList audioZoneIndexes = new DataList();
             for (int i = 0; i < 64; i++)
             {
                 if ((syncedAudioZonesField & (1uL << i)) != 0uL)
@@ -98,7 +98,7 @@ namespace Sylan.AudioManager
 
         public override bool SharesAudioZoneWith(AudioZoneSyncCore other)
         {
-            var remoteAudioZonesField = ((BitField64AudioZoneSync)other).syncedAudioZonesField;
+            ulong remoteAudioZonesField = ((BitField64AudioZoneSync)other).syncedAudioZonesField;
 
             if (IsInNoneOrEmpty(syncedAudioZonesField) && IsInNoneOrEmpty(remoteAudioZonesField)) return true;
 

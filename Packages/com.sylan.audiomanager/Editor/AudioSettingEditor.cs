@@ -35,10 +35,10 @@ namespace Sylan.AudioManager
                 SerializedPropertyUtils.SetLayerAndApply(settingZones.Select(z => z.gameObject).ToArray(), audioZoneLayer);
             }
 
-            var settingIdDict = new Dictionary<AudioSettingData, int>();
-            var allAudioSettings = new List<AudioSettingData>();
+            Dictionary<AudioSettingData, int> settingIdDict = new();
+            List<AudioSettingData> allAudioSettings = new();
 
-            foreach (var settingZone in settingZones)
+            foreach (AudioSettingCollider settingZone in settingZones)
             {
                 int settingIndex = GetOrAdd(settingIdDict, allAudioSettings, new AudioSettingData(settingZone));
                 SerializedObject so = new(settingZone);
@@ -75,7 +75,7 @@ namespace Sylan.AudioManager
             List<AudioSettingData> allAudioSettings,
             AudioSettingData settingData)
         {
-            if (settingIdDict.TryGetValue(settingData, out var value)) return value;
+            if (settingIdDict.TryGetValue(settingData, out int value)) return value;
 
             value = settingIdDict.Count;
             settingIdDict.Add(settingData, value);
@@ -127,7 +127,7 @@ namespace Sylan.AudioManager
 
             public override readonly int GetHashCode()
             {
-                var result = new HashCode();
+                HashCode result = new();
                 result.Add(priority);
                 result.Add(voiceGain);
                 result.Add(voiceNear);

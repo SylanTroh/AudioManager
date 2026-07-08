@@ -39,7 +39,7 @@ namespace Sylan.AudioManager
 
             base.OnDeserialization();
 #if SYLAN_AUDIOMANAGER_DEBUG
-            var audioZoneIndexes = new int[syncedAudioZones.Length];
+            int[] audioZoneIndexes = new int[syncedAudioZones.Length];
             for (int i = 0; i < syncedAudioZones.Length; i++)
             {
                 audioZoneIndexes[i] = syncedAudioZones[i];
@@ -77,15 +77,15 @@ namespace Sylan.AudioManager
 
         public override bool SharesAudioZoneWith(AudioZoneSyncCore other)
         {
-            var remoteZoneIds = ((ShortAudioZoneSync)other).syncedAudioZones;
+            ushort[] remoteZoneIds = ((ShortAudioZoneSync)other).syncedAudioZones;
 
-            var localInNullOrEmpty = syncedAudioZones.Length == 0 || syncedAudioZones[0] == AudioZoneManager.EmptyZoneIdIndex;
-            var remoteInNullOrEmpty = remoteZoneIds.Length == 0 || remoteZoneIds[0] == AudioZoneManager.EmptyZoneIdIndex;
+            bool localInNullOrEmpty = syncedAudioZones.Length == 0 || syncedAudioZones[0] == AudioZoneManager.EmptyZoneIdIndex;
+            bool remoteInNullOrEmpty = remoteZoneIds.Length == 0 || remoteZoneIds[0] == AudioZoneManager.EmptyZoneIdIndex;
 
             if (localInNullOrEmpty && remoteInNullOrEmpty) return true;
             if (localInNullOrEmpty != remoteInNullOrEmpty) return false;
 
-            foreach (var remoteZoneId in remoteZoneIds)
+            foreach (ushort remoteZoneId in remoteZoneIds)
             {
                 if (Array.BinarySearch(syncedAudioZones, remoteZoneId) >= 0)
                 {

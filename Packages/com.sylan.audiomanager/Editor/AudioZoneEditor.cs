@@ -57,7 +57,7 @@ namespace Sylan.AudioManager
         {
             AudioZoneCollider[] audioZones = SerializedPropertyUtils.FindAllObjects<AudioZoneCollider>();
             if (audioZones.Length == 0) return true; // TODO: Reset zoneIdCount.
-            if (!SerializedPropertyUtils.TryFindObject<AudioZoneManager>(out var audioZoneManager)) return false;
+            if (!SerializedPropertyUtils.TryFindObject(out AudioZoneManager audioZoneManager)) return false;
 
             if (AudioZoneLayerInit.TryGetAudioZoneLayer(out int audioZoneLayer, audioZoneManager))
             {
@@ -66,8 +66,8 @@ namespace Sylan.AudioManager
 
             MakeAllAttachedPrimitiveCollidersTriggers(audioZones);
 
-            var zoneIdDict = new Dictionary<string, int>() { { string.Empty, AudioZoneManager.EmptyZoneIdIndex } };
-            foreach (var audioZone in audioZones)
+            Dictionary<string, int> zoneIdDict = new() { { string.Empty, AudioZoneManager.EmptyZoneIdIndex } };
+            foreach (AudioZoneCollider audioZone in audioZones)
             {
                 PopulateGeneratedIds(zoneIdDict, audioZone);
             }
@@ -111,7 +111,7 @@ namespace Sylan.AudioManager
             AddIdAsFlag(ref field1, ref field2, ref field3, zoneIdIndex);
 
             int[] transitionZoneIdIndexes = new int[audioZone.transitionZoneIDs.Length];
-            for (var i = 0; i < audioZone.transitionZoneIDs.Length; i++)
+            for (int i = 0; i < audioZone.transitionZoneIDs.Length; i++)
             {
                 zoneIdIndex = GetOrAdd(zoneIdDict, audioZone.transitionZoneIDs[i]);
                 transitionZoneIdIndexes[i] = zoneIdIndex;
@@ -145,7 +145,7 @@ namespace Sylan.AudioManager
 
         private static int GetOrAdd(Dictionary<string, int> zoneIdDict, string zoneId)
         {
-            if (zoneIdDict.TryGetValue(zoneId, out var value)) return value;
+            if (zoneIdDict.TryGetValue(zoneId, out int value)) return value;
 
             value = zoneIdDict.Count;
             zoneIdDict.Add(zoneId, value);

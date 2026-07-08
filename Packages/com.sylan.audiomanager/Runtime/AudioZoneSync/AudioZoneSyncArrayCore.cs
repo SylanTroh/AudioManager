@@ -52,8 +52,8 @@ namespace Sylan.AudioManager
                 // When positive and or negative zones changed, determine if zones actually changed after
                 // said positive and negative zones have been combined.
                 hasZonesChanged = false;
-                var keys = audioZoneIds.GetKeys();
-                for (var i = 0; i < keys.Count; i++)
+                DataList keys = audioZoneIds.GetKeys();
+                for (int i = 0; i < keys.Count; i++)
                 {
                     if (!negativeZoneIds.ContainsKey(keys[i].Int))
                     {
@@ -73,7 +73,7 @@ namespace Sylan.AudioManager
 
         private void SwapDictionaries(ref DataDictionary newDict, ref DataDictionary oldDict)
         {
-            var tmpSwappingDict = oldDict;
+            DataDictionary tmpSwappingDict = oldDict;
             oldDict = newDict;
             newDict = tmpSwappingDict;
             newDict.Clear();
@@ -82,7 +82,7 @@ namespace Sylan.AudioManager
         private void AddZoneIds(AudioZoneCollider audioZoneCollider, DataDictionary oldDict, DataDictionary newDict)
         {
             AddZoneId(audioZoneCollider.zoneIdIndex, oldDict, newDict);
-            foreach (var zoneId in audioZoneCollider.transitionZoneIdIndexes)
+            foreach (int zoneId in audioZoneCollider.transitionZoneIdIndexes)
             {
                 AddZoneId(zoneId, oldDict, newDict);
             }
@@ -100,11 +100,11 @@ namespace Sylan.AudioManager
 
         private int[] GetAllKeysArraySorted(DataDictionary dict)
         {
-            var keys = new int[dict.Count];
-            var list = dict.GetKeys();
+            int[] keys = new int[dict.Count];
+            DataList list = dict.GetKeys();
             list.Sort(); // Sorted such that 1) empty id goes first and 2) binary searches can be used.
 
-            for (var i = 0; i < list.Count; i++)
+            for (int i = 0; i < list.Count; i++)
             {
                 keys[i] = list[i].Int;
             }

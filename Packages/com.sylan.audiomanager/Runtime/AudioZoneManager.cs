@@ -235,9 +235,9 @@ namespace Sylan.AudioManager
             else
             {
                 //If the local player caused the update, update all players
-                for (var i = 0; i < RemotePlayerSyncs.Count; i++)
+                for (int i = 0; i < RemotePlayerSyncs.Count; i++)
                 {
-                    var remotePlayerSync = (AudioZoneSyncCore)RemotePlayerSyncs[i].Reference;
+                    AudioZoneSyncCore remotePlayerSync = (AudioZoneSyncCore)RemotePlayerSyncs[i].Reference;
                     // Deletion order of remote VRCPlayerApis and their player objects is undefined behavior.
                     if (!Utilities.IsValid(remotePlayerSync.owningPlayer)) continue;
                     ApplyAudioZoneSetting(remotePlayerSync);
@@ -289,7 +289,7 @@ namespace Sylan.AudioManager
         {
             for (int i = 0; i < RemotePlayerSyncs.Count; i++)
             {
-                var remotePlayerSync = (AudioZoneSyncCore)RemotePlayerSyncs[i].Reference;
+                AudioZoneSyncCore remotePlayerSync = (AudioZoneSyncCore)RemotePlayerSyncs[i].Reference;
                 if (!Utilities.IsValid(remotePlayerSync.owningPlayer)) continue; // Major trust issues.
                 remotePlayerSync.ApplySettingAndAudioZoneSetting();
             }
