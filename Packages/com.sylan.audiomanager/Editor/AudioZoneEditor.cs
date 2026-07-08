@@ -55,8 +55,10 @@ namespace Sylan.AudioManager
 
         private static bool RunOnBuild()
         {
+            zoneIdCount = 0; // Reset before any early returns.
+
             AudioZoneCollider[] audioZones = SerializedPropertyUtils.FindAllObjects<AudioZoneCollider>();
-            if (audioZones.Length == 0) return true; // TODO: Reset zoneIdCount.
+            if (audioZones.Length == 0) return true;
             if (!SerializedPropertyUtils.TryFindObject(out AudioZoneManager audioZoneManager)) return false;
 
             if (AudioZoneLayerInit.TryGetAudioZoneLayer(out int audioZoneLayer, audioZoneManager))
