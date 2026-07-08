@@ -110,9 +110,14 @@ namespace Sylan.AudioManager
                         handles.ResetLocation();
 
             if (allColliderHandles.Any(h => h.CanResetCollider()))
-                if (GUILayout.Button("Reset Audiozone Size"))
+                if (GUILayout.Button(new GUIContent(
+                    "Reset Audiozone Size",
+                    "If there is a Mesh Filter on the parent of this object, "
+                        + "its bounds will be used as a reference to set the size of this Audiozone.")))
+                {
                     foreach (var handles in allColliderHandles.Where(h => h.CanResetCollider()))
                         handles.ResetCollider();
+                }
         }
 
         private void AddColliders<T>()
