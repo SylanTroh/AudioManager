@@ -186,7 +186,7 @@ namespace Sylan.AudioManager
         {
             // Inspired by: https://discussions.unity.com/t/drawing-capsule-gizmo/597344/13
             Vector3 offset = Vector3.zero;
-            offset[direction] = height * 0.5f - radius;
+            offset[direction] = Mathf.Max(0f, height * 0.5f - radius);
             DrawWireCapsule(center - offset, center + offset, radius);
         }
 
