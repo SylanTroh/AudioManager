@@ -1,5 +1,5 @@
 # AudioManager
-An UDON system designed to set player voice volume. 
+An UDON system designed to set player voice volume.
 
 Features Include:
 - Fake Audio Occlusion using Trigger Colliders to define 'AudioZones'
@@ -13,9 +13,9 @@ Features Include:
 4. If you would like to use fake audio occlusion, add a gameobject with an 'AudioZoneManager' component to your scene as well. You can use component to set what audio settings will be in use when players don't share an AudioZone as well as change the default priority of AudioZones.
 
 # Setting up Fake Audio Occlusion
-The AudioZone system simulates audio occlusion by applying an audiosetting that makes players unable to hear each other if certain conditions are met. 
+The AudioZone system simulates audio occlusion by applying an audiosetting that makes players unable to hear each other if certain conditions are met.
 
-Each AudioZoneCollider script has at least one "ID" which is a string that corresponds to an AudioZone. These IDs do not need to be unique, and a single AudioZoneCollider can have multiple IDs and therefore be a part of multiple AudioZones. If a player enters an AudioZoneCollider, they are tagged with all of its IDs. A player is considered to be inside an AudioZone as long as they are inside at least one AudioZoneCollider that has a matching ID. The AudioZoneManager will apply its audiosetting to players, making them unable to hear each other, if the two players do not share any AudioZones. 
+Each AudioZoneCollider script has at least one "ID" which is a string that corresponds to an AudioZone. These IDs do not need to be unique, and a single AudioZoneCollider can have multiple IDs and therefore be a part of multiple AudioZones. If a player enters an AudioZoneCollider, they are tagged with all of its IDs. A player is considered to be inside an AudioZone as long as they are inside at least one AudioZoneCollider that has a matching ID. The AudioZoneManager will apply its audiosetting to players, making them unable to hear each other, if the two players do not share any AudioZones.
 
 If a AudioZone has the id "", that is, the empty string, it will match players who are not in any AudioZones in addition to the AudioZone with id "". This can be used to create "Transition Zones" or zones where players can hear players who are inside of a zone, while still hearing players who are outside of it. Finally, if a player is in a AudioZoneCollider with the "Is Negative Zone" checkbox enabled, this will prevent them from matching players in AudioZones with the IDs specified on that AudioZoneCollider.
 
