@@ -33,7 +33,7 @@
 - [x] Do not mess with layer settings on build, only update layer collision settings upon migration or when the Audio Zone layer gets created the first time. It's too intrusive otherwise, people should have control over custom layers
 - [x] Adjust the note about shrinking audio zones in inspector
 - [x] Make info log spam disable-able
-  - [ ] Measure it
+  - [x] Measure it - each log messages uses ~ 0.6 ms on my system. That's a lot. That's an absurd amount. Having the option to disable that is very much worth it.
 - non uniform scaling... it is pretty opaque how unity calculates the actual collider sizes when non uniform scaling is involved
   - [ ] support non uniform scaling for box zone
     - [ ] gizmos
