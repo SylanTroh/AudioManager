@@ -197,7 +197,7 @@ namespace Sylan.AudioManager
 
             if (settingIndex == -1)
             {
-#if AUDIO_MANAGER_DEBUG
+#if SYLAN_AUDIOMANAGER_DEBUG
                 Debug.Log("[AudioManager] No Setting Zone for " + playerObjectSync.owningPlayer.PrintName() + ".");
 #endif
                 if (audioSettingManager.RemoveAudioSetting(playerObjectSync.owningPlayer, SETTING_ZONE_SETTING_ID))
@@ -209,7 +209,7 @@ namespace Sylan.AudioManager
             {
                 int priority = allAudioSettingsPriority[settingIndex];
                 DataList setting = allAudioSettings[settingIndex];
-#if AUDIO_MANAGER_DEBUG
+#if SYLAN_AUDIOMANAGER_DEBUG
                 Debug.Log("[AudioManager] Using Setting Zone " + settingIndex + " for " + playerObjectSync.owningPlayer.PrintName() + ".");
 #endif
                 audioSettingManager.RemoveAudioSetting(playerObjectSync.owningPlayer, SETTING_ZONE_SETTING_ID);
@@ -249,7 +249,7 @@ namespace Sylan.AudioManager
         {
             if (LocalPlayerSync.SharesAudioZoneWith(remotePlayerObjectSync))
             {
-#if AUDIO_MANAGER_DEBUG
+#if SYLAN_AUDIOMANAGER_DEBUG
                 Debug.Log("[AudioManager] Shares AudioZone with " + remotePlayerObjectSync.owningPlayer.PrintName() + ".");
 #endif
                 if (audioSettingManager.RemoveAudioSetting(remotePlayerObjectSync.owningPlayer, AUDIO_ZONE_SETTING_ID))
@@ -259,7 +259,7 @@ namespace Sylan.AudioManager
             }
             else
             {
-#if AUDIO_MANAGER_DEBUG
+#if SYLAN_AUDIOMANAGER_DEBUG
                 Debug.Log("[AudioManager] Does not share AudioZone with " + remotePlayerObjectSync.owningPlayer.PrintName() + ".");
 #endif
                 if (audioSettingManager.AddAudioSetting(remotePlayerObjectSync.owningPlayer, AUDIO_ZONE_SETTING_ID, audioZonePriority, AudioZoneAudioSettings))

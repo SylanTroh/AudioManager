@@ -94,7 +94,7 @@ namespace Sylan.AudioManager
 
             if (allPlayerSettings.TryGetValue((DataToken)player.playerId, out DataToken value))
             {
-#if !AUDIO_MANAGER_DISABLE_INFO_LOGGING
+#if !SYLAN_AUDIOMANAGER_DISABLE_INFO_LOGGING
                 Debug.Log("[AudioManager] PlayerAudioSettings already initialized for " + player.PrintName());
 #endif
                 return value.DataList;
@@ -115,7 +115,7 @@ namespace Sylan.AudioManager
             defaultPlayerAudioSettings[SETTING_INDEX].DataList.Add((DataToken)defaultAudioSettings);
 
             allPlayerSettings.SetValue(key: (DataToken)player.playerId, value: (DataToken)defaultPlayerAudioSettings);
-#if !AUDIO_MANAGER_DISABLE_INFO_LOGGING
+#if !SYLAN_AUDIOMANAGER_DISABLE_INFO_LOGGING
             Debug.Log("[AudioManager] Initialize PlayerAudioSettings for " + player.PrintName());
 #endif
             ApplyAudioSetting(player);
@@ -127,14 +127,14 @@ namespace Sylan.AudioManager
 
             if (!allPlayerSettings.Remove((DataToken)player.playerId))
             {
-#if !AUDIO_MANAGER_DISABLE_INFO_LOGGING
+#if !SYLAN_AUDIOMANAGER_DISABLE_INFO_LOGGING
                 // This is just an info, the goal of RemovePlayerAudioSettings is removing the settings,
                 // if they already didn't exist then its goal has already been achieved.
                 Debug.Log("[AudioManager] No PlayerAudioSettings present to remove for " + player.PrintName());
 #endif
                 return;
             }
-#if !AUDIO_MANAGER_DISABLE_INFO_LOGGING
+#if !SYLAN_AUDIOMANAGER_DISABLE_INFO_LOGGING
             Debug.Log("[AudioManager] Removed PlayerAudioSettings for " + player.PrintName());
 #endif
         }
@@ -283,7 +283,7 @@ namespace Sylan.AudioManager
 
             if (!TryGetOrInitPlayerAudioSettings(player, out DataList list)) return;
 
-#if AUDIO_MANAGER_DEBUG
+#if SYLAN_AUDIOMANAGER_DEBUG
             //VRCJson.TrySerializeToJson(list, JsonExportType.Minify, out DataToken result1);
             //Debug.Log(result1.ToString());
 #endif
@@ -296,7 +296,7 @@ namespace Sylan.AudioManager
 
             voiceApplicator.ApplyVoiceSetting(player, audioSetting);
 
-#if !AUDIO_MANAGER_DISABLE_INFO_LOGGING
+#if !SYLAN_AUDIOMANAGER_DISABLE_INFO_LOGGING
             Debug.Log("[AudioManager] Setting " + player.PrintName() + " Audio:"
                 + " SettingID:" + list[SETTING_ID_INDEX].DataList[0].String
                 + ", VoiceGain:" + audioSetting[VOICE_GAIN_INDEX].Float.ToString()

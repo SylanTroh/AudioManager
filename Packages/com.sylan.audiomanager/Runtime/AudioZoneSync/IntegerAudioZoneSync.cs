@@ -38,7 +38,7 @@ namespace Sylan.AudioManager
             }
 
             base.OnDeserialization();
-#if AUDIO_MANAGER_DEBUG
+#if SYLAN_AUDIOMANAGER_DEBUG
             LogAudioZones(syncedAudioZones);
 #endif
         }
@@ -59,7 +59,7 @@ namespace Sylan.AudioManager
                 syncedIds[newCount - 1] = audioSettingsIndex + audioZoneManager.totalAudioZonesCount;
             }
 
-#if AUDIO_MANAGER_DEBUG
+#if SYLAN_AUDIOMANAGER_DEBUG
             LogAudioZones(syncedAudioZones);
 #endif
         }

@@ -81,7 +81,7 @@ namespace Sylan.AudioManager
             syncedAudioZonesField2 = oldFinalAudioZonesField2;
             syncedAudioZonesField3 = oldFinalAudioZonesField3;
             highestSyncedAudioZonesField = syncedAudioZonesField3 | shiftedAudioSettingIndex;
-#if AUDIO_MANAGER_DEBUG
+#if SYLAN_AUDIOMANAGER_DEBUG
             LogAudioZones();
 #endif
         }
@@ -90,12 +90,12 @@ namespace Sylan.AudioManager
         {
             syncedAudioZonesField3 = highestSyncedAudioZonesField & ~audioZoneManager.audioSettingsIndexBitMask;
             base.OnDeserialization();
-#if AUDIO_MANAGER_DEBUG
+#if SYLAN_AUDIOMANAGER_DEBUG
             LogAudioZones();
 #endif
         }
 
-#if AUDIO_MANAGER_DEBUG
+#if SYLAN_AUDIOMANAGER_DEBUG
         private void LogAudioZones()
         {
             var audioZoneIndexes = new DataList();
