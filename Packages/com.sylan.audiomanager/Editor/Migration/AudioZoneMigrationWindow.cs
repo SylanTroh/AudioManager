@@ -18,6 +18,7 @@ namespace Sylan.AudioManager
         public static void ShowAudioZoneMigrationWindow()
         {
             MainInstance = GetWindow<AudioZoneMigrationWindow>();
+            MainInstance.minSize = new Vector2(500f, 600f);
             MainInstance.titleContent = new GUIContent("Audio Zones Migration");
             MainInstance.RefreshList();
             MainInstance.Focus();
