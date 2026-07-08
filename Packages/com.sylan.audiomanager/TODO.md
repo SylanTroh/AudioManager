@@ -34,22 +34,26 @@
 - [x] Adjust the note about shrinking audio zones in inspector
 - [ ] Make info log spam disable-able
   - [ ] Measure it
-- [ ] support non uniform scaling for sphere zone
-  - [ ] gizmos
-  - [ ] handles
-- [ ] support non uniform scaling for capsule zone
-  - [ ] gizmos
-
+- non uniform scaling... it is pretty opaque how unity calculates the actual collider sizes when non uniform scaling is involved
+  - [ ] support non uniform scaling for box zone
+    - [ ] gizmos
+    - [ ] handles
+  - [ ] support non uniform scaling for sphere zone
+    - [ ] gizmos
+    - [ ] handles
+  - [ ] support non uniform scaling for capsule zone
+    - [ ] gizmos
 - [ ] refactoring, naming, small stuff
-
-
-- [ ] Update Readme for Major version change
+- [ ] update the sample scene
+- [ ] maybe remove the player object variant scene, or rename it to be specifically for testing purposes
+- [x] Update Readme for Major version change
   - [ ] Remove Video Guide or at least mention what parts are no longer up to date
-  - [ ] Update Known Issues
-  - [ ] Inform about potential migration actions (un-shrink zones?)
-  - [ ] Update `Update Log` for Version 2.0.0
+  - [x] Update Known Issues
+  - [x] Inform about potential migration actions (un-shrink zones?)
+  - [x] Update `Update Log` for Version 2.0.0
     - Reworked Logic to detect Zones a Player is in to work with Stations. It now uses PlayerObject which automatically gets added to scene
-    - Removed Shrink Button for `AudioSettingCollider` and `AudioZoneCollider` which is no longer needed
+    - ~~Removed Shrink Button for `AudioSettingCollider` and `AudioZoneCollider` which is no longer needed~~
     - Added Option to `AudioZoneManager` to set default Layer
     - Added Button to `AudioZoneManager` to initialize "AudioZones" Layer
     - Added option for zones to get toggled at runtime
+- [ ] Update license year in both licenses

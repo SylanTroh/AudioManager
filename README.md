@@ -23,12 +23,40 @@ If a AudioZone has the id "", that is, the empty string, it will match players w
 [![Setup](https://img.youtube.com/vi/9Saxs7rcltQ/hqdefault.jpg)](https://youtu.be/9Saxs7rcltQ)
 
 # Known Issues
-- Sitting in a station disables a player's capsule collider. If a player moves through AudioZoneCollider in this state their audio will break. This is most commonly caused by one player "carrying" another using a station on their avatar, but would also occur if a world has stations that can move players through AudioZoneColliders.
-- VRChat doesn't do a perfect job of syncing remote player locations. As such, remote players may slightly clip through walls, triggering AudioZoneCollider on the other side of a wall. This effect is especially pronounced with multiple floors, where remote players will clip quite far into the floor below. This needs to be worked around by leaving some space between an AudioZoneCollider and the walls of a room.
+- Non uniform scaling of audio zones works, however the in scene view drawn gizmos and handles will be incorrect, especially once skews due to rotations within non uniformly scaled objects are introduced. Rely on gizmos drawn by the actual colliders themselves in this case, or avoid non uniform scaling for audio zones.
 
 ---
 
 # Update Log
+
+## Version 1.7.0
+- Support players being in stations, be it in world or on avatars, the system continues to detect zone changes (resolves previously known issue)
+- Support audio and setting zone game objects or their colliders getting toggled at runtime, the system will respect their active state
+- Remove discrepancy between local and remote players
+- Significantly reduce the need to account for players clipping into zones they should not be in (resolves previously known issue)
+- Change detection of audio zones, no longer using player trigger events, instead using periodic physics overlap checks centered at the player's head
+- Add per player object used for syncing which zones players are in, optimized for lowest network bandwidth usage, gets created automatically
+- Add automatic migration ensuring existing scenes should continue working without any mandatory changes
+- Add migration window with migration instructions, such as potentially un-shrinking zones and changing Head Check Radius
+- Add option to configure the radius used to check for audio zones around the player's head for backwards compatibility
+- Disable all collision for the `AudioZones` layer in project settings automatically upon creating the layer as well as once upon migration of a scene
+- Allow using a layer different than the `AudioZones` layer
+- Remove ability to change setting zone settings at runtime
+- Ensure the AudioSettingManager API can be used as early as possible for every player, even those having just joined
+- Fix voice of late joiners not getting updated until they or oneself changes zones
+- Force audio zones and setting zones to be trigger colliders, except for mesh colliders
+- Support all scripts being part of prefab instances
+- Support multi selection and editing of zones
+- Improve in editor support for zones with multiple colliders
+- Remember zone inspector foldout and shrink size throughout Unity session
+- Change default shrink/growth from 0.5 to 0.25 in zones inspector
+- Add explicit grow zone button in the zones inspector
+- Add scene view gizmos for capsule colliders used for zones
+- Add preprocessor define `AUDIO_MANAGER_DEBUG` for debug logging
+- Make editor asmdef truly only compile for editor
+- Remove needless console messages in the unity editor when entering play mode or building the world
+- Add temporary kill switch for first usage in the real world
+- Add [UdonGitFilters](https://github.com/JanSharp/UdonGitFilters) to gitattributes, relevant/useful for contributors
 
 ## Version 1.6.0
 - Added VoiceApplicator component to manage smooth fading between audio settings
