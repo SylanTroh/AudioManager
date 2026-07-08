@@ -43,7 +43,7 @@
     - [ ] handles
   - [ ] support non uniform scaling for capsule zone
     - [ ] gizmos
-- [ ] refactoring, naming, small stuff
+- [x] refactoring, naming, small stuff
 - [x] update the sample scene
 - [x] maybe remove the player object variant scene, or rename it to be specifically for testing purposes
 - [x] Update Readme for Major version change
@@ -56,4 +56,4 @@
     - Added Option to `AudioZoneManager` to set default Layer
     - Added Button to `AudioZoneManager` to initialize "AudioZones" Layer
     - Added option for zones to get toggled at runtime
-- [ ] Update license year in both licenses
+- [x] ~~Update license year in both licenses~~ Will mention in PR
