@@ -12,9 +12,9 @@ namespace Sylan.AudioManager.EditorUtilities
         /// <typeparam name="T">Type of Object to get</typeparam>
         /// <param name="obj">Local variable to contain the object</param>
         /// <returns>True if successful, false if unsuccessful</returns>
-        public static bool GetObject<T>(out T obj) where T : MonoBehaviour
+        public static bool TryFindObject<T>(out T obj) where T : Component
         {
-            T[] objects = UnityEngine.Object.FindObjectsOfType<T>();
+            T[] objects = Object.FindObjectsByType<T>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 
             if (objects.Length == 0)
             {
@@ -31,56 +31,49 @@ namespace Sylan.AudioManager.EditorUtilities
             obj = objects[0];
             return true;
         }
-        public static bool GetObjects<T>(out T[] obj) where T : MonoBehaviour
+
+        public static T[] FindAllObjects<T>() where T : Component
         {
-            T[] objects = UnityEngine.Object.FindObjectsOfType<T>();
-            obj = objects;
-            return true;
+            return Object.FindObjectsByType<T>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID);
         }
+
         /// <summary>
         /// Set Serialized Property of Type T. Property must not be an array.
         /// </summary>
         /// <typeparam name="T">Type of Object to set</typeparam>
-        /// <param name="serializedObject">Object with the property</param>
+        /// <param name="serializedObject">Object with the property, can be <see langword="null"/>.</param>
         /// <param name="propertyName">Name of Serialized Property</param>
-        public static void PopulateSerializedProperty<T>(SerializedObject serializedObject, string propertyName) where T : MonoBehaviour
+        public static void PopulateSerializedProperty<T>(SerializedObject serializedObject, string propertyName) where T : Component
         {
             if (serializedObject == null) return;
-            SerializedProperty property;
-            property = serializedObject.FindProperty(propertyName);
 
             // Get one matching components in the scene
-            GetObject<T>(out T obj);
-            property.objectReferenceValue = obj;
+            TryFindObject(out T obj); // May be null.
+            serializedObject.FindProperty(propertyName).objectReferenceValue = obj;
 
             // Apply the changes to the component
             serializedObject.ApplyModifiedProperties();
         }
+
         /// <summary>
         /// Set Serialized Property of Type T. Property must be an array, and will be filled with all the objects found.
         /// </summary>
         /// <typeparam name="T">Type of Object to set</typeparam>
-        /// <param name="serializedObject">Object with the property</param>
+        /// <param name="serializedObject">Object with the property, can be <see langword="null"/>.</param>
         /// <param name="propertyName">Name of Serialized Property</param>
-        public static void PopulateSerializedArray<T>(SerializedObject serializedObject, string propertyName) where T : MonoBehaviour
+        public static void PopulateSerializedArray<T>(SerializedObject serializedObject, string propertyName) where T : Component
         {
             if (serializedObject == null) return;
-            SerializedProperty arrayProperty;
-            arrayProperty = serializedObject.FindProperty(propertyName);
 
-            // Get all the matching components in the scene
-            GetObjects<T>(out T[] objects);
+            SetArrayProperty(
+                serializedObject.FindProperty(propertyName),
+                FindAllObjects<T>(),
+                (p, v) => p.objectReferenceValue = v);
 
-            // Assign the serialized references to the array
-            arrayProperty.ClearArray();
-            arrayProperty.arraySize = objects.Length;
-            for (int i = 0; i < objects.Length; i++)
-            {
-                arrayProperty.GetArrayElementAtIndex(i).objectReferenceValue = objects[i];
-            }
             // Apply the changes to the component
             serializedObject.ApplyModifiedProperties();
         }
+
         /// <summary>
         /// <para>Must call <see cref="SerializedObject.ApplyModifiedProperties()"/> afterwards.</para>
         /// </summary>
@@ -98,42 +91,19 @@ namespace Sylan.AudioManager.EditorUtilities
                 setValue(property.GetArrayElementAtIndex(i++), value);
             }
         }
+
         /// <summary>
         /// Find an object of Type T in the scene hierarchy as a SerializedObject.
         /// </summary>
         /// <typeparam name="T">Type of Object to get</typeparam>
+        /// <param name="obj">Local variable to contain the object</param>
         /// <param name="serializedObject">Local variable to contain the object</param>
         /// <returns>True if successful, false if unsuccessful</returns>
-        public static bool GetSerializedObject<T>(out SerializedObject serializedObject) where T : MonoBehaviour
+        public static bool TryFindSerializedObject<T>(out T obj, out SerializedObject serializedObject) where T : Component
         {
             serializedObject = null;
-            if (!GetObject(out T obj))
-            {
-                EditorApplication.isPlaying = false;
-                return false;
-            }
+            if (!TryFindObject(out obj)) return false;
             if (obj != null) serializedObject = new SerializedObject(obj);
-            return true;
-        }
-        /// <summary>
-        /// Find objects of Type T in the scene hierarchy as an array of type SerializedObject.
-        /// </summary>
-        /// <typeparam name="T">Type of Object to get</typeparam>
-        /// <param name="serializedObjects">Local variable to contain the objects</param>
-        /// <returns>True if successful, false if unsuccessful</returns>
-        public static bool GetSerializedObjects<T>(out SerializedObject[] serializedObjects) where T : MonoBehaviour
-        {
-            serializedObjects = null;
-            if (!GetObjects(out T[] obj))
-            {
-                EditorApplication.isPlaying = false;
-                return false;
-            }
-            serializedObjects = new SerializedObject[obj.Length];
-            for (int i = 0; i < obj.Length; i++)
-            {
-                serializedObjects[i] = new SerializedObject(obj[i]);
-            }
             return true;
         }
 

@@ -10,18 +10,14 @@ namespace Sylan.AudioManager
     {
         public static bool RunOnBuild()
         {
-            //Object with Serialized Property(s)
-            if (!SerializedPropertyUtils.GetSerializedObject<AudioZoneManager>(out SerializedObject managerSo)) return false;
-            if (managerSo == null) return true;
-            // Get the AudioZoneManager instance
-            AudioZoneManager manager = (AudioZoneManager)managerSo.targetObject;
+            if (!SerializedPropertyUtils.TryFindSerializedObject(out AudioZoneManager manager, out SerializedObject managerSo)) return false;
+            if (manager == null) return true;
 
             if (!TryGetPlayerObject(out var playerObject))
             {
                 playerObject = CreatePlayerObject(manager);
             }
 
-            //Set Serialized Property
             SerializedPropertyUtils.PopulateSerializedProperty<AudioSettingManager>(managerSo, AudioZoneManager.AudioSettingManagerPropertyName);
 
             RunOnPlayerObjectBuild(playerObject, manager);

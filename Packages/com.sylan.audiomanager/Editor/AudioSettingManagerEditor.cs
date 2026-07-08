@@ -9,11 +9,8 @@ namespace Sylan.AudioManager
     {
         private static bool SetSerializedProperties()
         {
-            //Object with Serialized Property(s)
-            if (!SerializedPropertyUtils.GetSerializedObject<AudioSettingManager>(out SerializedObject serializedObject)) return false;
+            if (!SerializedPropertyUtils.TryFindSerializedObject(out AudioSettingManager manager, out SerializedObject serializedObject)) return false;
 
-            // Get the AudioSettingManager instance
-            AudioSettingManager manager = serializedObject?.targetObject as AudioSettingManager;
             if (manager != null)
             {
                 // Add VoiceApplicator to the same GameObject if it doesn't already exist
@@ -24,7 +21,6 @@ namespace Sylan.AudioManager
                 }
             }
 
-            //Set Serialized Property
             SerializedPropertyUtils.PopulateSerializedProperty<AudioZoneManager>(serializedObject, AudioSettingManager.AudioZoneManagerPropertyName);
             SerializedPropertyUtils.PopulateSerializedProperty<VoiceApplicator>(serializedObject, AudioSettingManager.VoiceApplicatorPropertyName);
             return true;

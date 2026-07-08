@@ -55,9 +55,9 @@ namespace Sylan.AudioManager
 
         private static bool RunOnBuild()
         {
-            if (!SerializedPropertyUtils.GetObjects<AudioZoneCollider>(out AudioZoneCollider[] audioZones)) return false;
+            AudioZoneCollider[] audioZones = SerializedPropertyUtils.FindAllObjects<AudioZoneCollider>();
             if (audioZones.Length == 0) return true; // TODO: Reset zoneIdCount.
-            if (!SerializedPropertyUtils.GetObject<AudioZoneManager>(out var audioZoneManager)) return false;
+            if (!SerializedPropertyUtils.TryFindObject<AudioZoneManager>(out var audioZoneManager)) return false;
 
             if (AudioZoneLayerInit.TryGetAudioZoneLayer(out int audioZoneLayer, audioZoneManager))
             {
@@ -187,7 +187,7 @@ namespace Sylan.AudioManager
         public void OnProcessScene(Scene scene, BuildReport report)
         {
             //This will only temporary remove the string ZoneIds before PlayMode & upload. We dont need them anymore and can save some memory
-            foreach (var audioZoneCollider in Object.FindObjectsByType<AudioZoneCollider>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            foreach (AudioZoneCollider audioZoneCollider in SerializedPropertyUtils.FindAllObjects<AudioZoneCollider>())
             {
                 audioZoneCollider.zoneID = string.Empty;
                 audioZoneCollider.transitionZoneIDs = System.Array.Empty<string>();

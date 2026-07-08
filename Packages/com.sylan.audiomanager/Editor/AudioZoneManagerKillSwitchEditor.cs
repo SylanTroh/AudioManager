@@ -36,9 +36,7 @@ namespace Sylan.AudioManager
     {
         public static bool RunOnBuild()
         {
-            //Object with Serialized Property(s)
-            if (!SerializedPropertyUtils.GetSerializedObject<AudioZoneManagerKillSwitch>(out SerializedObject serializedObject)) return false;
-            //Set Serialized Property
+            if (!SerializedPropertyUtils.TryFindSerializedObject<AudioZoneManagerKillSwitch>(out _, out SerializedObject serializedObject)) return false;
             SerializedPropertyUtils.PopulateSerializedProperty<AudioZoneManager>(serializedObject, AudioZoneManagerKillSwitch.AudioZoneManagerPropertyName);
             SerializedPropertyUtils.PopulateSerializedProperty<AudioSettingManager>(serializedObject, AudioZoneManagerKillSwitch.AudioSettingManagerPropertyName);
             return true;
