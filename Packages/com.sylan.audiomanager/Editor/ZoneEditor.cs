@@ -9,7 +9,7 @@ namespace Sylan.AudioManager
     public abstract class ZoneEditor : Editor
     {
         // These are static to be remembered throughout this unity session.
-        private static float shrinkGrowthAmount = 0.5f;
+        private static float shrinkGrowthAmount = 0.25f;
         private static bool showFoldout = true;
 
         private readonly List<ColliderHandles> allColliderHandles = new();
