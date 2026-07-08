@@ -182,59 +182,38 @@ namespace Sylan.AudioManager
             }
         }
 
-        /// <summary>
-        /// <para>https://discussions.unity.com/t/drawing-capsule-gizmo/597344/13</para>
-        /// </summary>
-        /// <param name="center"></param>
-        /// <param name="height"></param>
-        /// <param name="radius"></param>
-        /// <param name="direction"></param>
         public static void DrawWireCapsule(Vector3 center, float height, float radius, int direction)
         {
+            // Inspired by: https://discussions.unity.com/t/drawing-capsule-gizmo/597344/13
             Vector3 offset = Vector3.zero;
             offset[direction] = height * 0.5f - radius;
-            DrawWireCapsule(center + offset, center - offset, radius);
+            DrawWireCapsule(center - offset, center + offset, radius);
         }
 
-        /// <summary>
-        /// <para>https://discussions.unity.com/t/drawing-capsule-gizmo/597344/13</para>
-        /// </summary>
-        /// <param name="p1"></param>
-        /// <param name="p2"></param>
-        /// <param name="radius"></param>
-        public static void DrawWireCapsule(Vector3 p1, Vector3 p2, float radius)
+        public static void DrawWireCapsule(Vector3 point1, Vector3 point2, float radius)
         {
-            // Special case when both points are in the same position
-            if (p1 == p2)
+            // Inspired by: https://discussions.unity.com/t/drawing-capsule-gizmo/597344/13
+            if (point1 == point2)
             {
-                // DrawWireSphere works only in gizmo methods
-                Gizmos.DrawWireSphere(p1, radius);
+                Gizmos.DrawWireSphere(point1, radius);
                 return;
             }
             using (new Handles.DrawingScope(Gizmos.color, Gizmos.matrix))
             {
-                Quaternion p1Rotation = Quaternion.LookRotation(p1 - p2);
-                Quaternion p2Rotation = Quaternion.LookRotation(p2 - p1);
-                // Check if capsule direction is collinear to Vector.up
-                float c = Vector3.Dot((p1 - p2).normalized, Vector3.up);
-                if (c == 1f || c == -1f)
-                {
-                    // Fix rotation
-                    p2Rotation = Quaternion.Euler(p2Rotation.eulerAngles.x, p2Rotation.eulerAngles.y + 180f, p2Rotation.eulerAngles.z);
-                }
-                // First side
-                Handles.DrawWireArc(p1, p1Rotation * Vector3.left, p1Rotation * Vector3.down, 180f, radius);
-                Handles.DrawWireArc(p1, p1Rotation * Vector3.up, p1Rotation * Vector3.left, 180f, radius);
-                Handles.DrawWireDisc(p1, (p2 - p1).normalized, radius);
-                // Second side
-                Handles.DrawWireArc(p2, p2Rotation * Vector3.left, p2Rotation * Vector3.down, 180f, radius);
-                Handles.DrawWireArc(p2, p2Rotation * Vector3.up, p2Rotation * Vector3.left, 180f, radius);
-                Handles.DrawWireDisc(p2, (p1 - p2).normalized, radius);
-                // Lines
-                Handles.DrawLine(p1 + p1Rotation * Vector3.down * radius, p2 + p2Rotation * Vector3.down * radius);
-                Handles.DrawLine(p1 + p1Rotation * Vector3.left * radius, p2 + p2Rotation * Vector3.right * radius);
-                Handles.DrawLine(p1 + p1Rotation * Vector3.up * radius, p2 + p2Rotation * Vector3.up * radius);
-                Handles.DrawLine(p1 + p1Rotation * Vector3.right * radius, p2 + p2Rotation * Vector3.left * radius);
+                Quaternion rotation = Quaternion.LookRotation(point1 - point2);
+
+                Handles.DrawWireArc(point1, rotation * Vector3.left, rotation * Vector3.down, 180f, radius);
+                Handles.DrawWireArc(point1, rotation * Vector3.up, rotation * Vector3.left, 180f, radius);
+                Handles.DrawWireDisc(point1, rotation * Vector3.forward, radius);
+
+                Handles.DrawWireArc(point2, rotation * Vector3.left, rotation * Vector3.down, -180f, radius);
+                Handles.DrawWireArc(point2, rotation * Vector3.up, rotation * Vector3.left, -180f, radius);
+                Handles.DrawWireDisc(point2, rotation * Vector3.forward, radius);
+
+                Handles.DrawLine(point1 + rotation * Vector3.down * radius, point2 + rotation * Vector3.down * radius);
+                Handles.DrawLine(point1 + rotation * Vector3.left * radius, point2 + rotation * Vector3.left * radius);
+                Handles.DrawLine(point1 + rotation * Vector3.up * radius, point2 + rotation * Vector3.up * radius);
+                Handles.DrawLine(point1 + rotation * Vector3.right * radius, point2 + rotation * Vector3.right * radius);
             }
         }
     }
