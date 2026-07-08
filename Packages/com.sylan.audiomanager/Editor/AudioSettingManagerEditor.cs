@@ -1,4 +1,5 @@
 ﻿using Sylan.AudioManager.EditorUtilities;
+using UdonSharpEditor;
 using UnityEditor;
 using UnityEngine;
 using VRC.SDKBase.Editor.BuildPipeline;
@@ -16,7 +17,7 @@ namespace Sylan.AudioManager
             // Add VoiceApplicator to the same GameObject if it doesn't already exist
             if (manager.GetComponent<VoiceApplicator>() == null)
             {
-                manager.gameObject.AddComponent<VoiceApplicator>();
+                UdonSharpUndo.AddComponent<VoiceApplicator>(manager.gameObject);
                 Debug.Log("[AudioManager] Automatically added VoiceApplicator to " + manager.gameObject.name, manager.gameObject);
             }
 
