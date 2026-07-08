@@ -34,6 +34,11 @@
 - [x] Adjust the note about shrinking audio zones in inspector
 - [ ] Make info log spam disable-able
   - [ ] Measure it
+- [ ] support non uniform scaling for sphere zone
+  - [ ] gizmos
+  - [ ] handles
+- [ ] support non uniform scaling for capsule zone
+  - [ ] gizmos
 
 - [ ] refactoring, naming, small stuff
 
