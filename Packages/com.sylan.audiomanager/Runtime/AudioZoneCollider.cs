@@ -4,7 +4,6 @@ using UnityEngine;
 namespace Sylan.AudioManager
 {
     [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
-    [AddComponentMenu("Scrips/Audio Zone Collider")]
     public class AudioZoneCollider : UdonSharpBehaviour
     {
         /// <summary>
