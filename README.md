@@ -52,7 +52,8 @@ If a AudioZone has the id "", that is, the empty string, it will match players w
 - Change default shrink/growth from 0.5 to 0.25 in zones inspector
 - Add explicit grow zone button in the zones inspector
 - Add scene view gizmos for capsule colliders used for zones
-- Add preprocessor define `AUDIO_MANAGER_DEBUG` for debug logging
+- Add preprocessor define `AUDIO_MANAGER_DISABLE_INFO_LOGGING` to disable log messages logged every time a player's voice settings get changed
+- Add preprocessor define `AUDIO_MANAGER_DEBUG` toe enable debug logging
 - Make editor asmdef truly only compile for editor
 - Remove needless console messages in the unity editor when entering play mode or building the world
 - Add temporary kill switch for first usage in the real world

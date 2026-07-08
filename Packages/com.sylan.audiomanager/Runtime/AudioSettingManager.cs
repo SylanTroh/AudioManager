@@ -94,7 +94,9 @@ namespace Sylan.AudioManager
 
             if (allPlayerSettings.TryGetValue((DataToken)player.playerId, out DataToken value))
             {
+#if !AUDIO_MANAGER_DISABLE_INFO_LOGGING
                 Debug.Log("[AudioManager] PlayerAudioSettings already initialized for " + player.PrintName());
+#endif
                 return value.DataList;
             }
 
@@ -113,7 +115,9 @@ namespace Sylan.AudioManager
             defaultPlayerAudioSettings[SETTING_INDEX].DataList.Add((DataToken)defaultAudioSettings);
 
             allPlayerSettings.SetValue(key: (DataToken)player.playerId, value: (DataToken)defaultPlayerAudioSettings);
+#if !AUDIO_MANAGER_DISABLE_INFO_LOGGING
             Debug.Log("[AudioManager] Initialize PlayerAudioSettings for " + player.PrintName());
+#endif
             ApplyAudioSetting(player);
             return defaultPlayerAudioSettings;
         }
@@ -123,12 +127,16 @@ namespace Sylan.AudioManager
 
             if (!allPlayerSettings.Remove((DataToken)player.playerId))
             {
+#if !AUDIO_MANAGER_DISABLE_INFO_LOGGING
                 // This is just an info, the goal of RemovePlayerAudioSettings is removing the settings,
                 // if they already didn't exist then its goal has already been achieved.
                 Debug.Log("[AudioManager] No PlayerAudioSettings present to remove for " + player.PrintName());
+#endif
                 return;
             }
+#if !AUDIO_MANAGER_DISABLE_INFO_LOGGING
             Debug.Log("[AudioManager] Removed PlayerAudioSettings for " + player.PrintName());
+#endif
         }
         public override void OnPlayerJoined(VRCPlayerApi joiningPlayer)
         {
@@ -275,8 +283,10 @@ namespace Sylan.AudioManager
 
             if (!TryGetOrInitPlayerAudioSettings(player, out DataList list)) return;
 
+#if AUDIO_MANAGER_DEBUG
             //VRCJson.TrySerializeToJson(list, JsonExportType.Minify, out DataToken result1);
             //Debug.Log(result1.ToString());
+#endif
 
             //Get Highest Priority Setting
             if (!list[SETTING_INDEX].DataList.TryGetValue(0, TokenType.DataList, out DataToken settingToken)) return;
@@ -286,6 +296,7 @@ namespace Sylan.AudioManager
 
             voiceApplicator.ApplyVoiceSetting(player, audioSetting);
 
+#if !AUDIO_MANAGER_DISABLE_INFO_LOGGING
             Debug.Log("[AudioManager] Setting " + player.PrintName() + " Audio:"
                 + " SettingID:" + list[SETTING_ID_INDEX].DataList[0].String
                 + ", VoiceGain:" + audioSetting[VOICE_GAIN_INDEX].Float.ToString()
@@ -293,6 +304,7 @@ namespace Sylan.AudioManager
                 + ", VoiceFar:" + audioSetting[RANGE_FAR_INDEX].Float.ToString()
                 + ", VolumetricRadius:" + audioSetting[VOLUMETRIC_RADIUS_INDEX].Float.ToString()
                 + ", Lowpass:" + audioSetting[VOICE_LOWPASS_INDEX].Boolean.ToString());
+#endif
         }
     }
     public static class AudioSettingManagerExtensions

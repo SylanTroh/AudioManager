@@ -32,7 +32,7 @@
 - [x] Fix duplicated info log message about which sync script is in use
 - [x] Do not mess with layer settings on build, only update layer collision settings upon migration or when the Audio Zone layer gets created the first time. It's too intrusive otherwise, people should have control over custom layers
 - [x] Adjust the note about shrinking audio zones in inspector
-- [ ] Make info log spam disable-able
+- [x] Make info log spam disable-able
   - [ ] Measure it
 - non uniform scaling... it is pretty opaque how unity calculates the actual collider sizes when non uniform scaling is involved
   - [ ] support non uniform scaling for box zone

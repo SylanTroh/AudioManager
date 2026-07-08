@@ -101,14 +101,18 @@ namespace Sylan.AudioManager
             if (playerAudioSetting.ContainsKey((DataToken)playerId))
             {
                 playerAudioSetting.Remove((DataToken)playerId);
+#if !AUDIO_MANAGER_DISABLE_INFO_LOGGING
                 Debug.Log("[AudioManager] VoiceApplicator: " + player.PrintName() + " left, removing current audio settings" + player.PrintName());
+#endif
             }
 
             // Remove active fade if present
             if (activePlayerFade.ContainsKey((DataToken)playerId))
             {
                 activePlayerFade.Remove((DataToken)playerId);
+#if !AUDIO_MANAGER_DISABLE_INFO_LOGGING
                 Debug.Log("[AudioManager] VoiceApplicator: " + player.PrintName() + " left, cancelled fades for");
+#endif
             }
         }
 
@@ -138,8 +142,10 @@ namespace Sylan.AudioManager
             player.SetVoiceVolumetricRadius(volumetric);
             player.SetVoiceLowpass(lowpass);
 
+#if !AUDIO_MANAGER_DISABLE_INFO_LOGGING
             Debug.Log("[AudioManager] VoiceApplicator: Applied voice settings to " + player.PrintName() +
                       " (gain:" + gain + ", near:" + near + ", far:" + far + ", volumetric:" + volumetric + ", lowpass:" + lowpass + ")");
+#endif
         }
 
         /// <summary>
@@ -178,9 +184,11 @@ namespace Sylan.AudioManager
 
             activePlayerFade.SetValue((DataToken)playerId, (DataToken)fadeData);
 
+#if !AUDIO_MANAGER_DISABLE_INFO_LOGGING
             Debug.Log("[AudioManager] VoiceApplicator: Started fade for " + player.PrintName() +
                       " (duration:" + duration + "s, from gain:" + fromSettings[AudioSettingManager.VOICE_GAIN_INDEX].Float +
                       " to gain:" + toSettings[AudioSettingManager.VOICE_GAIN_INDEX].Float + ")");
+#endif
         }
 
         /// <summary>
@@ -196,7 +204,9 @@ namespace Sylan.AudioManager
             if (activePlayerFade.ContainsKey((DataToken)playerId))
             {
                 activePlayerFade.Remove((DataToken)playerId);
+#if !AUDIO_MANAGER_DISABLE_INFO_LOGGING
                 Debug.Log("[AudioManager] VoiceApplicator: Cancelled fade for " + player.PrintName());
+#endif
             }
         }
 
@@ -281,7 +291,9 @@ namespace Sylan.AudioManager
 
                     playerAudioSetting.SetValue((DataToken)playerId, (DataToken)finalSettings);
 
+#if !AUDIO_MANAGER_DISABLE_INFO_LOGGING
                     Debug.Log("[AudioManager] VoiceApplicator: Completed fade for " + player.PrintName());
+#endif
                 }
                 else
                 {
