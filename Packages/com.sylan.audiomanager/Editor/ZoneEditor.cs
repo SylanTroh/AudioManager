@@ -14,6 +14,12 @@ namespace Sylan.AudioManager
 
         private readonly List<ColliderHandles> allColliderHandles = new();
 
+        /// <summary>
+        /// <para>Call <see cref="TryFindAudioZoneManager"/> before using this field.</para>
+        /// </summary>
+        private AudioZoneManager manager;
+        private void TryFindAudioZoneManager() => manager ??= FindAnyObjectByType<AudioZoneManager>(FindObjectsInactive.Include);
+
         private void OnEnable()
         {
             GetCollidersAndCreateHandles();
@@ -84,9 +90,14 @@ namespace Sylan.AudioManager
 
             if (allColliderHandles.Any(h => h.CanGrowCollider()))
             {
-                EditorGUILayout.LabelField("Shrinking Audiozones can help with clipping", EditorStyles.boldLabel);
-                shrinkGrowthAmount = Mathf.Max(0f, EditorGUILayout.FloatField("Shrink/Growth Amount", shrinkGrowthAmount));
+                TryFindAudioZoneManager();
+                EditorGUILayout.HelpBox("Depending on Head Check Radius defined on the Audio Zone Manager:\n"
+                    + "- when 0 (default), zones should likely match the size of interiors/areas exactly\n"
+                    + "- when larger, shrinking zones can help with undesired clipping into zones"
+                    + (manager == null ? "" : $"\n(Current Head Check Radius: {manager.HeadCheckRadius})"),
+                    MessageType.None);
 
+                shrinkGrowthAmount = Mathf.Max(0f, EditorGUILayout.FloatField("Shrink/Growth Amount", shrinkGrowthAmount));
                 GUILayout.BeginHorizontal();
                 if (GUILayout.Button("Shrink")) GrowColliders(-shrinkGrowthAmount);
                 if (GUILayout.Button("Grow")) GrowColliders(shrinkGrowthAmount);

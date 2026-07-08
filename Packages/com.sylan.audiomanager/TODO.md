@@ -31,6 +31,9 @@
 - [x] Fix players already existing in the world not having their voice settings updated when joining
 - [x] Fix duplicated info log message about which sync script is in use
 - [x] Do not mess with layer settings on build, only update layer collision settings upon migration or when the Audio Zone layer gets created the first time. It's too intrusive otherwise, people should have control over custom layers
+- [x] Adjust the note about shrinking audio zones in inspector
+- [ ] Make info log spam disable-able
+  - [ ] Measure it
 
 - [ ] refactoring, naming, small stuff
 
