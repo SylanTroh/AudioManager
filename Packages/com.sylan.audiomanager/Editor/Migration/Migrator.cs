@@ -60,6 +60,7 @@ namespace Sylan.AudioManager
 
         private void MarkMigrationsAsResolved(Component[] instances)
         {
+            if (instances.Length == 0) return;
             SerializedObject so = new(instances);
             so.FindProperty(ScriptVersionPropertyName()).uintValue = GetCurrentScriptVersion();
             so.ApplyModifiedProperties();
