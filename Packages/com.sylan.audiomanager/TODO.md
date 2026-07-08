@@ -45,7 +45,7 @@
     - [ ] gizmos
 - [ ] refactoring, naming, small stuff
 - [ ] update the sample scene
-- [ ] maybe remove the player object variant scene, or rename it to be specifically for testing purposes
+- [x] maybe remove the player object variant scene, or rename it to be specifically for testing purposes
 - [x] Update Readme for Major version change
   - [ ] Remove Video Guide or at least mention what parts are no longer up to date
   - [x] Update Known Issues
