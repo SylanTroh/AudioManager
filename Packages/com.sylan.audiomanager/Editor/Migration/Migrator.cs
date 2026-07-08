@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Sylan.AudioManager.EditorUtilities;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -29,7 +30,7 @@ namespace Sylan.AudioManager
 
         protected T[] FindAll()
         {
-            return Object.FindObjectsByType<T>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            return SerializedPropertyUtils.FindAllObjects<T>();
         }
 
         protected virtual bool ShouldShowMigrationWindow() => ShouldShowMigrationWindow(FindAll());

@@ -101,7 +101,7 @@ namespace Sylan.AudioManager
             where T : UdonSharpBehaviour
         {
             bool valid = true;
-            foreach (T script in Object.FindObjectsByType<T>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            foreach (T script in SerializedPropertyUtils.FindAllObjects<T>())
             {
                 if (script == validInstance) continue;
 
