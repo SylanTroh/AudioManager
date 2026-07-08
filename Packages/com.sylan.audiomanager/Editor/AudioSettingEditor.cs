@@ -30,7 +30,7 @@ namespace Sylan.AudioManager
 
             AudioSettingCollider[] settingZones = SerializedPropertyUtils.FindAllObjects<AudioSettingCollider>();
             if (settingZones.Length == 0) return true;
-            if (!SerializedPropertyUtils.TryFindSerializedObject(out AudioZoneManager manager, out SerializedObject managerSo)) return false;
+            if (!SerializedPropertyUtils.TryFindSerializedObject(out AudioZoneManager manager, out SerializedObject managerSo, required: true)) return false;
 
             if (AudioZoneLayerInit.TryGetAudioZoneLayer(out int audioZoneLayer, manager))
             {
@@ -52,22 +52,19 @@ namespace Sylan.AudioManager
 
             zoneIdCount = allAudioSettings.Count;
 
-            if (managerSo != null)
+            void SetArray(string propertyName, Action<SerializedProperty, AudioSettingData> setValue)
             {
-                void SetArray(string propertyName, Action<SerializedProperty, AudioSettingData> setValue)
-                {
-                    SerializedPropertyUtils.SetArrayProperty(managerSo.FindProperty(propertyName), allAudioSettings, setValue);
-                }
-                SetArray(nameof(AudioZoneManager.allAudioSettingsPriority), (p, v) => p.intValue = v.priority);
-                SetArray(nameof(AudioZoneManager.allAudioSettingsVoiceGain), (p, v) => p.floatValue = v.voiceGain);
-                SetArray(nameof(AudioZoneManager.allAudioSettingsVoiceNear), (p, v) => p.floatValue = v.voiceNear);
-                SetArray(nameof(AudioZoneManager.allAudioSettingsVoiceFar), (p, v) => p.floatValue = v.voiceFar);
-                SetArray(nameof(AudioZoneManager.allAudioSettingsVolumetricRadius), (p, v) => p.floatValue = v.volumetricRadius);
-                SetArray(nameof(AudioZoneManager.allAudioSettingsLowpassFilter), (p, v) => p.boolValue = v.lowpassFilter);
-                SetArray(nameof(AudioZoneManager.allAudioSettingsEnableFade), (p, v) => p.boolValue = v.enableFade);
-                SetArray(nameof(AudioZoneManager.allAudioSettingsFadeDuration), (p, v) => p.floatValue = v.fadeDuration);
-                managerSo.ApplyModifiedProperties();
+                SerializedPropertyUtils.SetArrayProperty(managerSo.FindProperty(propertyName), allAudioSettings, setValue);
             }
+            SetArray(nameof(AudioZoneManager.allAudioSettingsPriority), (p, v) => p.intValue = v.priority);
+            SetArray(nameof(AudioZoneManager.allAudioSettingsVoiceGain), (p, v) => p.floatValue = v.voiceGain);
+            SetArray(nameof(AudioZoneManager.allAudioSettingsVoiceNear), (p, v) => p.floatValue = v.voiceNear);
+            SetArray(nameof(AudioZoneManager.allAudioSettingsVoiceFar), (p, v) => p.floatValue = v.voiceFar);
+            SetArray(nameof(AudioZoneManager.allAudioSettingsVolumetricRadius), (p, v) => p.floatValue = v.volumetricRadius);
+            SetArray(nameof(AudioZoneManager.allAudioSettingsLowpassFilter), (p, v) => p.boolValue = v.lowpassFilter);
+            SetArray(nameof(AudioZoneManager.allAudioSettingsEnableFade), (p, v) => p.boolValue = v.enableFade);
+            SetArray(nameof(AudioZoneManager.allAudioSettingsFadeDuration), (p, v) => p.floatValue = v.fadeDuration);
+            managerSo.ApplyModifiedProperties();
 
             return true;
         }

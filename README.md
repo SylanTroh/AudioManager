@@ -56,6 +56,7 @@ If a AudioZone has the id "", that is, the empty string, it will match players w
 - Add preprocessor define `SYLAN_AUDIOMANAGER_DISABLE_INFO_LOGGING` to disable log messages logged every time a player's voice settings get changed
 - Add preprocessor define `SYLAN_AUDIOMANAGER_DEBUG` toe enable debug logging
 - Make editor asmdef truly only compile for editor
+- Change missing managers to a proper error preventing play mode and builds rather than info message
 - Remove needless console messages in the unity editor when entering play mode or building the world
 - Add temporary kill switch for first usage in the real world
 - Add [UdonGitFilters](https://github.com/JanSharp/UdonGitFilters) to gitattributes, relevant/useful for contributors

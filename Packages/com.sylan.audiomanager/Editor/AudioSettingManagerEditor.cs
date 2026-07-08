@@ -1,5 +1,6 @@
 ﻿using Sylan.AudioManager.EditorUtilities;
 using UnityEditor;
+using UnityEngine;
 using VRC.SDKBase.Editor.BuildPipeline;
 
 namespace Sylan.AudioManager
@@ -9,20 +10,18 @@ namespace Sylan.AudioManager
     {
         private static bool SetSerializedProperties()
         {
-            if (!SerializedPropertyUtils.TryFindSerializedObject(out AudioSettingManager manager, out SerializedObject serializedObject)) return false;
+            if (!SerializedPropertyUtils.TryFindSerializedObject(out AudioSettingManager manager, out SerializedObject managerSo, required: false)) return false;
+            if (manager == null) return true;
 
-            if (manager != null)
+            // Add VoiceApplicator to the same GameObject if it doesn't already exist
+            if (manager.GetComponent<VoiceApplicator>() == null)
             {
-                // Add VoiceApplicator to the same GameObject if it doesn't already exist
-                if (manager.GetComponent<VoiceApplicator>() == null)
-                {
-                    manager.gameObject.AddComponent<VoiceApplicator>();
-                    UnityEngine.Debug.Log("[AudioManager] Automatically added VoiceApplicator to " + manager.gameObject.name);
-                }
+                manager.gameObject.AddComponent<VoiceApplicator>();
+                Debug.Log("[AudioManager] Automatically added VoiceApplicator to " + manager.gameObject.name, manager.gameObject);
             }
 
-            SerializedPropertyUtils.PopulateSerializedProperty<AudioZoneManager>(serializedObject, AudioSettingManager.AudioZoneManagerPropertyName);
-            SerializedPropertyUtils.PopulateSerializedProperty<VoiceApplicator>(serializedObject, AudioSettingManager.VoiceApplicatorPropertyName);
+            if (!SerializedPropertyUtils.TryPopulateSerializedProperty<AudioZoneManager>(managerSo, AudioSettingManager.AudioZoneManagerPropertyName, required: false)) return false;
+            if (!SerializedPropertyUtils.TryPopulateSerializedProperty<VoiceApplicator>(managerSo, AudioSettingManager.VoiceApplicatorPropertyName, required: true)) return false;
             return true;
         }
         //

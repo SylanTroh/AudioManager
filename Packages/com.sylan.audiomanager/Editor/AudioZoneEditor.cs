@@ -59,9 +59,9 @@ namespace Sylan.AudioManager
 
             AudioZoneCollider[] audioZones = SerializedPropertyUtils.FindAllObjects<AudioZoneCollider>();
             if (audioZones.Length == 0) return true;
-            if (!SerializedPropertyUtils.TryFindObject(out AudioZoneManager audioZoneManager)) return false;
+            if (!SerializedPropertyUtils.TryFindSerializedObject(out AudioZoneManager manager, out SerializedObject managerSo, required: true)) return false;
 
-            if (AudioZoneLayerInit.TryGetAudioZoneLayer(out int audioZoneLayer, audioZoneManager))
+            if (AudioZoneLayerInit.TryGetAudioZoneLayer(out int audioZoneLayer, manager))
             {
                 SerializedPropertyUtils.SetLayerAndApply(audioZones.Select(z => z.gameObject).ToArray(), audioZoneLayer);
             }
@@ -76,27 +76,22 @@ namespace Sylan.AudioManager
 
             zoneIdCount = zoneIdDict.Count;
 
-            if (audioZoneManager != null)
+            managerSo.FindProperty(nameof(AudioZoneManager.totalAudioZonesCount)).intValue = zoneIdCount;
+            int shift = zoneIdCount % 64;
+            managerSo.FindProperty(nameof(AudioZoneManager.audioSettingsIndexBitShift)).intValue = shift;
+            managerSo.FindProperty(nameof(AudioZoneManager.audioSettingsIndexBitMask)).ulongValue = ulong.MaxValue << shift;
+
+            string[] zoneIdMapping = new string[zoneIdDict.Count];
+            foreach (var kvp in zoneIdDict)
             {
-                SerializedObject so = new(audioZoneManager);
-
-                so.FindProperty(nameof(AudioZoneManager.totalAudioZonesCount)).intValue = zoneIdCount;
-                int shift = zoneIdCount % 64;
-                so.FindProperty(nameof(AudioZoneManager.audioSettingsIndexBitShift)).intValue = shift;
-                so.FindProperty(nameof(AudioZoneManager.audioSettingsIndexBitMask)).ulongValue = ulong.MaxValue << shift;
-
-                string[] zoneIdMapping = new string[zoneIdDict.Count];
-                foreach (var kvp in zoneIdDict)
-                {
-                    zoneIdMapping[kvp.Value] = kvp.Key;
-                }
-                SerializedPropertyUtils.SetArrayProperty(
-                    so.FindProperty(nameof(audioZoneManager.zoneIdMapping)),
-                    zoneIdMapping,
-                    (p, v) => p.stringValue = v);
-
-                so.ApplyModifiedProperties();
+                zoneIdMapping[kvp.Value] = kvp.Key;
             }
+            SerializedPropertyUtils.SetArrayProperty(
+                managerSo.FindProperty(nameof(manager.zoneIdMapping)),
+                zoneIdMapping,
+                (p, v) => p.stringValue = v);
+
+            managerSo.ApplyModifiedProperties();
 
             return true;
         }

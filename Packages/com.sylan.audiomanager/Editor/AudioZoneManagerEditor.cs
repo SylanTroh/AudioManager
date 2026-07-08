@@ -10,7 +10,7 @@ namespace Sylan.AudioManager
     {
         public static bool RunOnBuild()
         {
-            if (!SerializedPropertyUtils.TryFindSerializedObject(out AudioZoneManager manager, out SerializedObject managerSo)) return false;
+            if (!SerializedPropertyUtils.TryFindSerializedObject(out AudioZoneManager manager, out SerializedObject managerSo, required: false)) return false;
             if (manager == null) return true;
 
             if (!TryGetPlayerObject(out AudioZonePlayerObject playerObject))
@@ -18,7 +18,7 @@ namespace Sylan.AudioManager
                 playerObject = CreatePlayerObject(manager);
             }
 
-            SerializedPropertyUtils.PopulateSerializedProperty<AudioSettingManager>(managerSo, AudioZoneManager.AudioSettingManagerPropertyName);
+            if (!SerializedPropertyUtils.TryPopulateSerializedProperty<AudioSettingManager>(managerSo, AudioZoneManager.AudioSettingManagerPropertyName, required: true)) return false;
 
             RunOnPlayerObjectBuild(playerObject, manager);
             AudioZoneSyncCore correctPlayerSync = PickAppropriateSyncScript(playerObject);

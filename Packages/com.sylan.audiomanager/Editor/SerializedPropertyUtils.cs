@@ -10,21 +10,25 @@ namespace Sylan.AudioManager.EditorUtilities
         /// Find exactly one object of Type T in the scene hierarchy.
         /// </summary>
         /// <typeparam name="T">Type of Object to get</typeparam>
-        /// <param name="obj">Local variable to contain the object</param>
+        /// <param name="obj">When <paramref name="required"/> is <see langword="true"/>, this is never <see langword="null"/>.</param>
+        /// <param name="required">When true and no object of type T is found, an error gets written to the console.</param>
         /// <returns>True if successful, false if unsuccessful</returns>
-        public static bool TryFindObject<T>(out T obj) where T : Component
+        public static bool TryFindObject<T>(out T obj, bool required) where T : Component
         {
             T[] objects = Object.FindObjectsByType<T>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 
             if (objects.Length == 0)
             {
-                Debug.Log("[EditorUtilities] No Objects of type " + typeof(T).ToString());
+                if (required)
+                {
+                    Debug.LogError($"[AudioManager] Missing {typeof(T).Name} in the scene.");
+                }
                 obj = null;
-                return true;
+                return !required;
             }
             if (objects.Length > 1)
             {
-                Debug.LogError("[EditorUtilities] More than one object of type " + typeof(T).ToString());
+                Debug.LogError($"[AudioManager] There must only be one {typeof(T).Name} in the scene.");
                 obj = null;
                 return false;
             }
@@ -43,16 +47,17 @@ namespace Sylan.AudioManager.EditorUtilities
         /// <typeparam name="T">Type of Object to set</typeparam>
         /// <param name="serializedObject">Object with the property, can be <see langword="null"/>.</param>
         /// <param name="propertyName">Name of Serialized Property</param>
-        public static void PopulateSerializedProperty<T>(SerializedObject serializedObject, string propertyName) where T : Component
+        public static bool TryPopulateSerializedProperty<T>(SerializedObject serializedObject, string propertyName, bool required) where T : Component
         {
-            if (serializedObject == null) return;
+            if (serializedObject == null) return true;
 
             // Get one matching components in the scene
-            TryFindObject(out T obj); // May be null.
+            if (!TryFindObject(out T obj, required)) return false; // obj may be null, when required is false.
             serializedObject.FindProperty(propertyName).objectReferenceValue = obj;
 
             // Apply the changes to the component
             serializedObject.ApplyModifiedProperties();
+            return true;
         }
 
         /// <summary>
@@ -96,13 +101,14 @@ namespace Sylan.AudioManager.EditorUtilities
         /// Find an object of Type T in the scene hierarchy as a SerializedObject.
         /// </summary>
         /// <typeparam name="T">Type of Object to get</typeparam>
-        /// <param name="obj">Local variable to contain the object</param>
-        /// <param name="serializedObject">Local variable to contain the object</param>
-        /// <returns>True if successful, false if unsuccessful</returns>
-        public static bool TryFindSerializedObject<T>(out T obj, out SerializedObject serializedObject) where T : Component
+        /// <param name="obj">When <paramref name="required"/> is <see langword="true"/>, this is never <see langword="null"/>.</param>
+        /// <param name="serializedObject">When <paramref name="required"/> is <see langword="true"/>, this is never <see langword="null"/>.</param>
+        /// <param name="required">When true and no object of type T is found, an error gets written to the console.</param>
+        /// <returns>True if successful, false if unsuccessful.</returns>
+        public static bool TryFindSerializedObject<T>(out T obj, out SerializedObject serializedObject, bool required) where T : Component
         {
             serializedObject = null;
-            if (!TryFindObject(out obj)) return false;
+            if (!TryFindObject(out obj, required)) return false;
             if (obj != null) serializedObject = new SerializedObject(obj);
             return true;
         }
