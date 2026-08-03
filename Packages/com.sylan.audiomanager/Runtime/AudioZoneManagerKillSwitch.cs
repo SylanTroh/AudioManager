@@ -68,6 +68,7 @@ namespace Sylan.AudioManager
             {
                 audioSettingManager.RemoveAudioSetting(player, AudioZoneManager.SETTING_ZONE_SETTING_ID);
                 audioSettingManager.RemoveAudioSetting(player, AudioZoneManager.AUDIO_ZONE_SETTING_ID);
+                audioSettingManager.ApplyAudioSetting(player);
             }
         }
     }
