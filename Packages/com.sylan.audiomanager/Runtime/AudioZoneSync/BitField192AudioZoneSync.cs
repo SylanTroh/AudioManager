@@ -137,7 +137,7 @@ namespace Sylan.AudioManager
             ulong remoteAudioZonesField2 = ((BitField192AudioZoneSync)other).syncedAudioZonesField2;
             ulong remoteAudioZonesField3 = ((BitField192AudioZoneSync)other).syncedAudioZonesField3;
 
-            if (IsInNoneOrEmpty(syncedAudioZonesField1, syncedAudioZonesField2, remoteAudioZonesField3)
+            if (IsInNoneOrEmpty(syncedAudioZonesField1, syncedAudioZonesField2, syncedAudioZonesField3)
                 && IsInNoneOrEmpty(remoteAudioZonesField1, remoteAudioZonesField2, remoteAudioZonesField3))
             {
                 return true;
