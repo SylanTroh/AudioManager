@@ -77,9 +77,6 @@ namespace Sylan.AudioManager
             zoneIdCount = zoneIdDict.Count;
 
             managerSo.FindProperty(nameof(AudioZoneManager.totalAudioZonesCount)).intValue = zoneIdCount;
-            int shift = zoneIdCount % 64;
-            managerSo.FindProperty(nameof(AudioZoneManager.audioSettingsIndexBitShift)).intValue = shift;
-            managerSo.FindProperty(nameof(AudioZoneManager.audioSettingsIndexBitMask)).ulongValue = ulong.MaxValue << shift;
 
             string[] zoneIdMapping = new string[zoneIdDict.Count];
             foreach (var kvp in zoneIdDict)

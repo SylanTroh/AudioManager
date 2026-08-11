@@ -21,7 +21,7 @@ namespace Sylan.AudioManager
             if (!SerializedPropertyUtils.TryPopulateSerializedProperty<AudioSettingManager>(managerSo, AudioZoneManager.AudioSettingManagerPropertyName, required: true)) return false;
 
             RunOnPlayerObjectBuild(playerObject, manager);
-            AudioZoneSyncCore correctPlayerSync = PickAppropriateSyncScript(playerObject);
+            AudioZoneSyncCore correctPlayerSync = PickAppropriateSyncScript(playerObject, managerSo);
 
             if (!EnsureNoUnknownScriptInstances(playerObject)
                 || !EnsureNoUnknownScriptInstances(correctPlayerSync))
@@ -55,7 +55,7 @@ namespace Sylan.AudioManager
             playerObjectSo.ApplyModifiedProperties();
         }
 
-        private static AudioZoneSyncCore PickAppropriateSyncScript(AudioZonePlayerObject playerObject)
+        private static AudioZoneSyncCore PickAppropriateSyncScript(AudioZonePlayerObject playerObject, SerializedObject managerSo)
         {
             int requiredSettingZoneBits = 0;
             while ((1u << requiredSettingZoneBits) <= ((uint)AudioSettingInitialize.zoneIdCount + 1u))
@@ -64,19 +64,17 @@ namespace Sylan.AudioManager
             }
             int totalRequiredBits = AudioZoneInitialize.zoneIdCount + requiredSettingZoneBits;
             int totalIdCount = AudioZoneInitialize.zoneIdCount + AudioSettingInitialize.zoneIdCount;
+            int bitFieldCount = (totalRequiredBits + 63) / 64;
 
-            System.Type scriptType = totalRequiredBits switch
+            System.Type scriptType = bitFieldCount switch
             {
-                <= 64 => typeof(BitField64AudioZoneSync),
-                <= 128 => typeof(BitField128AudioZoneSync),
-                <= 192 => typeof(BitField192AudioZoneSync),
-                _ => null,
+                1 => typeof(BitField64AudioZoneSync),
+                2 => typeof(BitField128AudioZoneSync),
+                3 => typeof(BitField192AudioZoneSync),
+                _ => totalIdCount <= ushort.MaxValue ? typeof(ShortAudioZoneSync) : typeof(IntegerAudioZoneSync),
             };
-            scriptType ??= totalIdCount switch
-            {
-                <= ushort.MaxValue => typeof(ShortAudioZoneSync),
-                _ => typeof(IntegerAudioZoneSync),
-            };
+
+            SetAudioSettingsIndexBits(managerSo, AudioZoneInitialize.zoneIdCount, bitFieldCount);
 
             AudioZoneSyncCore existingScript = playerObject.GetComponentInChildren<AudioZoneSyncCore>();
             if (existingScript?.GetType() == scriptType) return existingScript;
@@ -95,6 +93,15 @@ namespace Sylan.AudioManager
             }
 
             return (AudioZoneSyncCore)UdonSharpUndo.AddComponent(syncGo, scriptType);
+        }
+
+        private static void SetAudioSettingsIndexBits(SerializedObject managerSo, int audioZoneCount, int bitFieldCount)
+        {
+            int audioZoneBitsInLowerFields = 64 * (bitFieldCount - 1);
+            int shift = Mathf.Max(0, audioZoneCount - audioZoneBitsInLowerFields);
+            managerSo.FindProperty(nameof(AudioZoneManager.audioSettingsIndexBitShift)).intValue = shift;
+            managerSo.FindProperty(nameof(AudioZoneManager.audioSettingsIndexBitMask)).ulongValue = ulong.MaxValue << shift;
+            managerSo.ApplyModifiedProperties();
         }
 
         private static bool EnsureNoUnknownScriptInstances<T>(T validInstance)
