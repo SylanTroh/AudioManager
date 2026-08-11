@@ -63,7 +63,7 @@ namespace Sylan.AudioManager
             }
             audioZoneManager.Kill();
 
-            VRCPlayerApi[] players = VRCPlayerApi.GetPlayers();
+            VRCPlayerApi[] players = VRCPlayerApi.GetPlayers(new VRCPlayerApi[VRCPlayerApi.GetPlayerCount()]);
             foreach (VRCPlayerApi player in players)
             {
                 audioSettingManager.RemoveAudioSetting(player, AudioZoneManager.SETTING_ZONE_SETTING_ID);
