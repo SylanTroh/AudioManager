@@ -20,7 +20,7 @@ Each AudioZoneCollider script has at least one "ID" which is a string that corre
 If a AudioZone has the id "", that is, the empty string, it will match players who are not in any AudioZones in addition to the AudioZone with id "". This can be used to create "Transition Zones" or zones where players can hear players who are inside of a zone, while still hearing players who are outside of it. Finally, if a player is in a AudioZoneCollider with the "Is Negative Zone" checkbox enabled, this will prevent them from matching players in AudioZones with the IDs specified on that AudioZoneCollider.
 
 ## Video Guide
-**Important Note: The comments about players clipping through walls and floors no longer apply, zones can match the size of rooms exactly.** Player capsule colliders are no longer used since version 1.7.0, zones are instead checked for specifically at the head position. Local and remote players will always agree with each other since this system manually syncs which zones players are in.
+**Important Note: The comments about players clipping through walls and floors no longer apply, zones can match the size of rooms exactly.** Player capsule colliders are no longer used since version 2.0.0, zones are instead checked for specifically at the head position. Local and remote players will always agree with each other since this system manually syncs which zones players are in.
 [![Setup](https://img.youtube.com/vi/9Saxs7rcltQ/hqdefault.jpg)](https://youtu.be/9Saxs7rcltQ)
 
 # Known Issues
@@ -30,7 +30,7 @@ If a AudioZone has the id "", that is, the empty string, it will match players w
 
 # Update Log
 
-## Version 1.7.0
+## Version 2.0.0
 - Support players being in stations, be it in world or on avatars, the system continues to detect zone changes (resolves previously known issue)
 - Support audio and setting zone game objects or their colliders getting toggled at runtime, the system will respect their active state
 - Remove discrepancy between local and remote players
